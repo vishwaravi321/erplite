@@ -1,0 +1,50 @@
+.note-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .note-card {
+    width: 345px;
+    margin-bottom: 20px;
+  }
+  
+  .create-button-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+  }
+  
+  .create-button {
+    background-color: #1976d2;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .create-button:hover {
+    background-color: #1565c0;
+  }
+  
+  .dialog-title {
+    font-weight: bold;
+  }
+  
+  .dialog-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }

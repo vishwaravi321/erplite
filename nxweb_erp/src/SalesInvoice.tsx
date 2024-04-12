@@ -6,7 +6,7 @@ function App() {
   const [list, setList] = useState([]);
 
   useEffect(() => {
-    const frappe = new FrappeApp('http://49.13.142.146/');
+    const frappe = new FrappeApp("http://5.75.229.51");
     const db = frappe.db();
     db.getDocList('Sales Invoice', {
       fields: ['name', 'status', 'grand_total', 'customer', 'creation', 'modified_by'],

@@ -17,7 +17,8 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import EditNoteIcon from '@mui/icons-material/EditNote';
-import App from '../SalesInvoice'
+import SalesInvoice from '../SalesInvoice';
+import Note from '../Note';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 
 const drawerWidth = 240;
@@ -95,20 +96,12 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 export default function MiniDrawer() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
-  const [isClickedSales, setIsClickedSales] = React.useState(false);
-  const [isClickedNote, setIsClickedNote] = React.useState(false);
+  const [activeTab, setActiveTab] = React.useState(null);
 
 
-  const setActiveWin = (tab) =>{
-    if (tab == "Sales Invoice"){
-      setIsClickedSales(true)
-      setIsClickedNote(false)
-    }else if (tab === "Note"){
-      setIsClickedSales(false)
-      setIsClickedNote(true)
-    }
-
-  }
+  const setActiveWin = (tab) => {
+    setActiveTab(tab);
+  };
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -165,7 +158,7 @@ export default function MiniDrawer() {
                 >
                   <MonetizationOnIcon />
                 </ListItemIcon>
-                <ListItemText primary={'Sales Order'} sx={{ opacity: open ? 1 : 0 }} />
+                <ListItemText primary={'Sales Invoice'} sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
             </ListItem>
         </List>
@@ -194,19 +187,13 @@ export default function MiniDrawer() {
         </List>
         <Divider />
       </Drawer>
-      {isClickedSales ? <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <DrawerHeader />
-        <React.StrictMode>
-          <App />
-        </React.StrictMode>,
-      </Box> 
-      : 
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <DrawerHeader />
-        <React.StrictMode>
-          <App />
-        </React.StrictMode>,
-      </Box>}
+      <DrawerHeader />
+      <React.StrictMode>
+        {activeTab === 'Sales Invoice' ? <SalesInvoice /> : null}
+        {activeTab === 'Note' ? <Note /> : null}
+      </React.StrictMode>
+    </Box>
     </Box>
   );
 }
