@@ -1,9 +1,10 @@
 import React from 'react';
 import { Space, Table, Tag } from 'antd';
 import { FrappeApp } from 'frappe-js-sdk';
-import { TableProps, theme } from 'antd';
+import { TableProps, theme, Button } from 'antd';
 import { DeleteOutlined, EditOutlined, FolderViewOutlined } from '@ant-design/icons';
 import '../SalesInvoice/App.css';
+import SalesOrderModal from './SalesOrderModel';
 
 
 type CheckboxValueType = React.ReactText[];
@@ -18,7 +19,7 @@ interface DataType {
 
 
 const deleteEntry = (key) =>{
-  const frappe = new FrappeApp("http://5.75.229.51");
+  const frappe = new FrappeApp("http://162.55.41.54");
   const db = frappe.db();
   db.updateDoc('Sales Order', key, {
     docstatus: 2,
@@ -76,11 +77,15 @@ const Data: React.FC = () => {
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<CheckboxValueType>([]);
 
   React.useEffect(() => {
-    const frappe = new FrappeApp("http://5.75.229.51");
+    const frappe = new FrappeApp("http://162.55.41.54");
     const db = frappe.db();
     db.getDocList('Sales Order', {
       fields: ['name', 'status', 'grand_total', 'customer', 'creation', 'modified_by'],
-      limit: 10,
+      orderBy: {
+        field: 'creation',
+        order: 'desc',
+      },
+      limit:1000,
       asDict: true,
     })
     .then((docs) => {
@@ -108,6 +113,44 @@ const Data: React.FC = () => {
     },
   };
 
+  const [isModalVisible, setIsModalVisible] = React.useState(false);
+
+  const handleCreateSalesInvoice = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleModalCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleModalSubmit = (values) => {
+    const frappe = new FrappeApp("http://162.55.41.54");
+
+    const items = values.items.map((child) => ({
+      item_code: child.item,
+      qty: child.quantity,
+      delivery_date: `${child.deliverydate.$y}-${child.deliverydate.$M + 1}-${child.deliverydate.$D}`,
+      rate: child.rate,
+      warehouse:child.deliverywarehouse
+    }));
+    const db = frappe.db();
+    console.log(values);
+    db.createDoc('Sales Order', {
+      customer: values.customer,
+      order_type:values.orderType,
+      date: `${values.postingDate.$y}-${values.postingDate.$M + 1}-${values.postingDate.$D}`,
+      items: items,
+    })
+    .then((doc) => {
+      console.log('New item created:', doc);
+      setIsModalVisible(false);
+    })
+    .catch((error) => {
+      console.error('Error creating new item:', error);
+    });
+  };
+
+
   return (
     <div
     style={{
@@ -127,6 +170,15 @@ const Data: React.FC = () => {
       total: Data.length, 
     }}
     />
+    <Button style={{display:"flex",float:"right"}} type="primary" onClick={handleCreateSalesInvoice}>
+      Create New Sales Order
+    </Button>
+
+      <SalesOrderModal
+        visible={isModalVisible}
+        onCancel={handleModalCancel}
+        onSubmit={handleModalSubmit}
+      />
   </div>
 
 )

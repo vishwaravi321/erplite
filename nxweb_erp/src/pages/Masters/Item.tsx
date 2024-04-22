@@ -4,7 +4,7 @@ import { FrappeApp } from 'frappe-js-sdk';
 import { TableProps } from 'antd';
 import { DeleteOutlined, EditOutlined,FolderAddOutlined, FolderViewOutlined } from '@ant-design/icons';
 import '../SalesInvoice/App.css';
-import ItemCre from '../../components/ItemCreationPopUp';
+import ItemCreateModal from './ItemCreationPopUp';
 
 type CheckboxValueType = React.ReactText[];
 
@@ -18,7 +18,7 @@ interface DataType {
 }
 
 const deleteEntry = (key: string) => {
-  const frappe = new FrappeApp("http://5.75.229.51");
+  const frappe = new FrappeApp("http://162.55.41.54");
   const db = frappe.db();
   db.deleteDoc('Item', key)
     .then((response) => console.log(response.message))
@@ -83,11 +83,15 @@ const ItemTable: React.FC = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const frappe = new FrappeApp("http://5.75.229.51");
+        const frappe = new FrappeApp("http://162.55.41.54");
         const db = frappe.db();
         const docs = await db.getDocList('Item', {
           fields: ['name', 'disabled', 'creation', 'item_group', 'stock_uom'],
-          limit: 100,
+          limit:1000,
+          orderBy: {
+            field: 'creation',
+            order: 'desc',
+          },
           asDict: true,
         });
         const formattedDocs: DataType[] = docs.map((doc) => ({
@@ -106,6 +110,34 @@ const ItemTable: React.FC = () => {
     };
     fetchData();
   }, []);
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const handleCreateItem = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleModalCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleModalSubmit = (values) => {
+    const frappe = new FrappeApp("http://162.55.41.54");
+    const db = frappe.db();
+    console.log(values);
+    db.createDoc('Item', {
+      item_code: values.itemCode,
+      item_group: values.itemGroup,
+      stock_uom: values.defaultUom,
+    })
+      .then((doc) => {
+        console.log('New item created:', doc);
+        setIsModalVisible(false);
+      })
+      .catch((error) => {
+        console.error('Error creating new item:', error);
+      });
+  };
 
   const rowSelection = {
     selectedRowKeys,
@@ -129,7 +161,18 @@ const ItemTable: React.FC = () => {
           pagination={{ style: { marginTop: '10px' }, pageSize: 12, total: list.length }}
         />
       )}
-      <FloatButton icon={<FolderAddOutlined />} style={{ right: 24 }} type="primary" onClick={ItemCre} />
+      <FloatButton
+        icon={<FolderAddOutlined />}
+        style={{ right: 24 }}
+        type="primary"
+        onClick={handleCreateItem}
+      />
+
+      <ItemCreateModal
+        visible={isModalVisible}
+        onCancel={handleModalCancel}
+        onSubmit={handleModalSubmit}
+      />
     </div>
   );
 };

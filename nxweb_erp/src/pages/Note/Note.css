@@ -45,4 +45,25 @@
 .note-actions button {
   margin-left: 10px;
 }
+.note-card {
+  height: 230px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.note-card .MuiCardContent-root {
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.note-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px;
+}
 

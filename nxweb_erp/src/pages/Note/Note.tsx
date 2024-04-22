@@ -22,7 +22,7 @@ function Note() {
   const [editedNoteContent, setEditedNoteContent] = React.useState('');
 
   const deleteNote = (name) => {
-    const frappe = new FrappeApp("http://5.75.229.51");
+    const frappe = new FrappeApp("http://162.55.41.54");
     const db = frappe.db();
     db.deleteDoc('Note', name)
       .then((response) => {
@@ -33,7 +33,7 @@ function Note() {
   };
 
   const editTitle = (name,title) => {
-    const frappe = new FrappeApp("http://5.75.229.51");
+    const frappe = new FrappeApp("http://162.55.41.54");
     const db = frappe.db();
     db.updateDoc('Note', name, {
       title: title,
@@ -57,7 +57,7 @@ function Note() {
   };
 
   const handleSaveDrawerNote = () => {
-    const frappe = new FrappeApp("http://5.75.229.51");
+    const frappe = new FrappeApp("http://162.55.41.54");
     const db = frappe.db();
     db.updateDoc('Note', currentNote.name, {
       content: editedNoteContent,
@@ -70,11 +70,15 @@ function Note() {
   };
 
   React.useEffect(() => {
-    const frappe = new FrappeApp("http://5.75.229.51");
+    const frappe = new FrappeApp("http://162.55.41.54");
     const db = frappe.db();
     db.getDocList('Note', {
       fields: ['name', 'title', 'content'],
-      limit: 10,
+      orderBy: {
+        field: 'creation',
+        order: 'desc',
+      },
+      limit:1000,
       asDict: true,
     })
       .then((docs) => {
@@ -94,7 +98,7 @@ function Note() {
   };
 
   const handleSaveNote = () => {
-    const frappe = new FrappeApp("http://5.75.229.51");
+    const frappe = new FrappeApp("http://162.55.41.54");
     const db = frappe.db();
     const newNote = {
       title: newNoteTitle,
@@ -199,7 +203,7 @@ function Note() {
         /> 
         <div className="note-actions">
         <Button type="primary" onClick={handleSaveDrawerNote}>
-          Save
+          Update
         </Button>
         </div>
       </Drawer>

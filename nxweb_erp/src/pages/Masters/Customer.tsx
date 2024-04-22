@@ -4,6 +4,7 @@ import { FrappeApp } from 'frappe-js-sdk';
 import { TableProps } from 'antd';
 import { DeleteOutlined, EditOutlined,FolderAddOutlined, FolderViewOutlined } from '@ant-design/icons';
 import '../SalesInvoice/App.css';
+import CustomerCreatePopUp from './CustomerCreatePopUp';
 
 type CheckboxValueType = React.ReactText[];
 
@@ -17,7 +18,7 @@ interface DataType {
 }
 
 const deleteEntry = (key: string) => {
-  const frappe = new FrappeApp("http://5.75.229.51");
+  const frappe = new FrappeApp("http://162.55.41.54");
   const db = frappe.db();
   db.deleteDoc('Customer', key)
     .then((response) => console.log(response.message))
@@ -77,11 +78,15 @@ const ItemTable: React.FC = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const frappe = new FrappeApp("http://5.75.229.51");
+        const frappe = new FrappeApp("http://162.55.41.54");
         const db = frappe.db();
         const docs = await db.getDocList('Customer', {
           fields: ['name', 'disabled', 'creation', 'customer_type'],
-          limit: 100,
+          orderBy: {
+            field: 'creation',
+            order: 'desc',
+          },
+          limit:1000,
           asDict: true,
         });
         const formattedDocs: DataType[] = docs.map((doc) => ({
@@ -108,6 +113,34 @@ const ItemTable: React.FC = () => {
     },
   };
 
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const handleCreateItem = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleModalCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleModalSubmit = (values) => {
+    const frappe = new FrappeApp("http://162.55.41.54");
+    const db = frappe.db();
+    console.log(values);
+    db.createDoc('Customer', {
+      customer_name: values.customerName,
+      customer_type: values.customerType,
+      gst_category: values.setGstCategory,
+    })
+      .then((doc) => {
+        console.log('New item created:', doc);
+        setIsModalVisible(false);
+      })
+      .catch((error) => {
+        console.error('Error creating new item:', error);
+      });
+  };
+
   return (
     <div style={{ padding: 24, minHeight: '85vh', background: '#fff', borderRadius: 8 }}>
       {loading ? (
@@ -123,9 +156,15 @@ const ItemTable: React.FC = () => {
         />
       )}
       <FloatButton
-      icon={<FolderAddOutlined />}
-      style={{ right: 24 }}
-      type="primary"
+        icon={<FolderAddOutlined />}
+        style={{ right: 24 }}
+        type="primary"
+        onClick={handleCreateItem}
+      />
+      <CustomerCreatePopUp
+        visible={isModalVisible}
+        onCancel={handleModalCancel}
+        onSubmit={handleModalSubmit}
       />
     </div>
   );

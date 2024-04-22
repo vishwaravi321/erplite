@@ -1,9 +1,10 @@
 import React from 'react';
 import { Space, Table, Tag } from 'antd';
 import { FrappeApp } from 'frappe-js-sdk';
-import { TableProps, theme, Pagination } from 'antd';
+import { TableProps, theme,Button, Pagination } from 'antd';
 import { DeleteOutlined, EditOutlined, FolderViewOutlined } from '@ant-design/icons';
 import './App.css';
+import SalesInvoiceModal from './SalesInvoiceModal';
 
 type CheckboxValueType = React.ReactText[];
 
@@ -19,7 +20,7 @@ interface DataType {
 }
 
 const deleteEntry = (key) => {
-  const frappe = new FrappeApp("http://5.75.229.51");
+  const frappe = new FrappeApp("http://162.55.41.54");
   const db = frappe.db();
   db.updateDoc('Sales Invoice', key, { docstatus: 2 })
     .then((response) => console.log(response.message))
@@ -86,11 +87,15 @@ const Data: React.FC = () => {
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<CheckboxValueType>([]);
 
   React.useEffect(() => {
-    const frappe = new FrappeApp("http://5.75.229.51");
+    const frappe = new FrappeApp("http://162.55.41.54");
     const db = frappe.db();
     db.getDocList('Sales Invoice', {
       fields: ['name', 'status', 'grand_total', 'customer', 'creation', 'modified_by'],
-      limit: 100,
+      orderBy: {
+        field: 'creation',
+        order: 'desc',
+      },
+      limit:1000,
       asDict: true,
     })
       .then((docs) => {
@@ -118,6 +123,41 @@ const Data: React.FC = () => {
     },
   };
 
+  const [isModalVisible, setIsModalVisible] = React.useState(false);
+
+  const handleCreateSalesInvoice = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleModalCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleModalSubmit = (values) => {
+    const frappe = new FrappeApp("http://162.55.41.54");
+
+    const items = values.items.map((child) => ({
+      item_code: child.item,
+      qty: child.quantity,
+      uom: child.uom,
+      rate: child.rate,
+    }));
+    const db = frappe.db();
+    console.log(values);
+    db.createDoc('Sales Invoice', {
+      customer: values.customer,
+      due_date: `${values.paymentDueDate.$y}-${values.paymentDueDate.$M + 1}-${values.paymentDueDate.$D}`,
+      items: items,
+    })
+    .then((doc) => {
+      console.log('New item created:', doc);
+      setIsModalVisible(false);
+    })
+    .catch((error) => {
+      console.error('Error creating new item:', error);
+    });
+  };
+
   return (
     <div
       style={{
@@ -137,6 +177,17 @@ const Data: React.FC = () => {
           total: Data.length, 
         }}
       />
+
+      <Button style={{display:"flex",float:"right"}} type="primary" onClick={handleCreateSalesInvoice}>
+        Create New Sales Invoice
+      </Button>
+
+      <SalesInvoiceModal
+        visible={isModalVisible}
+        onCancel={handleModalCancel}
+        onSubmit={handleModalSubmit}
+      />
+
     </div>
   );
 };

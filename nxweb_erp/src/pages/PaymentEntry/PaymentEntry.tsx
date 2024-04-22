@@ -21,7 +21,7 @@ interface DataType {
 
 
 const deleteEntry = (key) =>{
-  const frappe = new FrappeApp("http://5.75.229.51");
+  const frappe = new FrappeApp("http://162.55.41.54");
   const db = frappe.db();
   db.updateDoc('Payment Entry', key, {
     docstatus: 2,
@@ -90,11 +90,15 @@ const Data: React.FC = () => {
 
 
   React.useEffect(() => {
-    const frappe = new FrappeApp("http://5.75.229.51");
+    const frappe = new FrappeApp("http://162.55.41.54");
     const db = frappe.db();
     db.getDocList('Payment Entry', {
       fields: ['name', 'party_name','status', 'paid_amount', 'payment_type', 'mode_of_payment', 'modified_by'],
-      limit: 10,
+      orderBy: {
+        field: 'creation',
+        order: 'desc',
+      },
+      limit:1000,
       asDict: true,
     })
     .then((docs) => {

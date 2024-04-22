@@ -1,9 +1,10 @@
 import React from 'react';
 import { Space, Table, Tag } from 'antd';
 import { FrappeApp } from 'frappe-js-sdk';
-import { TableProps, theme } from 'antd';
+import { TableProps, Button, theme } from 'antd';
 import { DeleteOutlined, EditOutlined, FolderViewOutlined } from '@ant-design/icons';
 import '../SalesInvoice/App.css';
+import JournalEntryModel from './JournalEntryModel';
 
 type CheckboxValueType = React.ReactText[];
 
@@ -17,7 +18,7 @@ interface DataType {
 
 
 const deleteEntry = (key) =>{
-  const frappe = new FrappeApp("http://5.75.229.51");
+  const frappe = new FrappeApp("http://162.55.41.54");
   const db = frappe.db();
   db.updateDoc('Journal Entry', key, {
     docstatus: 2,
@@ -75,11 +76,15 @@ const Data: React.FC = () => {
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<CheckboxValueType>([]);
 
   React.useEffect(() => {
-    const frappe = new FrappeApp("http://5.75.229.51");
+    const frappe = new FrappeApp("http://162.55.41.54");
     const db = frappe.db();
     db.getDocList('Journal Entry', {
       fields: ['name', 'voucher_type', 'total_debit', 'title', 'creation', 'modified_by'],
-      limit: 10,
+      orderBy: {
+        field: 'creation',
+        order: 'desc',
+      },
+      limit:1000,
       asDict: true,
     })
     .then((docs) => {
@@ -107,6 +112,42 @@ const Data: React.FC = () => {
     },
   };
 
+  const [isModalVisible, setIsModalVisible] = React.useState(false);
+
+  const handleCreateJournalEntry = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleModalCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleModalSubmit = (values) => {
+    const frappe = new FrappeApp("http://162.55.41.54");
+
+    const accounts = values.account.map((child) => ({
+      account: child.account,
+      party_type: child.partytype,
+      party: `${child.party.$y}-${child.party.$M + 1}-${child.party.$D}`,
+      debit: child.debit,
+      credit:child.credit
+    }));
+    const db = frappe.db();
+    console.log(values);
+    db.createDoc('Journal Entry', {
+      voucher_type: values.entrytype,
+      posting_date: `${values.postingDate.$y}-${values.postingDate.$M + 1}-${values.postingDate.$D}`,
+      accounts: accounts,
+    })
+    .then((doc) => {
+      console.log('New Journal created:', doc);
+      setIsModalVisible(false);
+    })
+    .catch((error) => {
+      console.error('Error creating new Journal:', error);
+    });
+  };
+
   return (
     <div
       style={{
@@ -117,6 +158,15 @@ const Data: React.FC = () => {
       }}
     >
       <Table rowSelection={rowSelection} columns={columns} dataSource={list} />
+      <Button style={{display:"flex",float:"right"}} type="primary" onClick={handleCreateJournalEntry}>
+        Create New Journal Entry
+      </Button>
+      
+      <JournalEntryModel
+        visible={isModalVisible}
+        onCancel={handleModalCancel}
+        onSubmit={handleModalSubmit}
+      />
     </div>
 )
 };
