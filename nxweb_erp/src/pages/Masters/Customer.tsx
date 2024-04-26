@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Space, Table,FloatButton, Tag } from 'antd';
 import { FrappeApp } from 'frappe-js-sdk';
-import { TableProps } from 'antd';
+import { TableProps, Skeleton,Result, Button } from 'antd';
 import { DeleteOutlined, EditOutlined,FolderAddOutlined, FolderViewOutlined } from '@ant-design/icons';
 import '../SalesInvoice/App.css';
 import CustomerCreatePopUp from './CustomerCreatePopUp';
@@ -144,15 +144,21 @@ const ItemTable: React.FC = () => {
   return (
     <div style={{ padding: 24, minHeight: '85vh', background: '#fff', borderRadius: 8 }}>
       {loading ? (
-        <div>Loading...</div>
+        <div><Skeleton active /></div>
       ) : error ? (
-        <div>Error: {error.message}</div>
+        <div>  <Result
+        status="500"
+        title="500"
+        subTitle={error.message}
+        // extra={<Button type="primary">Back Home</Button>}
+      />
+      </div>
       ) : (
         <Table
           columns={columns}
           dataSource={list}
           rowSelection={rowSelection}
-          pagination={{ style: { marginTop: '10px' }, pageSize: 12, total: list.length }}
+          pagination={{position:['bottom','start'], style: { marginTop: '15px' }, total: list.length }}
         />
       )}
       <FloatButton

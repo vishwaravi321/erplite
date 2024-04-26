@@ -55,9 +55,18 @@ const ItemCreateModal = ({ visible, onCancel, onSubmit }) => {
           rules={[{ required: true, message: 'Please select an GST Category!' }]}
         >
           <Select
+            showSearch
             placeholder="Select GST Category"
             value={gstCategory}
             onChange={(value) => setGstCategory(value)}
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              (option?.children ?? '').toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
+              (option?.value ?? '').toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+            filterSort={(optionA, optionB) =>
+              (optionA?.children ?? '').toLowerCase().localeCompare((optionB?.children ?? '').toLowerCase())
+            }
           >
             <Option value="Registered Regular">{"Registered Regular"}</Option>
             <Option value="Registered Composition">{"Registered Composition"}</Option>
@@ -77,9 +86,18 @@ const ItemCreateModal = ({ visible, onCancel, onSubmit }) => {
           rules={[{ required: true, message: 'Please select a customer type!' }]}
         >
           <Select
+            showSearch
             placeholder="Select Customer Type"
             value={customerType}
-            onChange={(value) => setCustomerType(value)}
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              (option?.children ?? '').toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
+              (option?.value ?? '').toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+            filterSort={(optionA, optionB) =>
+              (optionA?.children ?? '').toLowerCase().localeCompare((optionB?.children ?? '').toLowerCase())
+            }
+            onChange={(value) => setCustomerType(value)} 
           >
             <Option value="Company">{"Company"}</Option>
             <Option value="Individual">{"Individual"}</Option>

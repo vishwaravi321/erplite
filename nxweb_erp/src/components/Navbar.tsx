@@ -9,7 +9,7 @@ import React, { useState } from 'react';
 import { FormOutlined, FileOutlined, PieChartOutlined, TeamOutlined, SolutionOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Layout, Menu } from 'antd';
-import { Dropdown, Avatar, theme, Badge } from 'antd';
+import { Dropdown, Avatar, Badge } from 'antd';
 import { UserOutlined, FolderOutlined, CalculatorOutlined} from '@ant-design/icons';
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -31,7 +31,7 @@ function getItem(
 }
 
 const items: MenuItem[] = [
-  getItem('Option 1', '1', <PieChartOutlined />),
+  getItem('Dashboard', '1', <PieChartOutlined />),
   getItem('Notes', '2', <FormOutlined />),
   getItem('Sales', 'sub1', <SolutionOutlined />, [
     getItem('Sales Order', '3'),
@@ -45,7 +45,7 @@ const items: MenuItem[] = [
 const App: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [activeTab, setActiveTab] = useState<string | null>(null);
-  const { token: { colorBgContainer, borderRadiusLG } } = theme.useToken();
+  // const { token: { colorBgContainer, borderRadiusLG } } = theme.useToken();
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     if (e.key === '4') {

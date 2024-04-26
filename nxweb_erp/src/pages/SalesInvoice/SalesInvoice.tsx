@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Space, Table, Tag } from 'antd';
 import { FrappeApp } from 'frappe-js-sdk';
-import { TableProps, theme,Button, Pagination } from 'antd';
+import { TableProps, theme,Button, Skeleton, Result, Pagination } from 'antd';
 import { DeleteOutlined, EditOutlined, FolderViewOutlined } from '@ant-design/icons';
 import './App.css';
 import SalesInvoiceModal from './SalesInvoiceModal';
+import SalesInvoiceView from './SalesInvoiceView';
 
 type CheckboxValueType = React.ReactText[];
 
@@ -19,87 +20,98 @@ interface DataType {
   status: string;
 }
 
-const deleteEntry = (key) => {
-  const frappe = new FrappeApp("http://162.55.41.54");
-  const db = frappe.db();
-  db.updateDoc('Sales Invoice', key, { docstatus: 2 })
-    .then((response) => console.log(response.message))
-    .catch((error) => console.error(error));
-  db.deleteDoc('Sales Invoice', key)
-    .then((response) => console.log(response.message))
-    .catch((error) => console.error(error));
-};
-
-const columns: TableProps<DataType>['columns'] = [
-  {
-    title: 'Customer',
-    dataIndex: 'customer',
-    key: 'customer',
-    render: (text) => <a>{text}</a>,
-  },
-  {
-    title: 'Amount',
-    dataIndex: 'grand_total',
-    key: 'grand_total',
-  },
-  {
-    title: 'ID',
-    dataIndex: 'name',
-    key: 'name',
-  },
-  {
-    title: 'Status',
-    key: 'status',
-    dataIndex: 'status',
-    render: (status) => (
-      <>
-        <Tag color={status === 'Paid' ? 'green' : 'volcano'} key={status}>
-          {status.toUpperCase()}
-        </Tag>
-      </>
-    ),
-  },
-  {
-    title: 'Action',
-    key: 'action',
-    render: (_, record) => (
-      <Space size="middle">
-        <button className="action-button-e">
-          <EditOutlined />
-        </button>
-        <button className="action-button-v">
-          <FolderViewOutlined />
-        </button>
-        <button
-          className="action-button-d"
-          onClick={() => deleteEntry(record.key)}
-        >
-          <DeleteOutlined />
-        </button>
-      </Space>
-    ),
-  },
-];
-
 const Data: React.FC = () => {
   const { token: { colorBgContainer, borderRadiusLG } } = theme.useToken();
-  const [list, setList] = React.useState<DataType[]>([]);
-  const [selectedRowKeys, setSelectedRowKeys] = React.useState<CheckboxValueType>([]);
+  const [list, setList] = useState<DataType[]>([]);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<CheckboxValueType>([]);
+  const [selectedEntry, setSelectedEntry] = useState('');
+  const [isViewModalVisible, setIsViewModalVisible] = useState(false);
+  const [loadingInvoice, setLoadingInvoice] = useState(false);
+  const [error, setError] = useState(null);
 
-  React.useEffect(() => {
+  const deleteEntry = (key) => {
     const frappe = new FrappeApp("http://162.55.41.54");
     const db = frappe.db();
-    db.getDocList('Sales Invoice', {
-      fields: ['name', 'status', 'grand_total', 'customer', 'creation', 'modified_by'],
-      orderBy: {
-        field: 'creation',
-        order: 'desc',
-      },
-      limit:1000,
-      asDict: true,
-    })
-      .then((docs) => {
-        const formattedDocs: DataType[] = docs.map((doc) => ({
+    db.updateDoc('Sales Invoice', key, { docstatus: 2 })
+      .then((response) => console.log(response.message))
+      .catch((error) => console.error(error));
+    db.deleteDoc('Sales Invoice', key)
+      .then((response) => console.log(response.message))
+      .catch((error) => console.error(error));
+  };
+  
+  const columns: TableProps<DataType>['columns'] = [
+    {
+      title: 'Customer',
+      dataIndex: 'customer',
+      key: 'customer',
+      render: (text,record) => (
+      <a onClick={()=>handleViewEntry(record.name)}>{text}</a>
+    )
+    },
+    {
+      title: 'Amount',
+      dataIndex: 'grand_total',
+      key: 'grand_total',
+    },
+    {
+      title: 'ID',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: 'Status',
+      key: 'status',
+      dataIndex: 'status',
+      render: (status) => (
+        <>
+          <Tag color={status === 'Paid' ? 'green' : 'volcano'} key={status}>
+            {status.toUpperCase()}
+          </Tag>
+        </>
+      ),
+    },
+    {
+      title: 'Action',
+      key: 'action',
+      render: (_, record) => (
+        <Space size="middle">
+          <button className="action-button-e">
+            <EditOutlined />
+          </button>
+          <button 
+            className="action-button-v"
+            onClick={()=>handleViewEntry(record.name)}
+            >
+            <FolderViewOutlined />
+          </button>
+          <button
+            className="action-button-d"
+            onClick={() => deleteEntry(record.key)}
+          >
+            <DeleteOutlined />
+          </button>
+        </Space>
+      ),
+    },
+  ];
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoadingInvoice(true);
+      try {
+        const frappe = new FrappeApp("http://162.55.41.54");
+        const db = frappe.db();
+        const docs = await db.getDocList('Sales Invoice', {
+          fields: ['name', 'status', 'grand_total', 'customer', 'creation', 'modified_by'],
+          orderBy: {
+            field: 'creation',
+            order: 'desc',
+          },
+          limit: 1000,
+          asDict: true,
+        });
+        const formattedDocs = docs.map((doc) => ({
           key: doc.name,
           name: doc.name,
           age: doc.grand_total,
@@ -110,18 +122,14 @@ const Data: React.FC = () => {
           status: doc.status,
         }));
         setList(formattedDocs);
-      })
-      .catch((error) => console.error(error));
+      } catch (err) {
+        setError(err);
+      } finally {
+        setLoadingInvoice(false);
+      }
+    };
+    fetchData();
   }, []);
-
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: (keys: CheckboxValueType) => {
-      setSelectedRowKeys(keys);
-      console.log(selectedRowKeys);
-      
-    },
-  };
 
   const [isModalVisible, setIsModalVisible] = React.useState(false);
 
@@ -131,6 +139,11 @@ const Data: React.FC = () => {
 
   const handleModalCancel = () => {
     setIsModalVisible(false);
+  };
+
+  const handleViewEntry = (record) => {
+    setSelectedEntry(record);
+    setIsViewModalVisible(true);
   };
 
   const handleModalSubmit = (values) => {
@@ -158,6 +171,27 @@ const Data: React.FC = () => {
     });
   };
 
+  const [loading, setLoading] = React.useState(false);
+
+  const start = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setSelectedRowKeys([]);
+      setLoading(false);
+    }, 1000);
+  };
+
+  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+    console.log('selectedRowKeys changed: ', newSelectedRowKeys);
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
+  const hasSelected = selectedRowKeys.length > 0;
+
   return (
     <div
       style={{
@@ -167,26 +201,52 @@ const Data: React.FC = () => {
         borderRadius: borderRadiusLG,
       }}
     >
+    {loadingInvoice?(
+        <div><Skeleton active /></div>
+      ) : error ? (
+      <div>
+        <Result
+          status="500"
+          title="500"
+          subTitle={error.message}
+          // extra={<Button type="primary">Back Home</Button>}
+        />
+      </div>
+      ) : (
+        <>
+      <div style={{ display:'flex', float:'right', marginBottom: 16 }}>
+      <Button style={{marginRight:'8px' , display:"flex",float:"right"}} type="primary" onClick={handleCreateSalesInvoice}>
+        Create New Sales Invoice
+      </Button>
+        <span style={{ marginRight: 8 , marginTop: 8}}>
+          {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
+        </span>
+        <Button type="primary" onClick={start} disabled={!hasSelected} loading={loading}>
+          Delete
+        </Button>
+      </div>
       <Table
         columns={columns}
         dataSource={list}
         rowSelection={rowSelection}
-        pagination={{
-          style:{ marginTop: '10px' },
-          pageSize: 12, 
-          total: Data.length, 
+        pagination={{          
+          position:['bottom','start']
         }}
       />
 
-      <Button style={{display:"flex",float:"right"}} type="primary" onClick={handleCreateSalesInvoice}>
-        Create New Sales Invoice
-      </Button>
+      <SalesInvoiceView
+        visible={isViewModalVisible}
+        onCancel={() => setIsViewModalVisible(false)}
+        entryData={selectedEntry}
+      />
 
       <SalesInvoiceModal
         visible={isModalVisible}
         onCancel={handleModalCancel}
         onSubmit={handleModalSubmit}
       />
+      </>
+      )}
 
     </div>
   );

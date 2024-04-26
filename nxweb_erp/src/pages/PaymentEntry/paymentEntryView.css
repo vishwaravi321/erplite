@@ -1,0 +1,36 @@
+/* EntryViewModal.css */
+
+.block-card {
+    margin-bottom: 16px;
+  }
+.entry-view-modal {
+    padding: 16px;
+  }
+  
+  .entry-view-modal .ant-form-item {
+    margin-bottom: 8px;
+  }
+  
+  .entry-view-modal .ant-form-item-label {
+    font-weight: bold;
+  }
+  
+  
+  .entry-view-modal .horizontal-form {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  
+  .entry-view-modal .horizontal-form .ant-form-item {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+  
+  .entry-view-modal .vertical-form .ant-form-item-label {
+    font-weight: normal;
+  }
+  
+  .entry-view-modal .vertical-form .ant-form-item-label {
+    font-weight: bold;
+  }

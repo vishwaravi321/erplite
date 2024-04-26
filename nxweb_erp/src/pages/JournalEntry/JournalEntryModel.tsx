@@ -4,7 +4,7 @@ import { FrappeApp } from 'frappe-js-sdk';
 
 const { Option } = Select;
 
-const SalesOrderModal = ({ visible, onCancel, onSubmit }) => {
+const JournalEntryModal = ({ visible, onCancel, onSubmit }) => {
   const [form] = Form.useForm();
   const [account, setAccount] = useState([{ key: 1, account: '', debit: 0, credit: 0, amount: 0,partytype:'',party:''}]);
   const [loading, setLoading] = useState(false);
@@ -80,13 +80,13 @@ const SalesOrderModal = ({ visible, onCancel, onSubmit }) => {
 
     }, []);
 
-  const MakePartyReadOnly = (account_type) =>{
-    console.log(account_type);
-    if (account_type === 'Payable') {
-        console.log(account_type);
+    const MakePartyReadOnly = (account_type, index) => {
+      if (account_type == 'Payable') {
+        setPropertyParty(false);
+      } else {
         setPropertyParty(true);
-    }
-  }
+      }
+    };
 
   const handleOk = () => {
     form.validateFields().then((values) => {
@@ -110,16 +110,7 @@ const SalesOrderModal = ({ visible, onCancel, onSubmit }) => {
     const newItems = [...account];
     newItems[index][field] = value;
     newItems[index].amount = newItems[index].debit * newItems[index].credit;
-    // setAccount(newItems);
-
-    const selectedAccount = listAccount.find(
-        (acc) => acc.name === newItems[index].account
-      );
-      if (selectedAccount && selectedAccount.account_type !== 'Payable') {
-        newItems[index].partytype = '';
-        newItems[index].party = '';
-      }
-      setAccount(newItems);
+    setAccount(newItems);
   };
   const entries = [
     'Journal Entry', 'Inter Company Journal Entry', 'Bank Entry', 'Cash Entry', 'Credit Card Entry',
@@ -138,12 +129,25 @@ const SalesOrderModal = ({ visible, onCancel, onSubmit }) => {
           rules={[{ required: true, message: 'Please select an Account!' }]}
         >
         <Select
+        showSearch
         placeholder="Select Account"
         value={record.account}
-        onChange={(value) => handleItemChange(index, 'account', value)}
+        optionFilterProp="children"
+        filterOption={(input, option) =>
+          (option?.children ?? '').toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
+          (option?.value ?? '').toLowerCase().indexOf(input.toLowerCase()) >= 0
+        }
+        filterSort={(optionA, optionB) =>
+          (optionA?.children ?? '').toLowerCase().localeCompare((optionB?.children ?? '').toLowerCase())
+        }
+        onChange={(value) => {
+          handleItemChange(index, 'account', value);
+          MakePartyReadOnly(listAccount.find(data => data.name === value)?.account_type, index);
+          console.log(listAccount.find(data => data.name === value)?.account_type);
+        }}
         >
         {listAccount.map(data => (
-            <Option key={data.name} value={data.name} onClick={() => MakePartyReadOnly(data.account_type)}>
+            <Option key={data.name} value={data.name}>
             {data.name}
             </Option>
         ))}
@@ -162,8 +166,17 @@ const SalesOrderModal = ({ visible, onCancel, onSubmit }) => {
           rules={[{ required: false, message: 'Please select an Party Type!' }]}
         >
           <Select
+            showSearch
             placeholder="Select Party Type"
             value={record.partytype}
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              (option?.children ?? '').toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
+              (option?.value ?? '').toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+            filterSort={(optionA, optionB) =>
+              (optionA?.children ?? '').toLowerCase().localeCompare((optionB?.children ?? '').toLowerCase())
+            }
             onChange={(value) => handleItemChange(index, 'partytype', value)}
             disabled={propertyParty}
           >
@@ -183,9 +196,19 @@ const SalesOrderModal = ({ visible, onCancel, onSubmit }) => {
             rules={[{ required: false, message: 'Please select an Party!' }]}
           >
             <Select
+              showSearch
               placeholder="Select Party"
               value={record.party}
+              optionFilterProp="children"
+              filterOption={(input, option) =>
+                (option?.children ?? '').toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
+                (option?.value ?? '').toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+              filterSort={(optionA, optionB) =>
+                (optionA?.children ?? '').toLowerCase().localeCompare((optionB?.children ?? '').toLowerCase())
+              }
               onChange={(value) => handleItemChange(index, 'party', value)}
+              disabled={propertyParty}
             >
             {record.partytype === 'Supplier'
               ? listParty.map((data) => (
@@ -255,8 +278,17 @@ const SalesOrderModal = ({ visible, onCancel, onSubmit }) => {
           rules={[{ required: true, message: 'Please enter a Entry Type!' }]}
         >
           <Select
+            showSearch
             placeholder="Select Entry Type"
             value={entryType}
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              (option?.children ?? '').toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
+              (option?.value ?? '').toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+            filterSort={(optionA, optionB) =>
+              (optionA?.children ?? '').toLowerCase().localeCompare((optionB?.children ?? '').toLowerCase())
+            }
             onChange={(value) => SetEntryType(value)}
           >
         {entries.map((entry, index) => (
@@ -292,4 +324,4 @@ const SalesOrderModal = ({ visible, onCancel, onSubmit }) => {
   );
 };
 
-export default SalesOrderModal;
+export default JournalEntryModal;

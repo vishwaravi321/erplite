@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, Form, Input, DatePicker,Button, Table, InputNumber, Select } from 'antd';
+import { DeleteOutlined } from '@ant-design/icons';
+import { Modal, Form, Input, DatePicker, Button, Table, InputNumber, Select } from 'antd';
 import { FrappeApp } from 'frappe-js-sdk';
 
 const { Option } = Select;
@@ -122,6 +123,12 @@ const SalesOrderModal = ({ visible, onCancel, onSubmit }) => {
     setItems(newItems);
   };
 
+  const handleDeleteItem = (index) => {
+    const newItems = [...items];
+    newItems.splice(index, 1);
+    setItems(newItems);
+  };
+
   const columns = [
     {
       title: 'Item',
@@ -133,8 +140,17 @@ const SalesOrderModal = ({ visible, onCancel, onSubmit }) => {
           rules={[{ required: true, message: 'Please select an item!' }]}
         >
           <Select
+            showSearch
             placeholder="Select item"
             value={record.item}
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              (option?.children ?? '').toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
+              (option?.value ?? '').toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+            filterSort={(optionA, optionB) =>
+              (optionA?.children ?? '').toLowerCase().localeCompare((optionB?.children ?? '').toLowerCase())
+            }
             onChange={(value) => handleItemChange(index, 'item', value)}
           >
             {listItem.map(data=>(
@@ -170,8 +186,17 @@ const SalesOrderModal = ({ visible, onCancel, onSubmit }) => {
           rules={[{ required: true, message: 'Please select an Delivery Warehouse!' }]}
         >
           <Select
+            showSearch
             placeholder="Select Delivery Warehouse"
             value={record.deliverywarehouse}
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              (option?.children ?? '').toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
+              (option?.value ?? '').toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+            filterSort={(optionA, optionB) =>
+              (optionA?.children ?? '').toLowerCase().localeCompare((optionB?.children ?? '').toLowerCase())
+            }
             onChange={(value) => handleItemChange(index, 'deliverywarehouse', value)}
           >
             {listWarehouse.map(data=>(
@@ -215,6 +240,18 @@ const SalesOrderModal = ({ visible, onCancel, onSubmit }) => {
         </Form.Item>
       ),
     },
+    {
+      title: 'Actions',
+      key: 'action',
+      render: (_, record, index) => (
+        <Button
+          type="danger"
+          onClick={() => handleDeleteItem(index)}
+        >
+          <DeleteOutlined />
+        </Button>
+      ),
+    },
   ];
 
   return (
@@ -234,8 +271,17 @@ const SalesOrderModal = ({ visible, onCancel, onSubmit }) => {
           rules={[{ required: true, message: 'Please enter a customer!' }]}
         >
           <Select
+            showSearch
             placeholder="Select Customer"
             value={Customer}
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              (option?.children ?? '').toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
+              (option?.value ?? '').toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+            filterSort={(optionA, optionB) =>
+              (optionA?.children ?? '').toLowerCase().localeCompare((optionB?.children ?? '').toLowerCase())
+            }
             onChange={(value) => SetCustomer(value)}
           >
             {customerList.map((data)=>(
@@ -250,8 +296,17 @@ const SalesOrderModal = ({ visible, onCancel, onSubmit }) => {
           rules={[{ required: true, message: 'Please Select Order Type!' }]}
         >
           <Select
+            showSearch
             placeholder="Select Customer"
             value={Customer}
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              (option?.children ?? '').toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
+              (option?.value ?? '').toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+            filterSort={(optionA, optionB) =>
+              (optionA?.children ?? '').toLowerCase().localeCompare((optionB?.children ?? '').toLowerCase())
+            }
             onChange={(value) => SetCustomer(value)}
           >            
             <Option value="Sales">Sales</Option>
@@ -275,7 +330,7 @@ const SalesOrderModal = ({ visible, onCancel, onSubmit }) => {
           footer={() => (
             <div>
               <span style={{display:"flex",float:"right"}}>
-                <b>Total Amount:&nbsp; {items.reduce((total, item) => total + item.rate, 0)} </b>
+                <b>Total Amount:&nbsp; {items.reduce((total, item) => total + (item.rate*item.quantity), 0)} </b>
               </span>
               <Button type='primary' onClick={handleAddItem}>
                 Add 

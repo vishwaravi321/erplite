@@ -1,25 +1,25 @@
-import * as React from 'react';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
-import { CardActionArea, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
-import { FrappeApp } from 'frappe-js-sdk';
-import './Note.css';
-import { FolderAddOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { FloatButton, Input } from 'antd';
+import { useState, useEffect } from 'react';
+import { Modal, Button, Input, Result, Skeleton, Card, Drawer, Pagination, FloatButton } from 'antd';
 import Grid from '@mui/material/Grid';
-import { Button, Drawer,Divider } from 'antd';
+import { FrappeApp } from 'frappe-js-sdk';
+import { FolderAddOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import './Note.css';
 
 const { TextArea } = Input;
+const { Meta } = Card;
 
 function Note() {
-  const [list, setList] = React.useState([]);
-  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
-  const [newNoteTitle, setNewNoteTitle] = React.useState('');
-  const [newNoteContent, setNewNoteContent] = React.useState('');
-  const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
-  const [currentNote, setCurrentNote] = React.useState(null);
-  const [editedNoteContent, setEditedNoteContent] = React.useState('');
+  const [list, setList] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newNoteTitle, setNewNoteTitle] = useState('');
+  const [newNoteContent, setNewNoteContent] = useState('');
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [currentNote, setCurrentNote] = useState(null);
+  const [editedNoteContent, setEditedNoteContent] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<any>(null);
+  const pageSize = 9;
 
   const deleteNote = (name) => {
     const frappe = new FrappeApp("http://162.55.41.54");
@@ -32,7 +32,7 @@ function Note() {
       .catch((error) => console.error(error));
   };
 
-  const editTitle = (name,title) => {
+  const editTitle = (name, title) => {
     const frappe = new FrappeApp("http://162.55.41.54");
     const db = frappe.db();
     db.updateDoc('Note', name, {
@@ -44,7 +44,6 @@ function Note() {
       })
       .catch((error) => console.error(error));
   };
-  
 
   const showDrawer = (note) => {
     setCurrentNote(note);
@@ -69,19 +68,21 @@ function Note() {
       .catch((error) => console.error(error));
   };
 
-  React.useEffect(() => {
-    const frappe = new FrappeApp("http://162.55.41.54");
-    const db = frappe.db();
-    db.getDocList('Note', {
-      fields: ['name', 'title', 'content'],
-      orderBy: {
-        field: 'creation',
-        order: 'desc',
-      },
-      limit:1000,
-      asDict: true,
-    })
-      .then((docs) => {
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const frappe = new FrappeApp("http://162.55.41.54");
+        const db = frappe.db();
+        const docs = await db.getDocList('Note', {
+          fields: ['name', 'title', 'content'],
+          orderBy: {
+            field: 'creation',
+            order: 'desc',
+          },
+          limit: 1000,
+          asDict: true,
+        });
         const updatedDocs = docs.map((doc) => {
           const parser = new DOMParser();
           const htmlDoc = parser.parseFromString(doc.content, 'text/html');
@@ -89,12 +90,18 @@ function Note() {
           return { ...doc, content };
         });
         setList(updatedDocs);
-      })
-      .catch((error) => console.error(error));
+      } catch (err) {
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
   }, []);
+  
 
   const handleCreateNote = () => {
-    setIsDialogOpen(true);
+    setIsModalOpen(true);
   };
 
   const handleSaveNote = () => {
@@ -111,100 +118,109 @@ function Note() {
     })
       .then((doc) => console.log(doc))
       .catch((error) => console.error(error));
-    setIsDialogOpen(false);
+    setIsModalOpen(false);
   };
 
   const handleCancelNote = () => {
-    setIsDialogOpen(false);
+    setIsModalOpen(false);
   };
+
+  const onPageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const paginatedList = list.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
   return (
     <>
       <div className="note-container">
+      {loading?(
+        <div><Skeleton active /></div>
+      ) : error ? (
+      <div>
+        <Result
+          status="500"
+          title="500"
+          subTitle={error.message}
+        />
+      </div>
+      ) : (
+        <>
         <Grid container spacing={3}>
-          {list.map((data) => (
+          {paginatedList.map((data) => (
             <Grid item xs={12} sm={6} md={4} key={data.name}>
-              <Card className="note-card" elevation={3}>
-                <CardActionArea onClick={() => showDrawer(data)}>
-                  <CardContent>
-                    <Typography gutterBottom variant="h5" component="div">
-                      {data.title}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {data.content}
-                    </Typography>
-                  </CardContent>
-                </CardActionArea>
-                <Divider orientation="left" plain>
-                  Actions
-                </Divider>
-                <div className="note-actions">
-                  <Button className="note-actions" onClick={() => editTitle(data.name,"ready")}>
-                    <EditOutlined />
-                  </Button>
-                  <Button className="note-actions" onClick={() => deleteNote(data.name)}>
-                    <DeleteOutlined />
-                  </Button>
-                </div>
+              <Card
+                key={data.name}
+                hoverable
+                title={data.title}
+                actions={[
+                  <EditOutlined onClick={() => showDrawer(data)} key="edit" />,
+                  <DeleteOutlined onClick={() => deleteNote(data.name)} key="delete" />,
+                ]}
+                className="block-card"
+              >
+                <Meta
+                  style={{ overflow: 'hidden',height:'6em', maxHeight: '6em', textOverflow: 'ellipsis' }}
+                  onClick={() => showDrawer(data)}
+                  description={data.content}
+                />
               </Card>
             </Grid>
           ))}
         </Grid>
+        </>
+      )}
       </div>
-      <Dialog open={isDialogOpen} onClose={handleCancelNote}>
-        <DialogTitle className="dialog-title">Create a New Note</DialogTitle>
-        <DialogContent className="dialog-content">
-          <TextField
-            autoFocus
-            margin="dense"
-            id="title"
-            label="Title"
-            type="text"
-            fullWidth
-            variant="standard"
-            value={newNoteTitle}
-            onChange={(e) => setNewNoteTitle(e.target.value)}
-          />
-          <TextArea
-            rows={15}
-            placeholder="Content"
-            maxLength={1000}
-            margin="dense"
-            id="content"
-            label="Content"
-            type="text"
-            variant="standard"
-            value={newNoteContent}
-            onChange={(e) => setNewNoteContent(e.target.value)}
-          />
-        </DialogContent>
-        <DialogActions className="dialog-actions">
-          <Button type="primary" onClick={handleCancelNote}>Cancel</Button>
-          <Button type="primary" onClick={handleSaveNote}>Save</Button>
-        </DialogActions>
-      </Dialog>
+
+      <Pagination
+        current={currentPage}
+        total={list.length}
+        pageSize={pageSize}
+        onChange={onPageChange}
+        style={{ textAlign: 'center', marginTop: 20 }}
+      />
+
+      <Modal
+        title="Create a New Note"
+        open={isModalOpen}
+        onOk={handleSaveNote}
+        onCancel={handleCancelNote}
+        okText="Save"
+        cancelText="Cancel"
+      >
+        <Input
+          placeholder="Title"
+          value={newNoteTitle}
+          onChange={(e) => setNewNoteTitle(e.target.value)}
+        />
+        <TextArea
+          rows={15}
+          placeholder="Content"
+          // maxLength={100000}
+          value={newNoteContent}
+          onChange={(e) => setNewNoteContent(e.target.value)}
+        />
+      </Modal>
 
       <Drawer
         title={currentNote?.title}
         width={520}
         onClose={onDrawerClose}
         open={isDrawerOpen}
+        placement="right"
+        closable={false}
+        getContainer={false}
       >
         <TextArea
           rows={30}
           placeholder="Content"
-          maxLength={1000}
-          margin="dense"
-          id="content"
-          label="Content"
-          type="text"
           value={editedNoteContent}
           onChange={(e) => setEditedNoteContent(e.target.value)}
-        /> 
+        />
         <div className="note-actions">
-        <Button type="primary" onClick={handleSaveDrawerNote}>
-          Update
-        </Button>
+          <Button type="primary" onClick={handleSaveDrawerNote}>
+            Update
+          </Button>
         </div>
       </Drawer>
 

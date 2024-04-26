@@ -65,12 +65,17 @@ const ItemCreateModal = ({ visible, onCancel, onSubmit }) => {
       form.resetFields();
     });
   };
-  
+  const onSearch = (value: string) => {
+    console.log('search:', value);
+  };
 
   const handleCancel = () => {
     form.resetFields();
     onCancel();
   };
+
+  const filterOption = (input: string, option?: { label: string; value: string }) =>
+    (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
 
   return (
     <Modal
@@ -99,8 +104,17 @@ const ItemCreateModal = ({ visible, onCancel, onSubmit }) => {
           rules={[{ required: true, message: 'Please select an item group!' }]}
         >
           <Select
+            showSearch
             placeholder="Select item group"
             value={itemGroup}
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              (option?.children ?? '').toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
+              (option?.value ?? '').toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+            filterSort={(optionA, optionB) =>
+              (optionA?.children ?? '').toLowerCase().localeCompare((optionB?.children ?? '').toLowerCase())
+            }
             onChange={(value) => setItemGroup(value)}
           >
             {list.map((data) => (
@@ -115,13 +129,24 @@ const ItemCreateModal = ({ visible, onCancel, onSubmit }) => {
           rules={[{ required: true, message: 'Please select a default UOM!' }]}
         >
           <Select
+            showSearch
             placeholder="Select default UOM"
             value={defaultUom}
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              (option?.children ?? '').toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
+              (option?.value ?? '').toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+            filterSort={(optionA, optionB) =>
+              (optionA?.children ?? '').toLowerCase().localeCompare((optionB?.children ?? '').toLowerCase())
+            }
             onChange={(value) => setDefaultUom(value)}
           >
-            {listUOM.map((data) =>(
-            <Option value={data.name}>{data.name}</Option>
-          ) )}
+            {listUOM.map((data) => (
+              <Select.Option key={data.name} value={data.name}>
+                {data.name}
+              </Select.Option>
+            ))}
           </Select>
         </Form.Item>
 

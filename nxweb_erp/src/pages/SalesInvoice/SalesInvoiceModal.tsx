@@ -112,8 +112,17 @@ const SalesInvoiceModal = ({ visible, onCancel, onSubmit }) => {
           rules={[{ required: true, message: 'Please select an item!' }]}
         >
           <Select
+            showSearch
             placeholder="Select item"
             value={record.item}
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              (option?.children ?? '').toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
+              (option?.value ?? '').toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+            filterSort={(optionA, optionB) =>
+              (optionA?.children ?? '').toLowerCase().localeCompare((optionB?.children ?? '').toLowerCase())
+            }
             onChange={(value) => handleItemChange(index, 'item', value)}
           >
             {listItem.map(data=>(
@@ -167,8 +176,17 @@ const SalesInvoiceModal = ({ visible, onCancel, onSubmit }) => {
           rules={[{ required: true, message: 'Please select a UOM!' }]}
         >
           <Select
+            showSearch
             placeholder="Select UOM"
             value={record.uom}
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              (option?.children ?? '').toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
+              (option?.value ?? '').toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+            filterSort={(optionA, optionB) =>
+              (optionA?.children ?? '').toLowerCase().localeCompare((optionB?.children ?? '').toLowerCase())
+            }
             onChange={(value) => handleItemChange(index, 'uom', value)}
           >
             {listUOM.map(data=>(
@@ -203,8 +221,17 @@ const SalesInvoiceModal = ({ visible, onCancel, onSubmit }) => {
           rules={[{ required: true, message: 'Please enter a customer!' }]}
         >
           <Select
+            showSearch
             placeholder="Select Customer"
             value={Customer}
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              (option?.children ?? '').toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
+              (option?.value ?? '').toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+            filterSort={(optionA, optionB) =>
+              (optionA?.children ?? '').toLowerCase().localeCompare((optionB?.children ?? '').toLowerCase())
+            }
             onChange={(value) => SetCustomer(value)}
           >
             {customerList.map((data)=>(
