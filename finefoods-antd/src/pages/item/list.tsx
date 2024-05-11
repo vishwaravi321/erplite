@@ -16,6 +16,8 @@ import {
   PaginationTotal,
 } from "../../components";
 import { useLocation } from "react-router-dom";
+import { ItemDrawerForm } from "../../components/item/drawer-form";
+// import { ItemDrawerForm } from "../../components/item/drawer-form";
 import { PropsWithChildren, useEffect, useState } from "react";
 import { useFrappeDocTypeEventListener, useFrappeGetDocList } from "frappe-react-sdk";
 
@@ -26,6 +28,7 @@ export const ItemList = ({ children }: PropsWithChildren) => {
   const t = useTranslate();
   const [list, setList] = useState<any>([]);
   const { token } = theme.useToken();
+  const [isCreateDrawerOpen, setIsCreateDrawerOpen] = useState(false);
 
 
   const { data, mutate } = useFrappeGetDocList<any>('Item', {
@@ -57,24 +60,12 @@ export const ItemList = ({ children }: PropsWithChildren) => {
         breadcrumb={false}
         headerButtons={() => [
           <CreateButton
-            key="create"
-            size="large"
-            onClick={() => {
-              
-              return go({
-                to: `${createUrl("couriers")}`,
-                query: {
-                  to: pathname,
-                },
-                options: {
-                  keepQuery: true,
-                },
-                type: "replace",
-              });
-            }}
-          >
-            {"Create new Item"}
-          </CreateButton>,
+          key="create"
+          size="large"
+          onClick={() => setIsCreateDrawerOpen(true)} // Open the create drawer
+        >
+          {"Create new Item"}
+        </CreateButton>,
         ]}
       >
         <Table
@@ -110,6 +101,21 @@ export const ItemList = ({ children }: PropsWithChildren) => {
               </Typography.Text>
             )}
           />
+                      <Table.Column<any>
+              dataIndex="disabled"
+              key="disabled"
+              title={"Status"}
+              render={(value) => {
+                const status = value ? "Disabled" : "Enabled";
+                const color = value ? "red" : "blue";
+                
+                return (
+                  <Tag color={color} >
+                    {status}
+                  </Tag>
+                );
+              }}
+            />
           <Table.Column
             key="item_group"
             dataIndex="item_group"
@@ -124,23 +130,6 @@ export const ItemList = ({ children }: PropsWithChildren) => {
               </Typography.Text>
             )}
           />
-
-            <Table.Column<any>
-              dataIndex="disabled"
-              key="disabled"
-              title={"Status"}
-              render={(value) => {
-                const status = value ? "Disabled" : "Enabled";
-                const color = value ? "red" : "blue";
-                // const icon = value ? "stop" : "check-circle";
-                
-                return (
-                  <Tag color={color} >
-                    {status}
-                  </Tag>
-                );
-              }}
-            />
           <Table.Column
             key="creation"
             dataIndex="creation"
@@ -164,6 +153,17 @@ export const ItemList = ({ children }: PropsWithChildren) => {
           />
         </Table>
       </List>
+      {isCreateDrawerOpen && (
+      <ItemDrawerForm
+        open={isCreateDrawerOpen}
+        action="create"
+        onClose={() => setIsCreateDrawerOpen(false)}
+        onMutationSuccess={() => {
+          setIsCreateDrawerOpen(false);
+          mutate();
+        }}
+      />
+    )}
       {children}
     </>
   );
