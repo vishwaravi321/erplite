@@ -1,7 +1,7 @@
 import {
   useTranslate,
   useNavigation,
-  useGo,
+  useGo
 } from "@refinedev/core";
 import {
   CreateButton,
@@ -10,25 +10,23 @@ import {
   List,
 } from "@refinedev/antd";
 import { EyeOutlined} from "@ant-design/icons";
-import { Table, Typography, theme, InputNumber, Input, Tag } from "antd";
-import { ICourier } from "../../interfaces";
+import { Table, Typography, theme, Tag, Button } from "antd";
 import {
   PaginationTotal,
 } from "../../components";
-import { useLocation } from "react-router-dom";
-import { ItemDrawerForm } from "../../components/item/drawer-form";
-// import { ItemDrawerForm } from "../../components/item/drawer-form";
+import { ItemDrawerForm } from "../../components/item/drawer-form/create";
 import { PropsWithChildren, useEffect, useState } from "react";
 import { useFrappeDocTypeEventListener, useFrappeGetDocList } from "frappe-react-sdk";
+import { useLocation } from "react-router-dom";
 
 export const ItemList = ({ children }: PropsWithChildren) => {
-  const go = useGo();
-  const { pathname } = useLocation();
-  const { createUrl } = useNavigation();
   const t = useTranslate();
   const [list, setList] = useState<any>([]);
   const { token } = theme.useToken();
   const [isCreateDrawerOpen, setIsCreateDrawerOpen] = useState(false);
+  const { showUrl } = useNavigation();
+  const { pathname } = useLocation();
+  const go = useGo();
 
 
   const { data, mutate } = useFrappeGetDocList<any>('Item', {
@@ -43,7 +41,7 @@ export const ItemList = ({ children }: PropsWithChildren) => {
 
   useFrappeDocTypeEventListener('Payment Entry', (d) => {
     console.log("Event", d)
-    if (d.doctype === "Payment Entry") {
+    if (d.doctype === "Item") {
         mutate()
     }
   })
@@ -85,7 +83,7 @@ export const ItemList = ({ children }: PropsWithChildren) => {
                   whiteSpace: "nowrap",
                 }}
               >
-                ID #
+                ID 
               </Typography.Text>
             }
             dataIndex="name"
@@ -136,22 +134,34 @@ export const ItemList = ({ children }: PropsWithChildren) => {
             title={t("orders.fields.createdAt")}
             render={(value) => <DateField value={value} format="LLL" />}
           />
+          
           <Table.Column
             title={t("table.actions")}
             key="actions"
             fixed="right"
             align="center"
-            render={(_, record: ICourier) => {
-              return (
-                <EditButton
-                  icon={<EyeOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />}
-                  hideText
-                  recordItemId={record.id}
-                />
-              );
-            }}
+            render={(_, record: any) => {
+            return (
+              <Button
+                icon={<EyeOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />}
+                onClick={() => {
+                  return go({
+                    to: `${showUrl("item", record.name)}`,
+                    query: {
+                      to: pathname,
+                    },
+                    options: {
+                      keepQuery: true,
+                    },
+                    type: "replace",
+                  });
+                }}
           />
-        </Table>
+            );
+          }}
+      />
+      </Table>
+
       </List>
       {isCreateDrawerOpen && (
       <ItemDrawerForm

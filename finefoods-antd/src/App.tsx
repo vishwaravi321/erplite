@@ -48,9 +48,9 @@ import { Header, Title } from "./components";
 import { BikeWhiteIcon } from "./components/icons";
 import { ConfigProvider } from "./context";
 import { useAutoLoginForDemo } from "./hooks";
-
 import "@refinedev/antd/dist/reset.css";
 import { FrappeProvider } from "frappe-react-sdk";
+import { ItemDrawerShow } from "./components";
 
 const App: React.FC = () => {
   // This hook is used to automatically login the user.
@@ -134,6 +134,7 @@ const App: React.FC = () => {
                 name: "item",
                 list: "/item",
                 show: "/item/:id",
+                edit: "/item/:id/edit",
                 meta: {
                   label:'Item', icon: <FolderOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />,
                 },
@@ -225,11 +226,23 @@ const App: React.FC = () => {
                   <Route path=":id/edit" element={""} />
                 </Route>
 
-                <Route
+                {/* <Route
                   path="/item"
                   element={<ItemList/>}
                 >
-                  <Route path=":id" element={<CustomerShow />} />
+                  <Route path=":id" element={<ItemDrawerShow />} />
+                </Route> */}
+                <Route
+                  path="/item"
+                  element={
+                    <ItemList>
+                      <Outlet />
+                    </ItemList>
+                  }
+                >
+                  {/* <Route path="new" element={<ProductCreate />} /> */}
+                  <Route path=":id" element={<ItemDrawerShow />} />
+                  {/* <Route path=":id/edit" element={<ItemEdit />} /> */}
                 </Route>
 
                 <Route

@@ -53,9 +53,16 @@ export const ProductDrawerForm = (props: Props) => {
       },
     });
 
+    console.log('form prop');
+    console.log(formProps);
+    console.log('draw prop');
+    console.log(drawerProps);
+    
+
   const { selectProps: categorySelectProps } = useSelect<ICategory>({
     resource: "categories",
   });
+  
 
   const onDrawerCLose = () => {
     close();

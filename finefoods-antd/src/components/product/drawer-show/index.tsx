@@ -54,6 +54,10 @@ export const ProductDrawerShow = (props: Props) => {
     },
   });
   const category = categoryData?.data;
+  console.log('prop');
+  
+  console.log(props);
+  
 
   const handleDrawerClose = () => {
     if (props?.onClose) {
@@ -189,7 +193,7 @@ export const ProductDrawerShow = (props: Props) => {
           }}
         />
         <Button
-          icon={<EditOutlined />}
+          icon={<EditOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />}
           onClick={() => {
             if (props?.onEdit) {
               return props.onEdit();
