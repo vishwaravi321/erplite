@@ -135,7 +135,7 @@ import {
                   <Table.Column
                     key="name"
                     dataIndex="name"
-                    title={"Sales Order"}
+                    title={"ID"}
                     render={(value) => (
                       <Typography.Text
                         style={{

@@ -2,6 +2,7 @@ import {
   useTranslate,
   useExport,
   useNavigation,
+  useGo,
 } from "@refinedev/core";
 
 import {
@@ -10,6 +11,7 @@ import {
   EditButton,
   NumberField,
   ExportButton,
+  CreateButton,
 } from "@refinedev/antd";
 import { Skeleton, Table, Typography } from "antd";
 import { EyeOutlined } from "@ant-design/icons";
@@ -30,6 +32,8 @@ export const OrderList = () => {
   const [loadingOrder, setLoadingOrder] = useState(false);
   const [error, setError] = useState<any>(null);
   const [list, setList] = useState<ISalesOrder[]>([]);
+  const go = useGo();
+  const { createUrl } = useNavigation();
   const [selectedRowKeys, setSelectedRowKeys] = useState<any>([]);
 
 
@@ -104,9 +108,29 @@ export const OrderList = () => {
 
   return (
     <List
-      headerProps={{
-        extra: <ExportButton onClick={triggerExport} loading={isLoading} />,
-      }}
+      headerButtons={() => [
+        <ExportButton onClick={triggerExport} loading={isLoading} />,
+        <CreateButton
+        key="create"
+        size="large"
+        onClick={() => {
+          return go({
+            to: `${createUrl("orders")}`,
+            // query: {
+            //   to: "/products",
+            // },
+            // options: {
+            //   keepQuery: true,
+            // },
+            // type: "replace",
+          });
+        }}
+        // onClick={() => setIsCreateDrawerOpen(true)} // Open the create drawer
+      >
+        {"Create new Sales Order"}
+      </CreateButton>,
+       
+      ]}
     >
       {loadingOrder?(
         <Skeleton active loading={true} paragraph={{ rows: 20 }} />

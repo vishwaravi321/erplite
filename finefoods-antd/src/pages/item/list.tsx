@@ -39,7 +39,7 @@ export const ItemList = ({ children }: PropsWithChildren) => {
     asDict:true
   });
 
-  useFrappeDocTypeEventListener('Payment Entry', (d) => {
+  useFrappeDocTypeEventListener('Item', (d) => {
     console.log("Event", d)
     if (d.doctype === "Item") {
         mutate()

@@ -12,6 +12,7 @@ import {
   Grid,
   List,
   Typography,
+  message,
   theme,
 } from "antd";
 import { useSearchParams, useParams } from "react-router-dom";
@@ -21,6 +22,7 @@ import { EditOutlined } from "@ant-design/icons";
 import { useFrappeDocTypeEventListener ,useFrappeGetDoc } from "frappe-react-sdk";
 import { useEffect, useState } from "react";
 import { ItemStatus } from "../status/index";
+import { FrappeApp } from "frappe-js-sdk";
 
 export const ItemDrawerShow = (props:any) => {
   const getToPath = useGetToPath();
@@ -34,20 +36,30 @@ export const ItemDrawerShow = (props:any) => {
   const [itemData, setItemData] = useState<any>([])
 
 
-    console.log(id)
+  const DeleteItem = async (values: any) => {
+    const frappe = new FrappeApp("http://162.55.41.54");
+    const db = frappe.db();
+    try {
+      console.log("Form Values:", values);
+      const doc = await db.deleteDoc('Item', id);
+      message.success('Item deleted successfully!');
+      handleDrawerClose();
+    } catch (error) {
+      console.error(error);
+      const m = JSON.parse(error._server_messages)
+      const d = JSON.parse(m[0])
+      
+      message.error(d.message);
+
+    }
+  };
+
+
 
     const { data, error, isValidating, mutate } = useFrappeGetDoc<any>(
       "Item",
       id
     );
-
-
-    useFrappeDocTypeEventListener('Item',(d)=>{
-      if (d.doctype === "Item") {
-        mutate()
-      }
-    })
-
 
     useEffect(() => {
       if (data !== itemData) {
@@ -55,6 +67,11 @@ export const ItemDrawerShow = (props:any) => {
       }
     }, [data, itemData]);
 
+    useFrappeDocTypeEventListener('Item',(d)=>{
+      if (d.doctype === "Item") {
+        mutate()
+      }
+    })
 
     
 
@@ -81,14 +98,6 @@ export const ItemDrawerShow = (props:any) => {
         type: "replace",
       });
     };
-
-    if (isValidating || !itemData) {
-      return <div>Loading...</div>; // or any other loading state you prefer
-    }
-  
-    if (error) {
-      return <div>Error: {error.message}</div>; // or any other error handling you prefer
-    }
   
     return (
       <Drawer
@@ -183,10 +192,11 @@ export const ItemDrawerShow = (props:any) => {
           <DeleteButton
             type="text"
             recordItemId={itemData?.name}
-            resource="products"
-            onSuccess={() => {
-              handleDrawerClose();
-            }}
+            resource="item"
+            onClick={DeleteItem}
+            // onSuccess={() => {
+            //   handleDrawerClose();
+            // }}
           />
           <Button
             icon={<EditOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />}

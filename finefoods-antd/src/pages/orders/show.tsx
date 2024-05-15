@@ -43,7 +43,7 @@ import {
 import { FrappeApp } from "frappe-js-sdk";
 import {SkeletonSales} from "./skeleton";
 
-export const SalesOrderEdit = () => {
+export const SalesOrderShow = () => {
   const titleInputRef = useRef<InputRef>(null);
   const { id } = useParams<{ id: string }>();
 
@@ -82,7 +82,6 @@ export const SalesOrderEdit = () => {
   const [isFormDisabled, setIsFormDisabled] = useState(true);
 
   const t = useTranslate();
-  const { mutate } = useUpdate();
 
   const handleSave = async (values: ISalesOrderEdit) => {
     // await mutate({
@@ -117,19 +116,21 @@ export const SalesOrderEdit = () => {
           }}
         >
           {isFormDisabled ? (
-                    <><ListButton hidden={isBackbtnVisible} icon={<LeftOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />}>
-            {t("orders.orders")}
-          </ListButton><Button
-            style={{
-              marginLeft: "auto",
-            }}
-            disabled={false}
-            icon={<EditOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />}
-            onClick={() => {
-              setIsBackbtnVisible(true);
-              setIsFormDisabled(false);
-            } }
-          >
+          <>
+            <ListButton hidden={isBackbtnVisible} icon={<LeftOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />}>
+              {t("orders.orders")}
+            </ListButton>
+            <Button
+              style={{
+                marginLeft: "auto",
+              }}
+              disabled={false}
+              icon={<EditOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />}
+              onClick={() => {
+                setIsBackbtnVisible(true);
+                setIsFormDisabled(false);
+              } }
+            >
               {t("actions.edit")}
             </Button></>
           ) : (

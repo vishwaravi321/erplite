@@ -21,3 +21,6 @@ export * from "./item/item-list/item-group";
 export * from "./item/item-list/uom";
 export * from "./item/drawer-show/index";
 export * from "./item/status/index";
+export * from "./masterData/item";
+export * from "./masterData/customer";
+export * from "./salesTable/itemTable";

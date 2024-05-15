@@ -28,7 +28,7 @@ import { authProvider } from "./authProvider";
 import "dayjs/locale/de";
 
 import { DashboardPage } from "./pages/dashboard";
-import { OrderList, SalesOrderEdit } from "./pages/orders";
+import { OrderList, SalesOrderCreate, SalesOrderShow } from "./pages/orders";
 import { SalesInvList, SalesInvEdit } from "./pages/salesinv";
 import { Paymentent, PaymentEntryEdit } from "./pages/paymententry";
 import { AuthPage } from "./pages/auth";
@@ -51,6 +51,7 @@ import { useAutoLoginForDemo } from "./hooks";
 import "@refinedev/antd/dist/reset.css";
 import { FrappeProvider } from "frappe-react-sdk";
 import { ItemDrawerShow } from "./components";
+import { ItemDrawerForm } from "./components/item/drawer-form/create";
 
 const App: React.FC = () => {
   // This hook is used to automatically login the user.
@@ -106,6 +107,7 @@ const App: React.FC = () => {
               {
                 name: "orders",
                 list: "/orders",
+                create:"/orders/new",
                 edit:"/orders/:id/edit",
                 show: "/orders/:id",
                 meta: {
@@ -210,8 +212,8 @@ const App: React.FC = () => {
 
                 <Route path="/orders">
                   <Route index element={<OrderList />} />
-                  <Route path=":id" element={<SalesOrderEdit />} />
-                  <Route path=":id/edit" element={<SalesOrderEdit />} />
+                  <Route path=":id" element={<SalesOrderShow />} />
+                  <Route path="new" element={<SalesOrderCreate />} />
                 </Route>
 
                 <Route path="/salesinv">
@@ -242,7 +244,7 @@ const App: React.FC = () => {
                 >
                   {/* <Route path="new" element={<ProductCreate />} /> */}
                   <Route path=":id" element={<ItemDrawerShow />} />
-                  {/* <Route path=":id/edit" element={<ItemEdit />} /> */}
+                  <Route path=":id/edit" element={<ItemDrawerForm action={"edit"} />} />
                 </Route>
 
                 <Route
