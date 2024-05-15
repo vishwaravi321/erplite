@@ -31,7 +31,19 @@ import { DashboardPage } from "./pages/dashboard";
 import { OrderList, SalesOrderEdit } from "./pages/orders";
 import { SalesInvList, SalesInvEdit } from "./pages/salesinv";
 import { Paymentent, PaymentEntryEdit } from "./pages/paymententry";
+import { ItemPriceList , ItemPriceEdit} from "./pages/item_price";
+import { WarehouseList } from "./pages/warehouse";
+import { UomList } from "./pages/uom";
+import { ItemGroupList } from "./pages/item_group";
+import { SupplierGroupList } from "./pages/supplier_group";
+import { SupplierList } from "./pages/supplier";
+import { PurchaseOrderList } from "./pages/purchase_order";
+import { PurchaseInvoiceList } from "./pages/purchase_invoice";
 import { AuthPage } from "./pages/auth";
+import { AccountList } from "./pages/chart_of_accounts";
+import { ItemTaxTemplateList } from "./pages/tax_template";
+import { ModeofPaymentList } from "./pages/mode_of_payment";
+import { JournalEntryList } from "./pages/journal_entry";
 import { CustomerShow, CustomerList } from "./pages/customers";
 import { CourierList, CourierCreate, CourierEdit } from "./pages/couriers";
 import {
@@ -73,7 +85,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <FrappeProvider socketPort={import.meta.env.VITE_SOCKET_PORT ?? ''} url='http://162.55.41.54' >
+    <FrappeProvider socketPort={import.meta.env.VITE_SOCKET_PORT ?? ''} url='http://49.13.29.136' >
     <BrowserRouter>
       <ConfigProvider>
         <RefineKbarProvider>
@@ -131,13 +143,117 @@ const App: React.FC = () => {
                 },
               },
               {
+                name: "purchase",
+                meta: {
+                  label: 'Purchase',
+                  icon: <ShoppingOutlined />,
+                },
+              },
+              {
+                name: "supplier",
+                meta: { label: 'Supplier', parent: "purchase", canDelete: true },
+                list: "/supplier",
+              },
+              {
+                name: "groups",
+                meta: { label: 'Supplier Group', parent: "purchase", canDelete: true },
+                list: "/supplier_group",
+              },
+              {
+                name: "purchase_order",
+                meta: { label: 'Purchase Order', parent: "purchase", canDelete: true },
+                list: "/purchase_order",
+              },
+              {
+                name: "purchase_invoice",
+                meta: { label: 'Purchase Invoice', parent: "purchase", canDelete: true },
+                list: "/purchase_invoice",
+              },
+              {
+                name: "stock",
+                meta: {
+                  label:'Stock' , icon: <ShoppingOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />,
+                },
+              },
+              {
                 name: "item",
                 list: "/item",
                 show: "/item/:id",
                 meta: {
-                  label:'Item', icon: <FolderOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />,
+                  label:'Item',parent : 'stock'
                 },
               },
+              {
+                name: "item_group",
+                meta: { label: 'Item Group', parent: "stock", canDelete: true,},
+                list: "/item_group",
+              },
+              {
+                name:"item_price",
+                list: "/item_price",
+                edit:"/item_price/:id/edit",
+                meta: { label: 'Item Price', parent: "stock"},
+  
+              },
+              {
+                name: "ware_house",
+                meta: { label: 'Warehouse', parent: "stock", canDelete: true},
+                list: "/warehouse",
+  
+              },
+              {
+                name: "UOM",
+                meta: { label: 'UOM', parent: "stock", canDelete: true},
+                list: "/uom",
+              },
+              {
+                name: "account",
+                meta: {
+                  label: 'Account',
+                  icon: <ShoppingOutlined />,
+                },
+              },
+              {
+                name: "chart_of_accounts",
+                meta: { label: 'Chart Of Account', parent: "account", canDelete: true },
+                list: "/chart_of_accounts",
+              },
+              // {
+              //   name: "account_heads",
+              //   meta: { label: 'Account Head', parent: "account", canDelete: true },
+              //   list: "/",
+              // },
+              {
+                name: "tax_templates",
+                meta: { label: 'Tax Template', parent: "account", canDelete: true },
+                list: "/tax_template",
+              },
+              // {
+              //   name: "tax_category",
+              //   meta: { label: 'Tax Category', parent: "account", canDelete: true },
+              //   list: "/",
+              // },
+  
+              {
+                name: "mode_of_pays",
+                meta: { label: 'Mode Of Pays', parent: "account", canDelete: true },
+                list: "/mode_of_payment",
+              },
+              {
+                name: "journal_entry",
+                meta: { label: 'Journal Entry', parent: "account", canDelete: true },
+                list: "/journal_entry",
+              },
+              // {
+              //   name: "payment_entry",
+              //   meta: { label: 'Payment Entry', parent: "account", canDelete: true },
+              //   list: "/",
+              // },
+              // {
+              //   name: "reconcillation",
+              //   meta: { label: "Reconcillation", parent: "account", canDelete: true },
+              //   list: "/payment_reconcillation",
+              // },
               {
                 name: "users",
                 list: "/customers",
@@ -145,43 +261,7 @@ const App: React.FC = () => {
                 meta: {
                   icon: <UserOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />,
                 },
-              },
-              {
-                name: "products",
-                list: "/products",
-                create: "/products/new",
-                edit: "/products/:id/edit",
-                show: "/products/:id",
-                meta: {
-                  icon: <UnorderedListOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />,
-                },
-              },
-              {
-                name: "categories",
-                list: "/categories",
-                meta: {
-                  icon: <TagsOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />,
-                },
-              },
-              {
-                name: "stores",
-                list: "/stores",
-                create: "/stores/new",
-                edit: "/stores/:id/edit",
-                meta: {
-                  icon: <ShopOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />,
-                },
-              },
-              {
-                name: "couriers",
-                list: "/couriers",
-                create: "/couriers/new",
-                edit: "/couriers/:id/edit",
-                show: "/couriers/:id",
-                meta: {
-                  icon: <BikeWhiteIcon onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />,
-                },
-              },
+              }
             ]}
           >
             <Routes>
@@ -225,6 +305,78 @@ const App: React.FC = () => {
                   <Route path=":id/edit" element={""} />
                 </Route>
 
+                <Route path="/item_group">
+                  <Route index element={<ItemGroupList />} />
+                  <Route path=":id" element={""} />
+                  <Route path=":id/edit" element={""} />
+                </Route>
+
+                <Route path="/item_price">
+                  <Route index element={<ItemPriceList />} />
+                  <Route path=":id" element={<ItemPriceEdit/>} />
+                  <Route path=":id/edit" element={<ItemPriceEdit/>} />
+                </Route>
+
+                <Route path="/warehouse">
+                  <Route index element={<WarehouseList />} />
+                  <Route path=":id" element={""} />
+                  <Route path=":id/edit" element={""} />
+                </Route>
+
+                <Route path="/supplier">
+                  <Route index element={<SupplierList />} />
+                  <Route path=":id" element={""} />
+                  <Route path=":id/edit" element={""} />
+                </Route>
+
+                <Route path="/mode_of_payment">
+                  <Route index element={<ModeofPaymentList />} />
+                  <Route path=":id" element={""} />
+                  <Route path=":id/edit" element={""} />
+                </Route>
+
+                <Route path="/supplier_group">
+                  <Route index element={<SupplierGroupList />} />
+                  <Route path=":id" element={""} />
+                  <Route path=":id/edit" element={""} />
+                </Route>
+
+                <Route path="/purchase_order">
+                  <Route index element={<PurchaseOrderList />} />
+                  <Route path=":id" element={""} />
+                  <Route path=":id/edit" element={""} />
+                </Route>
+
+                <Route path="/chart_of_accounts">
+                  <Route index element={<AccountList />} />
+                  <Route path=":id" element={""} />
+                  <Route path=":id/edit" element={""} />
+                </Route>
+
+                <Route path="/tax_template">
+                  <Route index element={<ItemTaxTemplateList />} />
+                  <Route path=":id" element={""} />
+                  <Route path=":id/edit" element={""} />
+                </Route>
+
+                <Route path="/journal_entry">
+                  <Route index element={<JournalEntryList />} />
+                  <Route path=":id" element={""} />
+                  <Route path=":id/edit" element={""} />
+                </Route>
+
+                <Route path="/purchase_invoice">
+                  <Route index element={<PurchaseInvoiceList />} />
+                  <Route path=":id" element={""} />
+                  <Route path=":id/edit" element={""} />
+                </Route>
+
+                <Route path="/uom">
+                  <Route index element={<UomList />} />
+                  <Route path=":id" element={""} />
+                  <Route path=":id/edit" element={""} />
+                </Route>
+                
                 <Route
                   path="/item"
                   element={<ItemList/>}

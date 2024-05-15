@@ -119,6 +119,50 @@ export interface ISalesOrder {
   customer: string;
   modified_by: string;
 }
+
+export interface IItemGroup {
+  name: string;
+  item_group_name: string;
+  parent_item_group: number;
+  is_group: boolean;
+}
+
+export interface IUom {
+  name:string;
+  status:boolean;
+  uom_name:string;
+}
+
+export interface UomStatus{
+  id: number;
+  text:  "Disabled" | "Enabled";
+}
+
+export interface IWarehouse {
+  name:string;
+  warehouse_name:string;
+  status:boolean;
+  parent_warehouse:string;
+  company:string;
+}
+
+export interface IItemPrice {
+  item_code:string;
+  item_name: string;
+  price_list: string;
+  rate : number;
+}
+
+export interface IItemPriceEdit {
+  item_code:string;
+  item_name: string;
+  price_list: string;
+  UOM: string;
+  buying :  boolean ;
+  selling:  boolean;
+  rate : number;
+}
+
 export interface ISOChildTable{
   item_code:string;
   delivery_date:date;

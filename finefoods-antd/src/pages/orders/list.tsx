@@ -37,7 +37,7 @@ export const OrderList = () => {
     const fetchData = async () => {
       setLoadingOrder(true);
       try {
-        const frappe = new FrappeApp('http://162.55.41.54')
+        const frappe = new FrappeApp('http://49.13.29.136')
         const db = frappe.db();
         const docs = await db.getDocList('Sales Order', {
           fields: ['name', 'status', 'grand_total', 'customer', 'creation', 'modified_by'],

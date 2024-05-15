@@ -60,7 +60,7 @@ export const SalesOrderEdit = () => {
     const fetchData = async () => {
       setLoadingOrder(true);
       try {
-        const frappe = new FrappeApp("http://162.55.41.54");
+        const frappe = new FrappeApp("http://49.13.29.136/");
         const db = frappe.db();
         const doc = await db.getDoc('Sales Order', id);
         setOrderData(doc);
