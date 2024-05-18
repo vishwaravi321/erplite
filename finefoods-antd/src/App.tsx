@@ -29,7 +29,7 @@ import "dayjs/locale/de";
 
 import { DashboardPage } from "./pages/dashboard";
 import { OrderList, SalesOrderCreate, SalesOrderShow } from "./pages/orders";
-import { SalesInvList, SalesInvEdit } from "./pages/salesinv";
+import { SalesInvList, SalesInvEdit, SalesInvoiceCreate } from "./pages/salesinv";
 import { Paymentent, PaymentEntryEdit } from "./pages/paymententry";
 import { AuthPage } from "./pages/auth";
 import { CustomerShow, CustomerList } from "./pages/customers";
@@ -117,6 +117,7 @@ const App: React.FC = () => {
               {
                 name: "salesinv",
                 list: "/salesinv",
+                create:"/salesinv/new",
                 edit:"/salesinv/:id/edit",
                 show: "/salesinv/:id",
                 meta: {
@@ -219,7 +220,7 @@ const App: React.FC = () => {
                 <Route path="/salesinv">
                   <Route index element={<SalesInvList />} />
                   <Route path=":id" element={<SalesInvEdit />} />
-                  <Route path=":id/edit" element={<SalesInvEdit />} />
+                  <Route path="new" element={<SalesInvoiceCreate />} />
                 </Route>
 
                 <Route path="/paymentent">

@@ -2,6 +2,7 @@ import {
     useTranslate,
     useExport,
     useNavigation,
+    useGo,
   } from "@refinedev/core";
   
   import {
@@ -10,6 +11,7 @@ import {
     EditButton,
     NumberField,
     ExportButton,
+    CreateButton,
   } from "@refinedev/antd";
   import { Skeleton, Table, Typography } from "antd";
   import { EyeOutlined } from "@ant-design/icons";
@@ -19,49 +21,51 @@ import {
     SalStatus,
     PaginationTotal,
   } from "../../components";
-  import { ISalesOrder, IOrderStatus } from "../../interfaces";
-  import { FrappeApp } from 'frappe-js-sdk';
   import { useEffect, useState } from "react";
+import { useFrappeDocTypeEventListener, useFrappeGetDocList } from "frappe-react-sdk";
   
   type CheckboxValueType = React.ReactText[];
   
   
   export const SalesInvList = () => {
     const [loadingInv, setLoadingInv] = useState(false);
-    const [error, setError] = useState<any>(null);
-    const [list, setList] = useState<ISalesOrder[]>([]);
+    const [err, setErr] = useState<any>(null);
+    const [list, setList] = useState<any>([]);
     const [selectedRowKeys, setSelectedRowKeys] = useState<any>([]);
-  
-  
+    const { createUrl } = useNavigation();
+    const go = useGo();
+
+
+    const { data, error,isLoading,mutate } = useFrappeGetDocList<any>('Sales Invoice', {
+      fields: ['name', 'status', 'grand_total', 'customer', 'creation', 'modified_by'],
+      orderBy: {
+        field: 'creation',
+        order: 'desc',
+      },
+      limit: 1000,
+      asDict: true,
+    });
+
+    useFrappeDocTypeEventListener('Sales Invoice', (d) => {
+      console.log("Event", d)
+      if (d.doctype === "Sales Invoice") {
+          mutate()
+      }
+    })
+
     useEffect(() => {
-      const fetchData = async () => {
-        setLoadingInv(true);
-        try {
-          const frappe = new FrappeApp('http://162.55.41.54')
-          const db = frappe.db();
-          const docs = await db.getDocList('Sales Invoice', {
-            fields: ['name', 'status', 'grand_total', 'customer', 'creation', 'modified_by'],
-            orderBy: {
-              field: 'creation',
-              order: 'desc',
-            },
-            limit: 1000,
-            asDict: true,
-          });
-          setList(docs);
-        } catch (err) {
-          setError(err);
-        } finally {
-            setLoadingInv(false);
-        }
-      };
-      fetchData();
-    }, []);
+      if (data !== list) {
+        setList(data);
+        setLoadingInv(isLoading);
+        setErr(error)
+      }
+    }, [data, list]);
+  
   
     const t = useTranslate();
     const { show } = useNavigation();
   
-    const { isLoading, triggerExport } = useExport<ISalesOrder>({
+    const { triggerExport } = useExport<any>({
       pageSize: 50,
       maxItemCount: 50,
       mapData: (item) => {
@@ -74,12 +78,6 @@ import {
         };
       },
     });
-  
-    // const { selectProps: orderSelectProps } = useSelect<IOrderStatus>({
-    //   resource: "orderStatuses",
-    //   optionLabel: "text",
-    //   optionValue: "text",
-    // });
   
     const [loading, setLoading] = useState(false);
   
@@ -104,9 +102,20 @@ import {
   
     return (
       <List
-        headerProps={{
-          extra: <ExportButton onClick={triggerExport} loading={isLoading} />,
-        }}
+        headerButtons={()=>[
+        <ExportButton onClick={triggerExport} />,
+        <CreateButton
+          key="create"
+          size="large"
+          onClick={() => {
+            return go({
+              to: `${createUrl("salesinv")}`,
+            });
+          }}
+        >
+          {"Create new Sales Invoice"}
+        </CreateButton>,
+        ]}
       >
         {loadingInv?(
           <Skeleton active loading={true} paragraph={{ rows: 20 }} />
@@ -146,7 +155,7 @@ import {
                       </Typography.Text>
                     )}
                   />
-                  <Table.Column<ISalesOrder>
+                  <Table.Column
                     key="status"
                     dataIndex="status"
                     title={"Status"}

@@ -1,14 +1,11 @@
-import { useEffect, useRef, useState } from "react";
-import { useTranslate, useUpdate } from "@refinedev/core";
+import { useRef } from "react";
+import { useTranslate } from "@refinedev/core";
 import {
-  DeleteButton,
   ListButton,
   SaveButton,
   useForm,
-  useSelect,
 } from "@refinedev/antd";
 import {
-  Button,
   Card,
   Col,
   Divider,
@@ -18,11 +15,9 @@ import {
   InputNumber,
   InputRef,
   Row,
-  Select,
   Table,
 } from "antd";
 import { useParams } from "react-router-dom";
-
 import { ISalesOrderEdit, ISOChildTable } from "../../interfaces";
 import {
   FormItemEditable,
@@ -31,7 +26,6 @@ import {
 import {
   CalendarOutlined,
   DollarCircleOutlined,
-  EditOutlined,
   FontColorsOutlined,
   HomeOutlined,
   InfoOutlined,
@@ -40,72 +34,25 @@ import {
   UnorderedListOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { FrappeApp } from "frappe-js-sdk";
+import { useFrappeGetDoc } from "frappe-react-sdk";
 import {SkeletonSales} from "./skeleton";
 
 export const SalesOrderShow = () => {
   const titleInputRef = useRef<InputRef>(null);
-  const { id } = useParams<{ id: string }>();
-
-  const [loadingOrder, setLoadingOrder] = useState(false);
-  const [error, setError] = useState<any>(null);
-  const [orderData, setOrderData] = useState<ISalesOrderEdit | null>(null);
-  const [isBackbtnVisible,setIsBackbtnVisible] = useState(false);
-
-  const [form] = Form.useForm(); // Correctly destructuring form instance
-
+  const { id } = useParams<{ id: any }>();
+  const [form] = Form.useForm();
   const { formProps, saveButtonProps } = useForm<ISalesOrderEdit>();
+  
+  const { data, error, isLoading, isValidating, mutate } = useFrappeGetDoc<any>('Sales Order', id);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoadingOrder(true);
-      try {
-        const frappe = new FrappeApp("http://162.55.41.54");
-        const db = frappe.db();
-        const doc = await db.getDoc('Sales Order', id);
-        setOrderData(doc);
-      } catch (err) {
-        setError(err);
-      } finally {
-        setLoadingOrder(false);
-      }
-    };
-    fetchData();
-  }, [id]);
-
-  useEffect(() => {
-    if (orderData) {
-      form.setFieldsValue(orderData);
-    }
-  }, [orderData, form]);
-
-  const [isFormDisabled, setIsFormDisabled] = useState(true);
+  form.setFieldsValue(data);
 
   const t = useTranslate();
 
-  const handleSave = async (values: ISalesOrderEdit) => {
-    // await mutate({
-    //   resource: "orders",
-    //   id: id,
-    //   values,
-    // });
-    // setIsFormDisabled(true);
-  };
-
-  useEffect(() => {
-    if (!isFormDisabled) {
-      titleInputRef.current?.focus();
-    }
-  }, [isFormDisabled]);
-
   return (
     <>
-    {loadingOrder?(
+    {isLoading?(
       <SkeletonSales />
-    ):error?(
-    <>
-    {error}
-    </>
     ):(
       <>
            <Flex
@@ -115,36 +62,14 @@ export const SalesOrderShow = () => {
             padding: "16px 16px 0px 16px",
           }}
         >
-          {isFormDisabled ? (
           <>
-            <ListButton hidden={isBackbtnVisible} icon={<LeftOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />}>
-              {t("orders.orders")}
+            <ListButton icon={<LeftOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />}>
+              {"Sales Order"}
             </ListButton>
-            <Button
-              style={{
-                marginLeft: "auto",
-              }}
-              disabled={false}
-              icon={<EditOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />}
-              onClick={() => {
-                setIsBackbtnVisible(true);
-                setIsFormDisabled(false);
-              } }
-            >
-              {t("actions.edit")}
-            </Button></>
-          ) : (
+          </>
           <>
-          <Button onClick={() => {
-            setIsBackbtnVisible(false);
-            setIsFormDisabled(true)
-            }}>
-            {t("actions.cancel")}
-          </Button>
-          
           <SaveButton
             {...saveButtonProps}
-            disabled={isFormDisabled}
             style={{
               marginLeft: "auto",
             }}
@@ -152,10 +77,9 @@ export const SalesOrderShow = () => {
             type="primary"
             icon={null}
           >
-            Save
+            Cancel
           </SaveButton>
           </>
-        )}
         </Flex>
       <Divider />
 
@@ -163,8 +87,7 @@ export const SalesOrderShow = () => {
         {...formProps}
         form={form}
         layout="horizontal"
-        disabled={isFormDisabled}
-        onFinish={handleSave}
+        disabled={true}
       >
 
         <Flex align="center" gap={24}>
@@ -299,15 +222,18 @@ export const SalesOrderShow = () => {
                   }}
                 />
               </FormItemHorizontal>
-              <Divider style={{ margin: "0" }} />
             </Card>
             </Col>
             </Row>
 
-            {/* child table */}
+            <Divider orientation="left" >
+              Items
+            </Divider>
+
+            {/*Item child table */}
             <Table<ISOChildTable>
               style={{ marginTop: '20px' }}
-              dataSource={(orderData?.items as unknown as ISOChildTable[]) || []}
+              dataSource={(data?.items as unknown as ISOChildTable[]) || []}
               pagination={false}
               rowKey="name"
               footer={() => (
@@ -343,38 +269,85 @@ export const SalesOrderShow = () => {
                       <Table.Column title="Rate" dataIndex="rate" key="rate" />
                       <Table.Column title="Quantity" dataIndex="qty" key="qty" />
                       <Table.Column title="Amount" dataIndex="amount" key="amount" />
-                    </Table>
+            </Table>
 
-        <Row gutter={18}>
-          <Col span={14}>
-            <FormItemHorizontal
-              name="grand_total"
-              label="Grand Total"
-              labelStyle={{fontWeight:'bold'}}
-              style={{ fontWeight: "bold", width: "100%" }}
-              rules={[{ required: true }]}
-              icon={<DollarCircleOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />}
-            >
-              <InputNumber style={{ width: "100%" }} />
-            </FormItemHorizontal>
-          </Col>
-          <Col span={8}>
-            <FormItemHorizontal
-              name="in_words"
-              label="In Words"              
-              labelStyle={{fontWeight:'bold'}}
-              style={{fontWeight:"large", display: 'flex', float: 'right', width: "100%" }}
-              rules={[{ required: true }]}
-              icon={<FontColorsOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />}
-            >
-              <Input style={{ width: "130%" }} />
-            </FormItemHorizontal>
-          </Col>
-        </Row>
+            <Divider orientation="left" >
+            Sales Taxes and Charges
+            </Divider>
 
+            {/*Tax child table */}
+            <Table<any>
+              style={{ marginTop: '20px' }}
+              dataSource={(data?.taxes as unknown as ISOChildTable[]) || []}
+              pagination={false}
+              rowKey="name"
+              footer={() => (
+                <Row gutter={18} align="middle">
+                  <Col span={18}>
+                  </Col>
+                  <Col span={6}  >
+                    <FormItemHorizontal
+                      name="total_taxes_and_charges"
+                      label="Total Taxes and Charges"
+                      style={{ width: "100%" }}
+                      rules={[{ required: true }]}
+                      icon={<DollarCircleOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />}
+                    >
+                      <InputNumber style={{ textAlign: 'right',width: "100%"}} />
+                    </FormItemHorizontal>
+                  </Col>
+                </Row>
+                      )}
+                    >
+                      <Table.Column title="Type" dataIndex="charge_type" key="charge_type" />
+                      <Table.Column title="Account Head" dataIndex="account_head" key="account_head" />
+                      <Table.Column title="Tax Rate" dataIndex="rate" key="rate" />
+                      <Table.Column title="Amount(INR)" dataIndex="tax_amount" key="tax_amount" />
+                      <Table.Column title="Total(INR)" dataIndex="total" key="total" />
+            </Table>
 
+            <Divider orientation="left" >
+            Totals
+            </Divider>
+
+            <Row gutter={18}>
+              <Col span={14}>
+              </Col>
+              <Col span={8}>
+                <FormItemHorizontal
+                  name="grand_total"
+                  label="Grand Total"
+                  labelStyle={{fontWeight:'bold'}}
+                  style={{ fontWeight: "bold", width: "100%" }}
+                  rules={[{ required: true }]}
+                  icon={<DollarCircleOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />}
+                >
+                  <InputNumber style={{ width: "100%" }} />
+                </FormItemHorizontal>
+                <FormItemHorizontal
+                  name="rounded_total"
+                  label="Rounded Total"
+                  labelStyle={{fontWeight:'bold'}}
+                  style={{ fontWeight: "bold", width: "100%" }}
+                  rules={[{ required: true }]}
+                  icon={<DollarCircleOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />}
+                >
+                  <InputNumber style={{ width: "100%" }} />
+                </FormItemHorizontal>
+
+                <FormItemHorizontal
+                  name="in_words"
+                  label="In Words"              
+                  labelStyle={{fontWeight:'bold'}}
+                  style={{fontWeight:"large", display: 'flex', float: 'right', width: "100%" }}
+                  rules={[{ required: true }]}
+                  icon={<FontColorsOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />}
+                >
+                  <Input style={{ width: "130%" }} />
+                </FormItemHorizontal>
+              </Col>
+            </Row>
           </Form>
-
       </>
     )
     }

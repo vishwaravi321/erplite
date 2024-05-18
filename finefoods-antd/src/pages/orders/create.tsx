@@ -1,61 +1,87 @@
-import { Key, useState } from "react";
-import { useTranslate } from "@refinedev/core";
 import {
   ListButton,
   SaveButton,
   useForm,
 } from "@refinedev/antd";
 import {
-  Button,
   Card,
   Col,
   DatePicker,
   Divider,
   Flex,
   Form,
-  Input,
-  InputNumber,
   Row,
   Select,
-  Space,
-  Table,
+  message,
 } from "antd";
-
 import {FormItemHorizontal} from "../../components";
 import {
   CalendarOutlined,
-  DeleteOutlined,
   DollarCircleOutlined,
   FontColorsOutlined,
   HomeOutlined,
-  InfoOutlined,
   LeftOutlined,
-  PlusOutlined,
-  ShoppingCartOutlined,
   UnorderedListOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 import { CustomerList } from "../../components/masterData/customer";
 import { CompanyList } from "../../components/masterData/company"; 
 import { ItemTable } from "../../components/salesTable/itemTable";
+import { useFrappeCreateDoc } from "frappe-react-sdk";
+import { TaxTable } from "../../components/salesTable/taxesTable";
+import { useCallback, useState } from "react";
+import NumberToWords from "number-to-words";
+
 
 export const SalesOrderCreate = () => {
-
   const [form] = Form.useForm();
   const { formProps, saveButtonProps } = useForm<any>();
+  const [totalAmount, setTotalAmount] = useState(0);
+  const [roundedTotal, setRoundedTotal] = useState(0);
+  const [amountInWords, setAmountInWords] = useState("");
+  const [isFormDisabled, setIsFormDisabled] = useState(false);
 
   const customerList = CustomerList();
   const companyList = CompanyList();
+  const { createDoc } = useFrappeCreateDoc()
 
-
-  const handleSave = async (values: any) => {
-    // await mutate({
-    //   resource: "orders",
-    //   id: id,
-    //   values,
-    // });
-    // setIsFormDisabled(true);
+  const handleSave = (values: any) => {
+    console.log(values);
+    const items = values.items.map((child: any ) => ({
+      item_code: child.item_code,
+      delivery_warehouse:child.delivery_warehouse,
+      qty: child.qty,
+      delivery_date: `${child.delivery_date.$y}-${child.delivery_date.$M + 1}-${child.delivery_date.$D}`,
+      rate: child.rate,
+      warehouse:child.delivery_warehouse
+    }));
+    
+    createDoc('Sales Order', {
+      customer: values.customer,
+      order_type: values.order_type,
+      transaction_date:`${values.date.$y}-${values.date.$M + 1}-${values.date.$D}`,
+      company:values.company,
+      items:items
+    })
+      .then(() =>{
+        message.success('Successfully Created Sales Order')
+        setIsFormDisabled(true)
+      })
+      .catch((error) =>{
+        const m = JSON.parse(error._server_messages)
+        const d = JSON.parse(m[0])
+        message.error(d.message);
+        console.error(error)
+      });
   };
+
+  const updateTotals = useCallback((items: any[]) => {
+    const total = items.reduce((acc: any, item: { amount: any; }) => acc + item.amount, 0);
+    setTotalAmount(total);
+    setRoundedTotal(Math.round(total));
+    setAmountInWords(NumberToWords.toWords(Math.round(total)));
+  }, []);
+
 
   return (
     <>
@@ -72,32 +98,33 @@ export const SalesOrderCreate = () => {
             {"Cancel"}
           </ListButton>
         </>
-        <>
-          <SaveButton
-            {...saveButtonProps}
-            style={{
-              marginLeft: "auto",
-            }}
-            htmlType="submit"
-            type="primary"
-            icon={null}
-          >
-            Save
-          </SaveButton>
-        </>
       </Flex>
       
       <Divider />
 
       {/* Form View */}
       <Form
+        disabled={isFormDisabled}
         {...formProps}
         form={form}
         layout="horizontal"
-        // disabled={false}
         onFinish={handleSave}
       >
-        <Row gutter={16}>
+        <SaveButton
+        {...saveButtonProps}
+        style={{
+          display:"flex",
+          marginLeft: "auto",
+          marginBottom:"auto"
+        }}
+        htmlType="submit"
+        type="primary"
+        icon={null}
+        >
+          Save
+        </SaveButton>
+
+        <Row gutter={16} style={{marginBottom:'30px'}}>
           <Col span={12}>
             <Card
               style={{
@@ -230,7 +257,7 @@ export const SalesOrderCreate = () => {
               </FormItemHorizontal>
               <Divider style={{ margin: "0" }} />
               <FormItemHorizontal
-                name="delivery_date"
+                name="date"
                 label="Date"
                 labelStyle={{fontWeight:'bold'}}
                 style={{fontWeight: "bold" , width:"100%"}}
@@ -253,34 +280,56 @@ export const SalesOrderCreate = () => {
             </Row>
 
             {/* child table */}
-            <ItemTable />
+            <Divider orientation="left" >
+              Items
+            </Divider>
+            <ItemTable updateTotals={updateTotals}  />
+            <Divider orientation="left" >
+              Sales Taxes and Charges
+            </Divider>
 
-        <Row gutter={18}>
-          <Col span={14}>
-            <FormItemHorizontal
-              name="grand_total"
-              label="Grand Total"
-              labelStyle={{fontWeight:'bold'}}
-              style={{ fontWeight: "bold", width: "100%" }}
-              rules={[{ required: true }]}
-              icon={<DollarCircleOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />}
-            >
-              {/* <InputNumber style={{ width: "100%" }} /> */}
-            </FormItemHorizontal>
-          </Col>
-          <Col span={8}>
-            <FormItemHorizontal
-              name="in_words"
-              label="In Words"              
-              labelStyle={{fontWeight:'bold'}}
-              style={{fontWeight:"large", display: 'flex', float: 'right', width: "100%" }}
-              rules={[{ required: true }]}
-              icon={<FontColorsOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />}
-            >
-              {/* <Input style={{ width: "130%" }} /> */}
-            </FormItemHorizontal>
-          </Col>
-        </Row>
+            <TaxTable />
+
+            <Divider  orientation="left" >
+              Totals
+            </Divider>
+            
+            <Row gutter={18}>
+              <Col span={16}>
+
+              </Col>
+              <Col span={8}>
+                <FormItemHorizontal
+                  name="grand_total"
+                  label="Grand Total"
+                  labelStyle={{fontWeight:'bold'}}
+                  style={{ fontWeight: "bold", width: "100%" }}
+                  icon={<DollarCircleOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />}
+                >
+                  : &nbsp; {totalAmount}
+                </FormItemHorizontal>
+
+                <FormItemHorizontal
+                  name="rounded_total"
+                  label="Rounded Total"
+                  labelStyle={{fontWeight:'bold'}}
+                  style={{ fontWeight: "bold", width: "100%" }}
+                  icon={<DollarCircleOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />}
+                >
+                  : &nbsp; {roundedTotal}
+                </FormItemHorizontal>
+                
+                <FormItemHorizontal
+                  name="in_words"
+                  label="In Words"              
+                  labelStyle={{fontWeight:'bold'}}
+                  style={{fontWeight:"large", display: 'flex', float: 'right', width: "100%" }}
+                  icon={<FontColorsOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />}
+                >
+                  : &nbsp; {amountInWords}
+                </FormItemHorizontal>
+              </Col>
+            </Row>
       </Form>
-    </>
+  </>
     )}

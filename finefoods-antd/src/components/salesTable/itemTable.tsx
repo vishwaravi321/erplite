@@ -1,4 +1,4 @@
-import { Key, useState } from "react";
+import { useEffect, useState } from "react";
 import {
     Button,
   Col,
@@ -10,7 +10,6 @@ import {
   Space,
   Table,
 } from "antd";
-
 import {
   DeleteOutlined,
   DollarCircleOutlined,
@@ -18,111 +17,155 @@ import {
   ShoppingCartOutlined,
 } from "@ant-design/icons";
 import { ItemList } from "../../components/masterData/item";
+import { WarehouseList } from "../masterData/warehouse";
 import { FormItemHorizontal } from "../form";
 
-export const ItemTable = () => {
 
-    const [items, setItems] = useState([{ key: 1, item_code: '', item_name: '', delivery_date:'' , qty:0, rate: 0, uom: '', amount: 0 }]);
-    const [totalQuantity, setTotalQuantity] = useState(0);
-    const [totalAmount, setTotalAmount] = useState(0);
-    const [dataSource, setDataSource] = useState<any>([
-        {
-          key: 1,
-          item_code: "",
-          item_name: "",
-          delivery_date: "",
-          qty: 0,
-          rate: 0,
-          uom: "",
-          amount: 0,
-        },
-      ]);
+export const ItemTable = ({updateTotals}) => {
+  interface ItemType {
+    key: React.Key;
+    item_code: string;
+    delivery_date: string;
+    delivery_warehouse:string,
+    qty: number;
+    rate: number;
+    amount: number;
+  }
   
-    const itemList = ItemList();
+  const [items, setItems] = useState<ItemType[]>([
+    { key: 1, item_code: "", delivery_date: "",delivery_warehouse:"", qty: 0, rate: 0, amount: 0 },
+  ]);
+  const itemList = ItemList();
+  const warehouseList = WarehouseList();
 
-    const handleItemChange = (index: any, field: any, value: any) => {
-        const updatedDataSource = [...dataSource];
-        // updatedDataSource[index][field] = value;
-        if (field === "qty") {
-            updatedDataSource[index].qty = value;
-          } else {
-            updatedDataSource[index][field] = value;
-          }
-      
-        if (field === "qty" || field === "rate") {
-          updatedDataSource[index].amount = updatedDataSource[index].qty * updatedDataSource[index].rate;
-        }
-      
-        setDataSource(updatedDataSource);
-      
-        const totalQty = updatedDataSource.reduce((acc, row) => acc + row.qty, 0);
-        const totalAmt = updatedDataSource.reduce((acc, row) => acc + row.amount, 0);
-      
-        setTotalQuantity(totalQty);
-        setTotalAmount(totalAmt);
-      };
+  useEffect(() => {
+    updateTotals(items);
+  }, [items, updateTotals]);
+
   
-    const tableColumns = [
+  const handleItemChange = (index: number, field: keyof ItemType, value: any) => {
+    setItems((prevItems) => {
+      const newItems = [...prevItems];
+      newItems[index] = { ...newItems[index], [field]: value };
+      if (field === 'qty' || field === 'rate') {
+        newItems[index].amount = newItems[index].qty * newItems[index].rate;
+      }
+      return newItems;
+    });
+  };
+  
+  const handleAddRow = () => {
+    setItems([
+      ...items,
       {
-        title: "Item Code",
-        dataIndex: "item_code",
-        key: "item_code",
-        render: (_: any, record: { quantity: any; }, index: any) => (
-          <Form.Item
-            name={['items', index, 'item_code']}
-            rules={[{ required: true, message: 'Please select an item!' }]}
-          >
-            <Select
-              style={{ width: "300px" }}
-              showSearch
-              optionFilterProp="children"
-              filterOption={(input, option:any) =>
-                (option?.children ?? '').toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
-                (option?.value ?? '').toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
-              filterSort={(optionA, optionB) =>
-                (optionA?.children ?? '').toLowerCase().localeCompare((optionB?.children ?? '').toLowerCase())
-              }
-              >
-                {itemList?.map((item: any) => (
-                  <Select.Option key={item.name} value={item.name}>
-                    {item.name}
-                  </Select.Option>
-                ))}
-              </Select>
-          </Form.Item>
+        key: items.length + 1,
+        item_code: "",
+        delivery_date: "",
+        delivery_warehouse:"",
+        qty: 0,
+        rate: 0,
+        amount: 0,
+      },
+    ]);
+  };
+  
+  const handleDeleteRow = (key: React.Key) => {
+    const newItems = items.filter((item) => item.key !== key);
+    setItems(newItems);
+  };
+  
+  const tableColumns = [
+    {
+      title: "Item Code",
+      dataIndex: "item_code",
+      key: "item_code",
+      render: (_: any, record:any,index:any) => (
+      <Form.Item
+        name={['items', index, 'item_code']}
+        rules={[{ message: 'Please select an item!' }]}
+      >
+        <Select
+          style={{ width: "300px" }}
+          showSearch
+          optionFilterProp="children"
+          filterOption={(input, option:any) =>
+            (option?.children ?? '').toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
+            (option?.value ?? '').toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
+          filterSort={(optionA, optionB) =>
+            (optionA?.children ?? '').toLowerCase().localeCompare((optionB?.children ?? '').toLowerCase())
+          }
+          onChange={(value) => handleItemChange(index, 'item_code', value)}
+        >
+          {itemList?.map((item: any) => (
+          <Select.Option key={item.name} value={item.name}>
+            {item.name}
+          </Select.Option>
+        ))}
+        </Select>
+        </Form.Item>
         )
       },
       {
-        title: "Delivery Date",
-        dataIndex: "delivery_date",
-        key: "delivery_date",
-        render: (_: any, record: { quantity: any; }, index: any) => (
+        title: 'Delivery Date',
+        dataIndex: 'delivery_date',
+        key: 'delivery_date',
+        render: (_: any, record: any, index: any) => (
           <Form.Item
             name={['items', index, 'delivery_date']}
-            rules={[{ required: true, message: 'Please select an item!' }]}
+            rules={[{ required: true, message: 'Please select a delivery date!' }]}
           >
-            <DatePicker 
-            // onChange={(value) => handleItemChange(index, 'deliverydate', value)}
+            <DatePicker
+              value={record.delivery_date }
+              onChange={(value) => handleItemChange(index, 'delivery_date', value ? value.format('YYYY-MM-DD') : null)}
             />
           </Form.Item>
-        )
+        ),
+      },
+      {
+        title: 'Delivery Warehouse',
+        dataIndex: 'delivery_warehouse',
+        key: 'delivery_warehouse',
+        render: (_: any, record: any, index: any) => (
+          <Form.Item
+          name={['items', index, 'delivery_warehouse']}
+          rules={[{ message: 'Please select an item!' }]}
+        >
+          <Select
+            style={{ width: "300px" }}
+            showSearch
+            optionFilterProp="children"
+            filterOption={(input, option:any) =>
+              (option?.children ?? '').toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
+              (option?.value ?? '').toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+            filterSort={(optionA, optionB) =>
+              (optionA?.children ?? '').toLowerCase().localeCompare((optionB?.children ?? '').toLowerCase())
+            }
+            onChange={(value) => handleItemChange(index, 'delivery_warehouse', value)}
+          >
+            {warehouseList?.map((item: any) => (
+            <Select.Option key={item.name} value={item.name}>
+              {item.name}
+            </Select.Option>
+          ))}
+          </Select>
+          </Form.Item>
+        ),
       },
       {
         title: "Quantity",
         dataIndex: "qty",
         key: "qty",
-        render: (_: any, record: {
-            qty: any; quantity: any; 
-}, index: any) => (
+        render: (_: any, record:any, index: any) => (
           <Form.Item
             name={['items', index, 'qty']}
-            rules={[{ required: true, message: 'Please select an item!' }]}
+            rules={[{ required: true, message: 'Please select an quantity!' }]}
           >
                 <InputNumber
                 min={0}
                 value={record.qty}
-                onChange={(value) => handleItemChange(index, "qty", value)}
+                onChange={(value) => handleItemChange(index, 'qty', value)}
                 />
           </Form.Item>
         )
@@ -131,9 +174,7 @@ export const ItemTable = () => {
         title: "Rate",
         dataIndex: "rate",
         key: "rate",
-        render: (_: any, record: {
-            rate: any; quantity: any; 
-}, index: any) => (
+        render: (_: any, record:any, index: any) => (
           <Form.Item
             name={['items', index, 'rate']}
             rules={[{ required: true, message: 'Please select an item!' }]}
@@ -150,56 +191,29 @@ export const ItemTable = () => {
         title: "Amount",
         dataIndex: "amount",
         key: "amount",
-        render: (_: any, record: { qty: number; rate: number }, index: any) => (
-          <Form.Item
-            name={["items", index, "amount"]}
-            rules={[{ required: true, message: "Please select an item!" }]}
-          >
-            <InputNumber
-              min={0}
-              value={record.qty * record.rate}
-              onChange={(value) => handleItemChange(index, "amount", value)}
-            />
-          </Form.Item>
-        ),
+        render: (_: any, record:any) => record.qty * record.rate,
       },
       {
         title: "Action",
         dataIndex: "action",
         key: "action",
-        render: (_: any, record: { key: Key; }) => (
+        render: (_: any, record: ItemType) => (
           <Space size="middle">
-            <DeleteOutlined onClick={()=>handleDeleteRow(record.key)} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />
+            <DeleteOutlined
+              onClick={() => handleDeleteRow(record.key)}
+              onPointerEnterCapture={undefined}
+              onPointerLeaveCapture={undefined}
+            />
           </Space>
         ),
       },
     ];
-  
-    const handleAddRow = () => {
-        const newRow = {
-          key: dataSource.length === 0 ? 1 : dataSource[dataSource.length - 1].key + 1,
-          item_code: "",
-          item_name: "",
-          delivery_date: "",
-          qty: 0,
-          rate: 0,
-          uom: "",
-          amount: 0,
-        };
-        setDataSource([...dataSource, newRow]);
-      };
-  
-    const handleDeleteRow = (key: React.Key) => {
-      const updatedDataSource = dataSource.filter((row: { key: Key; }) => row.key !== key);
-      setDataSource(updatedDataSource);
-    };
-  
 
   
     return (
     <>
         <Table
-            dataSource={dataSource}
+            dataSource={items}
             style={{ marginTop: '20px' }}
             columns={tableColumns}
             pagination={false}
@@ -211,10 +225,10 @@ export const ItemTable = () => {
                     name="total_qty"
                     label="Total Quantity"
                     style={{ width: "100%" }}
-                    rules={[{ required: true }]}
                     icon={<ShoppingCartOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />}
                     >
-                    <InputNumber value={totalQuantity} disabled />
+                      : &nbsp; {items.reduce((total, item) => total + item.qty, 0)}
+                    {/* : &nbsp; {items.reduce((total: any, item: { qty: any; }) => total + item.qty, 0)} */}
                   </FormItemHorizontal>
                   </Col>
                   <Col span={6}  >
@@ -222,16 +236,16 @@ export const ItemTable = () => {
                     name="total"
                     label="Total Amount"
                     style={{ width: "100%" }}
-                    rules={[{ required: true }]}
                     icon={<DollarCircleOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />}
                     >
-                    <InputNumber value={totalAmount} disabled />
+                      : &nbsp; {items.reduce((total, item) => total + item.amount, 0)}
+                    {/* : &nbsp; {items.reduce((total: any, item: { amount: any; }) => total + item.amount, 0)} */}
                     </FormItemHorizontal>
                   </Col>
                 </Row>
                       )}
         />
-        <Button style={{ marginTop:'10px', float:'right' }} type="primary" icon={<PlusOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />} onClick={handleAddRow}>
+        <Button style={{ marginTop:'10px', marginBottom:'50px' ,float:'right' }} type="primary" icon={<PlusOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />} onClick={handleAddRow}>
             Add Row
         </Button>
     </>

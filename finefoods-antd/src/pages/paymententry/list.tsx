@@ -1,6 +1,5 @@
 import { useFrappeDocTypeEventListener, useFrappeGetDocList } from 'frappe-react-sdk';
 import {
-  useTranslate,
   useExport,
   useNavigation,
 } from "@refinedev/core";
@@ -21,18 +20,13 @@ import {
   PaginationTotal,
 } from "../../components";
 import { ISalesOrder, IOrderStatus } from "../../interfaces";
-import { FrappeApp } from 'frappe-js-sdk';
 import { useEffect, useState } from "react";
 
-type CheckboxValueType = React.ReactText[];
 
 
 export const Paymentent = () => {
-  const [loadingOrder, setLoadingOrder] = useState(false);
-  const [error, setError] = useState<any>(null);
   const [list, setList] = useState<any>([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<any>([]);
-
 
   const { data,isLoading,mutate } = useFrappeGetDocList<any>('Payment Entry', {
     fields: ['name','party','status','payment_type','posting_date','mode_of_payment', 'creation', 'paid_amount'],
@@ -50,13 +44,9 @@ export const Paymentent = () => {
   useEffect(() => {
     if (data !== list) {
       setList(data);
-      setLoading(isLoading);
     }
   }, [data, list]);
 
-  
-
-  const t = useTranslate();
   const { show } = useNavigation();
 
   const { triggerExport } = useExport<ISalesOrder>({
@@ -73,19 +63,9 @@ export const Paymentent = () => {
     },
   });
 
-  // const { selectProps: orderSelectProps } = useSelect<IOrderStatus>({
-  //   resource: "orderStatuses",
-  //   optionLabel: "text",
-  //   optionValue: "text",
-  // });
-
-  const [loading, setLoading] = useState(false);
-
   const start = () => {
-    setLoading(true);
     setTimeout(() => {
       setSelectedRowKeys([]);
-      setLoading(false);
     }, 1000);
   };
 
@@ -106,7 +86,7 @@ export const Paymentent = () => {
         extra: <ExportButton onClick={triggerExport} loading={isLoading} />,
       }}
     >
-      {loadingOrder?(
+      {isLoading?(
         <Skeleton active loading={true} paragraph={{ rows: 20 }} />
       ):(
         <>
@@ -191,7 +171,7 @@ export const Paymentent = () => {
                 <Table.Column
                   key="creation"
                   dataIndex="creation"
-                  title={t("orders.fields.createdAt")}
+                  title={"createdAt"}
                   render={(value) => <DateField value={value} format="LLL" />}
                 />
                 <Table.Column<any>

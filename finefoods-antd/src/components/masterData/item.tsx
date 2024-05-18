@@ -6,6 +6,7 @@ export const ItemList = () => {
   const { data, mutate } = useFrappeGetDocList<any>('Item', {
     fields: ['name'],
     limit: 1000,
+    filters:[['disabled','=',0]],
     orderBy: { field: 'creation', order: 'desc' },
     asDict: true
   });
