@@ -10,6 +10,7 @@ import {
     Divider,
     Flex,
     Form,
+    Input,
     Row,
     Select,
     message,
@@ -40,6 +41,10 @@ import {
     const [roundedTotal, setRoundedTotal] = useState(0);
     const [amountInWords, setAmountInWords] = useState("");
     const [isFormDisabled, setIsFormDisabled] = useState(false);
+    const [name, setName] = useState('');
+    const [formState, setFormState] = useState('create'); 
+
+
   
     const customerList = CustomerList();
     const companyList = CompanyList();
@@ -49,23 +54,26 @@ import {
       console.log(values);
       const items = values.items.map((child: any ) => ({
         item_code: child.item_code,
-        delivery_warehouse:child.delivery_warehouse,
+        // delivery_warehouse:child.delivery_warehouse,
         qty: child.qty,
-        delivery_date: `${child.delivery_date.$y}-${child.delivery_date.$M + 1}-${child.delivery_date.$D}`,
+        // delivery_date: `${child.delivery_date.$y}-${child.delivery_date.$M + 1}-${child.delivery_date.$D}`,
         rate: child.rate,
-        warehouse:child.delivery_warehouse
+        // warehouse:child.delivery_warehouse
       }));
       
       createDoc('Sales Invoice', {
         customer: values.customer,
-        posting_date:`${values.date.$y}-${values.date.$M + 1}-${values.date.$D}`,
-        due_date:`${values.date.$y}-${values.date.$M + 1}-${values.date.$D}`,
+        posting_date:`${values.posting_date.$y}-${values.posting_date.$M + 1}-${values.posting_date.$D}`,
+        due_date:`${values.due_date.$y}-${values.due_date.$M + 1}-${values.due_date.$D}`,
         company:values.company,
         items:items
       })
-        .then(() =>{
+        .then((doc) =>{
+          setName(doc.name)
           message.success('Successfully Created Sales Invoice')
-          setIsFormDisabled(true)
+          // setDisableSave(false);
+          // setIsEditMode(false);
+          setFormState('submit'); 
         })
         .catch((error) =>{
           const m = JSON.parse(error._server_messages)
@@ -73,6 +81,17 @@ import {
           message.error(d.message);
           console.error(error)
         });
+    };
+
+    const handleSubmit = () =>{
+
+    }
+
+    const handleUpdate = () =>{
+
+    }
+    const handleFormChange = () => {
+      setFormState('edit'); 
     };
   
     const updateTotals = useCallback((items: any[]) => {
@@ -109,20 +128,64 @@ import {
           form={form}
           layout="horizontal"
           onFinish={handleSave}
+          onValuesChange={handleFormChange}
+
         >
-          <SaveButton
-          {...saveButtonProps}
-          style={{
-            display:"flex",
-            marginLeft: "auto",
-            marginBottom:"auto"
-          }}
-          htmlType="submit"
-          type="primary"
-          icon={null}
-          >
-            Save
-          </SaveButton>
+            <Flex style={{fontWeight:'bold',fontSize:'20px'}} align="center" gap={24}>
+               {name}
+            </Flex>
+            
+            {formState === 'create' && (
+            <SaveButton
+            {...saveButtonProps}
+            style={{
+              display: 'flex',
+              marginLeft: 'auto',
+              marginBottom: '100px',
+              marginTop: '-110px',
+            }}
+            htmlType="submit"
+            type="primary"
+            icon={null}
+            >
+              Save
+            </SaveButton>
+            )}
+            
+            {formState === 'submit' && (
+            <SaveButton
+              {...saveButtonProps}
+              style={{
+                display: 'flex',
+                marginLeft: 'auto',
+                marginBottom: '100px',
+                marginTop: '-110px',
+              }}
+              htmlType="button"
+              type="primary"
+              icon={null}
+              onClick={handleSubmit}
+            >
+              Submit
+            </SaveButton>
+            )}
+            {formState === 'edit' && (
+            <SaveButton
+              {...saveButtonProps}
+              style={{
+                display: 'flex',
+                marginLeft: 'auto',
+                marginBottom: '100px',
+                marginTop: '-110px',
+              }}
+              htmlType="submit"
+              type="primary"
+              icon={null}
+            >
+              Update
+            </SaveButton>
+          )}
+
   
           <Row gutter={16} style={{marginBottom:'30px'}}>
             <Col span={12}>
@@ -170,8 +233,27 @@ import {
                     ))}
                   </Select>
               </FormItemHorizontal>
+              <FormItemHorizontal
+                  name="posting_date"
+                  label="Posting Date"
+                  labelStyle={{fontWeight:'bold'}}
+                  style={{fontWeight: "bold" , width:"100%"}}
+                  rules={[
+                    {
+                      required: true,
+                    },
+                  ]}
+                  icon={<CalendarOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />}
+                >
+                  <DatePicker
+                    style={{
+                      width: "100%",
+                    }}
+                  />
+                </FormItemHorizontal>
+
                 <Divider style={{ margin: "0" }} />
-                
+
                 </Card>
                 </Col>
                 <Col span={12}>
@@ -221,8 +303,8 @@ import {
                 </FormItemHorizontal>
                 <Divider style={{ margin: "0" }} />
                 <FormItemHorizontal
-                  name="date"
-                  label="Date"
+                  name="due_date"
+                  label="Due Date"
                   labelStyle={{fontWeight:'bold'}}
                   style={{fontWeight: "bold" , width:"100%"}}
                   rules={[
@@ -247,7 +329,7 @@ import {
               <Divider orientation="left" >
                 Items
               </Divider>
-              <ItemTable updateTotals={updateTotals}  />
+              <ItemTable disabled={isFormDisabled} doc='SalesInvoice' updateTotals={updateTotals}  />
               <Divider orientation="left" >
                 Sales Taxes and Charges
               </Divider>

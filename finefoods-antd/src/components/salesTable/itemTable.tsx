@@ -21,7 +21,7 @@ import { WarehouseList } from "../masterData/warehouse";
 import { FormItemHorizontal } from "../form";
 
 
-export const ItemTable = ({updateTotals}) => {
+export const ItemTable = ({disabled,doc,updateTotals}) => {
   interface ItemType {
     key: React.Key;
     item_code: string;
@@ -35,6 +35,17 @@ export const ItemTable = ({updateTotals}) => {
   const [items, setItems] = useState<ItemType[]>([
     { key: 1, item_code: "", delivery_date: "",delivery_warehouse:"", qty: 0, rate: 0, amount: 0 },
   ]);
+  const [deliveryWarehouse,setDeliveryWarehouse] = useState(false)
+
+  useEffect(() => {
+    if (doc === "SalesInvoice") {
+      setDeliveryWarehouse(true)
+    }else{
+      setDeliveryWarehouse(false)
+    }
+  }, [])
+  
+
   const itemList = ItemList();
   const warehouseList = WarehouseList();
 
@@ -70,8 +81,10 @@ export const ItemTable = ({updateTotals}) => {
   };
   
   const handleDeleteRow = (key: React.Key) => {
-    const newItems = items.filter((item) => item.key !== key);
-    setItems(newItems);
+    if (!disabled) {
+      const newItems = items.filter((item) => item.key !== key);
+      setItems(newItems);  
+    }
   };
   
   const tableColumns = [
@@ -110,6 +123,7 @@ export const ItemTable = ({updateTotals}) => {
         title: 'Delivery Date',
         dataIndex: 'delivery_date',
         key: 'delivery_date',
+        hidden:deliveryWarehouse,
         render: (_: any, record: any, index: any) => (
           <Form.Item
             name={['items', index, 'delivery_date']}
@@ -126,6 +140,7 @@ export const ItemTable = ({updateTotals}) => {
         title: 'Delivery Warehouse',
         dataIndex: 'delivery_warehouse',
         key: 'delivery_warehouse',
+        hidden:deliveryWarehouse,
         render: (_: any, record: any, index: any) => (
           <Form.Item
           name={['items', index, 'delivery_warehouse']}

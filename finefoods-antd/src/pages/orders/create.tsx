@@ -283,7 +283,7 @@ export const SalesOrderCreate = () => {
             <Divider orientation="left" >
               Items
             </Divider>
-            <ItemTable updateTotals={updateTotals}  />
+            <ItemTable disabled={isFormDisabled} doc="SalesOrder" updateTotals={updateTotals}  />
             <Divider orientation="left" >
               Sales Taxes and Charges
             </Divider>
