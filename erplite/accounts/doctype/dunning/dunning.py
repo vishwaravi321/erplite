@@ -18,7 +18,7 @@ from frappe import _
 from frappe.contacts.doctype.address.address import get_address_display
 from frappe.utils import getdate
 
-from erpnext.controllers.accounts_controller import AccountsController
+from erplite.controllers.accounts_controller import AccountsController
 
 
 class Dunning(AccountsController):
@@ -30,7 +30,7 @@ class Dunning(AccountsController):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
-		from erpnext.accounts.doctype.overdue_payment.overdue_payment import OverduePayment
+		from erplite.accounts.doctype.overdue_payment.overdue_payment import OverduePayment
 
 		address_display: DF.SmallText | None
 		amended_from: DF.Link | None
@@ -103,7 +103,7 @@ class Dunning(AccountsController):
 		self.grand_total = self.total_outstanding + self.dunning_amount
 
 	def set_party_details(self):
-		from erpnext.accounts.party import _get_party_details
+		from erplite.accounts.party import _get_party_details
 
 		party_details = _get_party_details(
 			self.customer,

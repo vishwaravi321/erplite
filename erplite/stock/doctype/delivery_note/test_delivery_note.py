@@ -9,37 +9,37 @@ import frappe
 from frappe.tests.utils import FrappeTestCase
 from frappe.utils import add_days, cstr, flt, getdate, nowdate, nowtime, today
 
-from erpnext.accounts.doctype.account.test_account import get_inventory_account
-from erpnext.accounts.utils import get_balance_on
-from erpnext.selling.doctype.product_bundle.test_product_bundle import make_product_bundle
-from erpnext.selling.doctype.sales_order.test_sales_order import (
+from erplite.accounts.doctype.account.test_account import get_inventory_account
+from erplite.accounts.utils import get_balance_on
+from erplite.selling.doctype.product_bundle.test_product_bundle import make_product_bundle
+from erplite.selling.doctype.sales_order.test_sales_order import (
 	automatically_fetch_payment_terms,
 	compare_payment_schedules,
 	create_dn_against_so,
 	make_sales_order,
 )
-from erpnext.stock.doctype.delivery_note.delivery_note import (
+from erplite.stock.doctype.delivery_note.delivery_note import (
 	make_delivery_trip,
 	make_sales_invoice,
 )
-from erpnext.stock.doctype.item.test_item import make_item
-from erpnext.stock.doctype.purchase_receipt.test_purchase_receipt import get_gl_entries
-from erpnext.stock.doctype.serial_and_batch_bundle.test_serial_and_batch_bundle import (
+from erplite.stock.doctype.item.test_item import make_item
+from erplite.stock.doctype.purchase_receipt.test_purchase_receipt import get_gl_entries
+from erplite.stock.doctype.serial_and_batch_bundle.test_serial_and_batch_bundle import (
 	get_batch_from_bundle,
 	get_serial_nos_from_bundle,
 	make_serial_batch_bundle,
 )
-from erpnext.stock.doctype.stock_entry.test_stock_entry import (
+from erplite.stock.doctype.stock_entry.test_stock_entry import (
 	get_qty_after_transaction,
 	make_serialized_item,
 	make_stock_entry,
 )
-from erpnext.stock.doctype.stock_reconciliation.test_stock_reconciliation import (
+from erplite.stock.doctype.stock_reconciliation.test_stock_reconciliation import (
 	create_stock_reconciliation,
 	set_valuation_method,
 )
-from erpnext.stock.doctype.warehouse.test_warehouse import get_warehouse
-from erpnext.stock.stock_ledger import get_previous_sle
+from erplite.stock.doctype.warehouse.test_warehouse import get_warehouse
+from erplite.stock.stock_ledger import get_previous_sle
 
 
 class TestDeliveryNote(FrappeTestCase):
@@ -174,8 +174,8 @@ class TestDeliveryNote(FrappeTestCase):
 			self.assertEqual(cstr(serial_no.get(field)), value)
 
 	def test_delivery_note_return_against_denormalized_serial_no(self):
-		from erpnext.stock.doctype.delivery_note.delivery_note import make_sales_return
-		from erpnext.stock.doctype.serial_no.serial_no import get_serial_nos
+		from erplite.stock.doctype.delivery_note.delivery_note import make_sales_return
+		from erplite.stock.doctype.serial_no.serial_no import get_serial_nos
 
 		frappe.flags.ignore_serial_batch_bundle_validation = True
 		sn_item = "Old Serial NO Item Return Test - 1"
@@ -350,7 +350,7 @@ class TestDeliveryNote(FrappeTestCase):
 		self.assertEqual(dn.items[0].returned_qty, 2)
 		self.assertEqual(dn.per_returned, 40)
 
-		from erpnext.controllers.sales_and_purchase_return import make_return_doc
+		from erplite.controllers.sales_and_purchase_return import make_return_doc
 
 		return_dn_2 = make_return_doc("Delivery Note", dn.name)
 
@@ -421,7 +421,7 @@ class TestDeliveryNote(FrappeTestCase):
 		self.assertEqual(dn.status, "Return Issued")
 
 	def test_delivery_note_return_valuation_on_different_warehouse(self):
-		from erpnext.stock.doctype.warehouse.test_warehouse import create_warehouse
+		from erplite.stock.doctype.warehouse.test_warehouse import create_warehouse
 
 		company = frappe.db.get_value("Warehouse", "Stores - TCP1", "company")
 		item_code = "Test Return Valuation For DN"
@@ -443,7 +443,7 @@ class TestDeliveryNote(FrappeTestCase):
 		dn.submit()
 		self.assertEqual(dn.items[0].incoming_rate, 150)
 
-		from erpnext.controllers.sales_and_purchase_return import make_return_doc
+		from erplite.controllers.sales_and_purchase_return import make_return_doc
 
 		return_dn = make_return_doc(dn.doctype, dn.name)
 		return_dn.items[0].warehouse = return_warehouse
@@ -514,7 +514,7 @@ class TestDeliveryNote(FrappeTestCase):
 			self.assertFalse(row.serial_no)
 			self.assertFalse(row.batch_no)
 
-		from erpnext.controllers.sales_and_purchase_return import make_return_doc
+		from erplite.controllers.sales_and_purchase_return import make_return_doc
 
 		return_dn = make_return_doc(dn.doctype, dn.name)
 		for row in return_dn.items:
@@ -696,8 +696,8 @@ class TestDeliveryNote(FrappeTestCase):
 		self.assertEqual(gle_warehouse_amount, 1400)
 
 	def test_bin_details_of_packed_item(self):
-		from erpnext.selling.doctype.product_bundle.test_product_bundle import make_product_bundle
-		from erpnext.stock.doctype.item.test_item import make_item
+		from erplite.selling.doctype.product_bundle.test_product_bundle import make_product_bundle
+		from erplite.stock.doctype.item.test_item import make_item
 
 		# test Update Items with product bundle
 		if not frappe.db.exists("Item", "_Test Product Bundle Item New"):
@@ -770,7 +770,7 @@ class TestDeliveryNote(FrappeTestCase):
 		)
 
 	def test_delivery_of_bundled_items_to_target_warehouse(self):
-		from erpnext.selling.doctype.customer.test_customer import create_internal_customer
+		from erplite.selling.doctype.customer.test_customer import create_internal_customer
 
 		company = frappe.db.get_value("Warehouse", "Stores - TCP1", "company")
 		customer_name = create_internal_customer(
@@ -873,7 +873,7 @@ class TestDeliveryNote(FrappeTestCase):
 		frappe.db.rollback()
 
 	def test_closed_delivery_note(self):
-		from erpnext.stock.doctype.delivery_note.delivery_note import update_delivery_note_status
+		from erplite.stock.doctype.delivery_note.delivery_note import update_delivery_note_status
 
 		make_stock_entry(target="Stores - TCP1", qty=5, basic_rate=100)
 
@@ -928,7 +928,7 @@ class TestDeliveryNote(FrappeTestCase):
 
 	def test_dn_billing_status_case2(self):
 		# SO -> SI and SO -> DN1, DN2
-		from erpnext.selling.doctype.sales_order.sales_order import (
+		from erplite.selling.doctype.sales_order.sales_order import (
 			make_delivery_note,
 			make_sales_invoice,
 		)
@@ -970,8 +970,8 @@ class TestDeliveryNote(FrappeTestCase):
 
 	def test_dn_billing_status_case3(self):
 		# SO -> DN1 -> SI and SO -> SI and SO -> DN2
-		from erpnext.selling.doctype.sales_order.sales_order import make_delivery_note
-		from erpnext.selling.doctype.sales_order.sales_order import (
+		from erplite.selling.doctype.sales_order.sales_order import make_delivery_note
+		from erplite.selling.doctype.sales_order.sales_order import (
 			make_sales_invoice as make_sales_invoice_from_so,
 		)
 
@@ -1020,8 +1020,8 @@ class TestDeliveryNote(FrappeTestCase):
 
 	def test_dn_billing_status_case4(self):
 		# SO -> SI -> DN
-		from erpnext.accounts.doctype.sales_invoice.sales_invoice import make_delivery_note
-		from erpnext.selling.doctype.sales_order.sales_order import make_sales_invoice
+		from erplite.accounts.doctype.sales_invoice.sales_invoice import make_delivery_note
+		from erplite.selling.doctype.sales_order.sales_order import make_sales_invoice
 
 		so = make_sales_order(po_no="12345")
 
@@ -1047,7 +1047,7 @@ class TestDeliveryNote(FrappeTestCase):
 		self.assertEqual(dn.name, dt.delivery_stops[0].delivery_note)
 
 	def test_delivery_note_with_cost_center(self):
-		from erpnext.accounts.doctype.cost_center.test_cost_center import create_cost_center
+		from erplite.accounts.doctype.cost_center.test_cost_center import create_cost_center
 
 		cost_center = "_Test Cost Center for BS Account - TCP1"
 		create_cost_center(
@@ -1107,8 +1107,8 @@ class TestDeliveryNote(FrappeTestCase):
 			self.assertEqual(expected_values[gle.account]["cost_center"], gle.cost_center)
 
 	def test_make_sales_invoice_from_dn_for_returned_qty(self):
-		from erpnext.selling.doctype.sales_order.sales_order import make_delivery_note
-		from erpnext.stock.doctype.delivery_note.delivery_note import make_sales_invoice
+		from erplite.selling.doctype.sales_order.sales_order import make_delivery_note
+		from erplite.stock.doctype.delivery_note.delivery_note import make_sales_invoice
 
 		so = make_sales_order(qty=2)
 		so.submit()
@@ -1126,7 +1126,7 @@ class TestDeliveryNote(FrappeTestCase):
 		self.assertEqual(si.items[0].qty, 1)
 
 	def test_make_sales_invoice_from_dn_with_returned_qty_duplicate_items(self):
-		from erpnext.stock.doctype.delivery_note.delivery_note import make_sales_invoice
+		from erplite.stock.doctype.delivery_note.delivery_note import make_sales_invoice
 
 		dn = create_delivery_note(qty=8, do_not_submit=True)
 		dn.append(
@@ -1201,10 +1201,10 @@ class TestDeliveryNote(FrappeTestCase):
 		frappe.db.set_single_value("Accounts Settings", "delete_linked_ledger_entries", 0)
 
 	def test_payment_terms_are_fetched_when_creating_sales_invoice(self):
-		from erpnext.accounts.doctype.payment_entry.test_payment_entry import (
+		from erplite.accounts.doctype.payment_entry.test_payment_entry import (
 			create_payment_terms_template,
 		)
-		from erpnext.accounts.doctype.sales_invoice.test_sales_invoice import create_sales_invoice
+		from erplite.accounts.doctype.sales_invoice.test_sales_invoice import create_sales_invoice
 
 		automatically_fetch_payment_terms()
 
@@ -1236,8 +1236,8 @@ class TestDeliveryNote(FrappeTestCase):
 		#                 |
 		#                 |---> DN(Partial Sales Return) ---> SI(Credit Note)
 
-		from erpnext.accounts.doctype.sales_invoice.sales_invoice import make_delivery_note
-		from erpnext.selling.doctype.sales_order.sales_order import make_sales_invoice
+		from erplite.accounts.doctype.sales_invoice.sales_invoice import make_delivery_note
+		from erplite.selling.doctype.sales_order.sales_order import make_sales_invoice
 
 		so = make_sales_order(qty=10)
 		si = make_sales_invoice(so.name)
@@ -1249,7 +1249,7 @@ class TestDeliveryNote(FrappeTestCase):
 		self.assertEqual(dn.items[0].returned_qty, 0)
 		self.assertEqual(dn.per_billed, 100)
 
-		from erpnext.stock.doctype.delivery_note.delivery_note import make_sales_invoice
+		from erplite.stock.doctype.delivery_note.delivery_note import make_sales_invoice
 
 		dn1 = create_delivery_note(is_return=1, return_against=dn.name, qty=-3)
 		si1 = make_sales_invoice(dn1.name)
@@ -1270,7 +1270,7 @@ class TestDeliveryNote(FrappeTestCase):
 		self.assertEqual(dn2.per_billed, 100)
 
 	def test_internal_transfer_with_valuation_only(self):
-		from erpnext.selling.doctype.customer.test_customer import create_internal_customer
+		from erplite.selling.doctype.customer.test_customer import create_internal_customer
 
 		item = make_item().name
 		warehouse = "_Test Warehouse - _TC"
@@ -1351,7 +1351,7 @@ class TestDeliveryNote(FrappeTestCase):
 		self.assertEqual(dn.items[0].net_rate, rate)
 
 	def test_internal_transfer_precision_gle(self):
-		from erpnext.selling.doctype.customer.test_customer import create_internal_customer
+		from erplite.selling.doctype.customer.test_customer import create_internal_customer
 
 		item = make_item(properties={"valuation_method": "Moving Average"}).name
 		company = "_Test Company with perpetual inventory"
@@ -1376,8 +1376,8 @@ class TestDeliveryNote(FrappeTestCase):
 		self.assertFalse(frappe.db.exists("GL Entry", {"voucher_no": dn.name, "voucher_type": dn.doctype}))
 
 	def test_batch_expiry_for_delivery_note(self):
-		from erpnext.controllers.sales_and_purchase_return import make_return_doc
-		from erpnext.stock.doctype.purchase_receipt.test_purchase_receipt import make_purchase_receipt
+		from erplite.controllers.sales_and_purchase_return import make_return_doc
+		from erplite.stock.doctype.purchase_receipt.test_purchase_receipt import make_purchase_receipt
 
 		item = make_item(
 			"_Test Batch Item For Return Check",
@@ -1415,9 +1415,9 @@ class TestDeliveryNote(FrappeTestCase):
 		self.reserved_qty_check()
 
 	def reserved_qty_check(self):
-		from erpnext.controllers.sales_and_purchase_return import make_return_doc
-		from erpnext.selling.doctype.sales_order.sales_order import make_delivery_note
-		from erpnext.stock.stock_balance import get_reserved_qty
+		from erplite.controllers.sales_and_purchase_return import make_return_doc
+		from erplite.selling.doctype.sales_order.sales_order import make_delivery_note
+		from erplite.stock.stock_balance import get_reserved_qty
 
 		dont_reserve_qty = frappe.db.get_single_value(
 			"Selling Settings", "dont_reserve_sales_order_qty_on_sales_return"
@@ -1455,7 +1455,7 @@ class TestDeliveryNote(FrappeTestCase):
 		frappe.db.set_single_value("Selling Settings", "dont_reserve_sales_order_qty_on_sales_return", 0)
 
 	def test_non_internal_transfer_delivery_note(self):
-		from erpnext.stock.doctype.warehouse.test_warehouse import create_warehouse
+		from erplite.stock.doctype.warehouse.test_warehouse import create_warehouse
 
 		dn = create_delivery_note(do_not_submit=True)
 		warehouse = create_warehouse("Internal Transfer Warehouse", company=dn.company)
@@ -1470,7 +1470,7 @@ class TestDeliveryNote(FrappeTestCase):
 		self.assertFalse(dn.items[0].target_warehouse)
 
 	def test_serial_no_status(self):
-		from erpnext.stock.doctype.purchase_receipt.test_purchase_receipt import make_purchase_receipt
+		from erplite.stock.doctype.purchase_receipt.test_purchase_receipt import make_purchase_receipt
 
 		item = make_item(
 			"Test Serial Item For Status",
@@ -1626,8 +1626,8 @@ class TestDeliveryNote(FrappeTestCase):
 		frappe.db.set_single_value("Stock Settings", "auto_create_serial_and_batch_bundle_for_outward", 0)
 
 	def test_internal_transfer_for_non_stock_item(self):
-		from erpnext.selling.doctype.customer.test_customer import create_internal_customer
-		from erpnext.selling.doctype.sales_order.sales_order import make_delivery_note
+		from erplite.selling.doctype.customer.test_customer import create_internal_customer
+		from erplite.selling.doctype.sales_order.sales_order import make_delivery_note
 
 		item = make_item(properties={"is_stock_item": 0}).name
 		warehouse = "_Test Warehouse - _TC"
@@ -1690,8 +1690,8 @@ class TestDeliveryNote(FrappeTestCase):
 				self.assertEqual(row.serial_no, serial_no)
 
 	def test_delivery_note_legacy_serial_no_valuation(self):
-		from erpnext.stock.doctype.delivery_note.delivery_note import make_sales_return
-		from erpnext.stock.doctype.serial_no.serial_no import get_serial_nos
+		from erplite.stock.doctype.delivery_note.delivery_note import make_sales_return
+		from erplite.stock.doctype.serial_no.serial_no import get_serial_nos
 
 		frappe.flags.ignore_serial_batch_bundle_validation = True
 		sn_item = "Old Serial NO Item Valuation Test - 2"
@@ -1816,7 +1816,7 @@ class TestDeliveryNote(FrappeTestCase):
 		self.assertEqual(sle_data.stock_value_difference, 200.0 * -1)
 
 	def test_sales_return_batch_no_for_batched_item_in_dn(self):
-		from erpnext.stock.doctype.delivery_note.delivery_note import make_sales_return
+		from erplite.stock.doctype.delivery_note.delivery_note import make_sales_return
 
 		item_code = make_item(
 			"Test Batched Item for Sales Return 11",
@@ -1845,7 +1845,7 @@ class TestDeliveryNote(FrappeTestCase):
 		self.assertEqual(batch_no, returned_batch_no)
 
 	def test_partial_sales_return_batch_no_for_batched_item_in_dn(self):
-		from erpnext.stock.doctype.delivery_note.delivery_note import make_sales_return
+		from erplite.stock.doctype.delivery_note.delivery_note import make_sales_return
 
 		item_code = make_item(
 			"Test Partial Batched Item for Sales Return 11",
@@ -1892,7 +1892,7 @@ class TestDeliveryNote(FrappeTestCase):
 		self.assertEqual(sabb_qty, 2)
 
 	def test_sales_return_serial_no_for_serial_item_in_dn(self):
-		from erpnext.stock.doctype.delivery_note.delivery_note import make_sales_return
+		from erplite.stock.doctype.delivery_note.delivery_note import make_sales_return
 
 		item_code = make_item(
 			"Test Serial Item for Sales Return 11",
@@ -2041,7 +2041,7 @@ class TestDeliveryNote(FrappeTestCase):
 			self.assertEqual(sn.warranty_period, 100)
 
 	def test_batch_return_dn(self):
-		from erpnext.stock.doctype.delivery_note.delivery_note import make_sales_return
+		from erplite.stock.doctype.delivery_note.delivery_note import make_sales_return
 
 		item_code = make_item(
 			"Test Batch Return DN Item 1",
@@ -2082,7 +2082,7 @@ class TestDeliveryNote(FrappeTestCase):
 		self.assertEqual(stock_value_difference, 100.0 * 5)
 
 	def test_delivery_note_return_valuation_without_use_serial_batch_field(self):
-		from erpnext.stock.doctype.delivery_note.delivery_note import make_sales_return
+		from erplite.stock.doctype.delivery_note.delivery_note import make_sales_return
 
 		batch_item = make_item(
 			"_Test Delivery Note Return Valuation Batch Item",
@@ -2201,7 +2201,7 @@ class TestDeliveryNote(FrappeTestCase):
 					self.assertEqual(d.incoming_rate, serial_no_valuation[d.serial_no])
 
 	def test_delivery_note_return_valuation_with_use_serial_batch_field(self):
-		from erpnext.stock.doctype.delivery_note.delivery_note import make_sales_return
+		from erplite.stock.doctype.delivery_note.delivery_note import make_sales_return
 
 		batch_item = make_item(
 			"_Test Delivery Note Return Valuation WITH Batch Item",

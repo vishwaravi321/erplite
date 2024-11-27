@@ -5,23 +5,23 @@ import frappe
 from frappe.tests.utils import FrappeTestCase
 from frappe.utils import flt
 
-from erpnext.controllers.subcontracting_controller import make_rm_stock_entry
-from erpnext.controllers.tests.test_subcontracting_controller import (
+from erplite.controllers.subcontracting_controller import make_rm_stock_entry
+from erplite.controllers.tests.test_subcontracting_controller import (
 	get_subcontracting_order,
 	make_service_item,
 	set_backflush_based_on,
 )
-from erpnext.manufacturing.doctype.production_plan.test_production_plan import make_bom
-from erpnext.manufacturing.doctype.work_order.test_work_order import make_wo_order_test_record
-from erpnext.manufacturing.doctype.work_order.work_order import make_stock_entry
-from erpnext.stock.doctype.item.test_item import create_item
-from erpnext.stock.doctype.stock_reconciliation.stock_reconciliation import (
+from erplite.manufacturing.doctype.production_plan.test_production_plan import make_bom
+from erplite.manufacturing.doctype.work_order.test_work_order import make_wo_order_test_record
+from erplite.manufacturing.doctype.work_order.work_order import make_stock_entry
+from erplite.stock.doctype.item.test_item import create_item
+from erplite.stock.doctype.stock_reconciliation.stock_reconciliation import (
 	EmptyStockReconciliationItemsError,
 )
-from erpnext.stock.doctype.stock_reconciliation.test_stock_reconciliation import (
+from erplite.stock.doctype.stock_reconciliation.test_stock_reconciliation import (
 	create_stock_reconciliation,
 )
-from erpnext.subcontracting.doctype.subcontracting_order.subcontracting_order import (
+from erplite.subcontracting.doctype.subcontracting_order.subcontracting_order import (
 	make_subcontracting_receipt,
 )
 

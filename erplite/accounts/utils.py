@@ -28,16 +28,16 @@ from frappe.utils import (
 from pypika import Order
 from pypika.terms import ExistsCriterion
 
-import erpnext
+import erplite
 
-# imported to enable erpnext.accounts.utils.get_account_currency
-from erpnext.accounts.doctype.account.account import get_account_currency
-from erpnext.accounts.doctype.accounting_dimension.accounting_dimension import get_dimensions
-from erpnext.stock import get_warehouse_account_map
-from erpnext.stock.utils import get_stock_value_on
+# imported to enable erplite.accounts.utils.get_account_currency
+from erplite.accounts.doctype.account.account import get_account_currency
+from erplite.accounts.doctype.accounting_dimension.accounting_dimension import get_dimensions
+from erplite.stock import get_warehouse_account_map
+from erplite.stock.utils import get_stock_value_on
 
 if TYPE_CHECKING:
-	from erpnext.stock.doctype.repost_item_valuation.repost_item_valuation import RepostItemValuation
+	from erplite.stock.doctype.repost_item_valuation.repost_item_valuation import RepostItemValuation
 
 
 class FiscalYearError(frappe.ValidationError):
@@ -526,7 +526,7 @@ def reconcile_against_document(
 		else:
 			gl_map = doc.build_gl_map()
 			# Make sure there is no overallocation
-			from erpnext.accounts.general_ledger import process_debit_credit_difference
+			from erplite.accounts.general_ledger import process_debit_credit_difference
 
 			process_debit_credit_difference(gl_map)
 			create_payment_ledger_entry(gl_map, update_outstanding="No", cancel=0, adv_adj=1)
@@ -1113,7 +1113,7 @@ def get_outstanding_invoices(
 		party_account_type = "Receivable" if root_type == "Asset" else "Payable"
 		party_account_type = account_type or party_account_type
 	else:
-		party_account_type = erpnext.get_party_account_type(party_type)
+		party_account_type = erplite.get_party_account_type(party_type)
 
 	held_invoices = get_held_invoices(party_type, party)
 
@@ -1191,7 +1191,7 @@ def get_companies():
 
 @frappe.whitelist()
 def get_children(doctype, parent, company, is_root=False):
-	from erpnext.accounts.report.financial_statements import sort_accounts
+	from erplite.accounts.report.financial_statements import sort_accounts
 
 	parent_fieldname = "parent_" + frappe.scrub(doctype)
 	fields = ["name as value", "is_group as expandable"]
@@ -1235,7 +1235,7 @@ def get_account_balances(accounts, company):
 
 
 def create_payment_gateway_account(gateway, payment_channel="Email"):
-	from erpnext.setup.setup_wizard.operations.install_fixtures import create_bank_account
+	from erplite.setup.setup_wizard.operations.install_fixtures import create_bank_account
 
 	company = frappe.get_cached_value("Global Defaults", "Global Defaults", "default_company")
 	if not company:
@@ -1352,7 +1352,7 @@ def parse_naming_series_variable(doc, variable):
 
 @frappe.whitelist()
 def get_coa(doctype, parent, is_root=None, chart=None):
-	from erpnext.accounts.doctype.account.chart_of_accounts.chart_of_accounts import (
+	from erplite.accounts.doctype.account.chart_of_accounts.chart_of_accounts import (
 		build_tree_from_json,
 	)
 
@@ -1388,7 +1388,7 @@ def repost_gle_for_stock_vouchers(
 	warehouse_account=None,
 	repost_doc: Optional["RepostItemValuation"] = None,
 ):
-	from erpnext.accounts.general_ledger import toggle_debit_credit_if_negative
+	from erplite.accounts.general_ledger import toggle_debit_credit_if_negative
 
 	if not stock_vouchers:
 		return
@@ -2154,7 +2154,7 @@ def create_gain_loss_journal(
 			"party": party,
 			"account_currency": party_account_currency,
 			"exchange_rate": 0,
-			"cost_center": cost_center or erpnext.get_default_cost_center(company),
+			"cost_center": cost_center or erplite.get_default_cost_center(company),
 			"reference_type": ref1_dt,
 			"reference_name": ref1_dn,
 			"reference_detail_no": ref1_detail_no,
@@ -2171,7 +2171,7 @@ def create_gain_loss_journal(
 			"account": gain_loss_account,
 			"account_currency": gain_loss_account_currency,
 			"exchange_rate": 1,
-			"cost_center": cost_center or erpnext.get_default_cost_center(company),
+			"cost_center": cost_center or erplite.get_default_cost_center(company),
 			"reference_type": ref2_dt,
 			"reference_name": ref2_dn,
 			"reference_detail_no": ref2_detail_no,

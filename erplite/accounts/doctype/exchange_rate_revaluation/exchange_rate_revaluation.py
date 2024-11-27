@@ -10,10 +10,10 @@ from frappe.query_builder import Criterion, Order
 from frappe.query_builder.functions import NullIf, Sum
 from frappe.utils import flt, get_link_to_form
 
-import erpnext
-from erpnext.accounts.doctype.journal_entry.journal_entry import get_balance_on
-from erpnext.accounts.utils import get_currency_precision
-from erpnext.setup.utils import get_exchange_rate
+import erplite
+from erplite.accounts.doctype.journal_entry.journal_entry import get_balance_on
+from erplite.accounts.utils import get_currency_precision
+from erplite.setup.utils import get_exchange_rate
 
 
 class ExchangeRateRevaluation(Document):
@@ -25,7 +25,7 @@ class ExchangeRateRevaluation(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
-		from erpnext.accounts.doctype.exchange_rate_revaluation_account.exchange_rate_revaluation_account import (
+		from erplite.accounts.doctype.exchange_rate_revaluation_account.exchange_rate_revaluation_account import (
 			ExchangeRateRevaluationAccount,
 		)
 
@@ -163,7 +163,7 @@ class ExchangeRateRevaluation(Document):
 		account_details = []
 
 		if company and posting_date:
-			company_currency = erpnext.get_company_currency(company)
+			company_currency = erplite.get_company_currency(company)
 
 			acc = qb.DocType("Account")
 			if account:
@@ -248,7 +248,7 @@ class ExchangeRateRevaluation(Document):
 	@staticmethod
 	def calculate_new_account_balance(company, posting_date, account_details):
 		accounts = []
-		company_currency = erpnext.get_company_currency(company)
+		company_currency = erplite.get_company_currency(company)
 		precision = get_field_precision(
 			frappe.get_meta("Exchange Rate Revaluation Account").get_field("new_balance_in_base_currency"),
 			company_currency,
@@ -385,7 +385,7 @@ class ExchangeRateRevaluation(Document):
 						d.get("balance_in_account_currency"), d.precision("balance_in_account_currency")
 					),
 					"exchange_rate": 0,
-					"cost_center": erpnext.get_default_cost_center(self.company),
+					"cost_center": erplite.get_default_cost_center(self.company),
 					"reference_type": "Exchange Rate Revaluation",
 					"reference_name": self.name,
 				}
@@ -425,7 +425,7 @@ class ExchangeRateRevaluation(Document):
 						"credit": 0,
 						"debit_in_account_currency": abs(d.gain_loss) if d.gain_loss < 0 else 0,
 						"credit_in_account_currency": abs(d.gain_loss) if d.gain_loss > 0 else 0,
-						"cost_center": erpnext.get_default_cost_center(self.company),
+						"cost_center": erplite.get_default_cost_center(self.company),
 						"exchange_rate": 1,
 						"reference_type": "Exchange Rate Revaluation",
 						"reference_name": self.name,
@@ -457,7 +457,7 @@ class ExchangeRateRevaluation(Document):
 						"credit": abs(d.gain_loss) if d.gain_loss > 0 else 0,
 						"debit_in_account_currency": 0,
 						"credit_in_account_currency": 0,
-						"cost_center": erpnext.get_default_cost_center(self.company),
+						"cost_center": erplite.get_default_cost_center(self.company),
 						"exchange_rate": 1,
 						"reference_type": "Exchange Rate Revaluation",
 						"reference_name": self.name,
@@ -514,7 +514,7 @@ class ExchangeRateRevaluation(Document):
 					dr_or_cr: flt(
 						abs(d.get("balance_in_account_currency")), d.precision("balance_in_account_currency")
 					),
-					"cost_center": erpnext.get_default_cost_center(self.company),
+					"cost_center": erplite.get_default_cost_center(self.company),
 					"exchange_rate": flt(d.get("new_exchange_rate"), d.precision("new_exchange_rate")),
 					"reference_type": "Exchange Rate Revaluation",
 					"reference_name": self.name,
@@ -532,7 +532,7 @@ class ExchangeRateRevaluation(Document):
 					reverse_dr_or_cr: flt(
 						abs(d.get("balance_in_account_currency")), d.precision("balance_in_account_currency")
 					),
-					"cost_center": erpnext.get_default_cost_center(self.company),
+					"cost_center": erplite.get_default_cost_center(self.company),
 					"exchange_rate": flt(
 						d.get("current_exchange_rate"), d.precision("current_exchange_rate")
 					),
@@ -555,7 +555,7 @@ class ExchangeRateRevaluation(Document):
 				if self.gain_loss_unbooked < 0
 				else 0,
 				"credit_in_account_currency": self.gain_loss_unbooked if self.gain_loss_unbooked > 0 else 0,
-				"cost_center": erpnext.get_default_cost_center(self.company),
+				"cost_center": erplite.get_default_cost_center(self.company),
 				"exchange_rate": 1,
 				"reference_type": "Exchange Rate Revaluation",
 				"reference_name": self.name,
@@ -626,7 +626,7 @@ def get_account_details(
 		frappe.throw(_("Party Type and Party is mandatory for {0} account").format(account_type))
 
 	account_details = {}
-	erpnext.get_company_currency(company)
+	erplite.get_company_currency(company)
 
 	account_details = {
 		"account_currency": account_currency,

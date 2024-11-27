@@ -8,14 +8,14 @@ from frappe.model.mapper import get_mapped_doc
 from frappe.query_builder.functions import Sum
 from frappe.utils import cint, cstr, flt, formatdate, get_link_to_form, getdate, nowdate
 
-import erpnext
-from erpnext.accounts.deferred_revenue import validate_service_stop_date
-from erpnext.accounts.doctype.gl_entry.gl_entry import update_outstanding_amt
-from erpnext.accounts.doctype.repost_accounting_ledger.repost_accounting_ledger import (
+import erplite
+from erplite.accounts.deferred_revenue import validate_service_stop_date
+from erplite.accounts.doctype.gl_entry.gl_entry import update_outstanding_amt
+from erplite.accounts.doctype.repost_accounting_ledger.repost_accounting_ledger import (
 	validate_docs_for_deferred_accounting,
 	validate_docs_for_voucher_types,
 )
-from erpnext.accounts.doctype.sales_invoice.sales_invoice import (
+from erplite.accounts.doctype.sales_invoice.sales_invoice import (
 	check_if_return_invoice_linked_with_payment_entry,
 	get_total_in_party_account_currency,
 	is_overdue,
@@ -23,24 +23,24 @@ from erpnext.accounts.doctype.sales_invoice.sales_invoice import (
 	update_linked_doc,
 	validate_inter_company_party,
 )
-from erpnext.accounts.doctype.tax_withholding_category.tax_withholding_category import (
+from erplite.accounts.doctype.tax_withholding_category.tax_withholding_category import (
 	get_party_tax_withholding_details,
 )
-from erpnext.accounts.general_ledger import (
+from erplite.accounts.general_ledger import (
 	get_round_off_account_and_cost_center,
 	make_gl_entries,
 	make_reverse_gl_entries,
 	merge_similar_entries,
 )
-from erpnext.accounts.party import get_due_date, get_party_account
-from erpnext.accounts.utils import get_account_currency, get_fiscal_year
-from erpnext.assets.doctype.asset.asset import is_cwip_accounting_enabled
-from erpnext.assets.doctype.asset_category.asset_category import get_asset_category_account
-from erpnext.buying.utils import check_on_hold_or_closed_status
-from erpnext.controllers.accounts_controller import validate_account_head
-from erpnext.controllers.buying_controller import BuyingController
-from erpnext.stock import get_warehouse_account_map
-from erpnext.stock.doctype.purchase_receipt.purchase_receipt import (
+from erplite.accounts.party import get_due_date, get_party_account
+from erplite.accounts.utils import get_account_currency, get_fiscal_year
+from erplite.assets.doctype.asset.asset import is_cwip_accounting_enabled
+from erplite.assets.doctype.asset_category.asset_category import get_asset_category_account
+from erplite.buying.utils import check_on_hold_or_closed_status
+from erplite.controllers.accounts_controller import validate_account_head
+from erplite.controllers.buying_controller import BuyingController
+from erplite.stock import get_warehouse_account_map
+from erplite.stock.doctype.purchase_receipt.purchase_receipt import (
 	get_item_account_wise_additional_cost,
 	update_billed_amount_based_on_po,
 )
@@ -62,18 +62,18 @@ class PurchaseInvoice(BuyingController):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
-		from erpnext.accounts.doctype.advance_tax.advance_tax import AdvanceTax
-		from erpnext.accounts.doctype.payment_schedule.payment_schedule import PaymentSchedule
-		from erpnext.accounts.doctype.pricing_rule_detail.pricing_rule_detail import PricingRuleDetail
-		from erpnext.accounts.doctype.purchase_invoice_advance.purchase_invoice_advance import (
+		from erplite.accounts.doctype.advance_tax.advance_tax import AdvanceTax
+		from erplite.accounts.doctype.payment_schedule.payment_schedule import PaymentSchedule
+		from erplite.accounts.doctype.pricing_rule_detail.pricing_rule_detail import PricingRuleDetail
+		from erplite.accounts.doctype.purchase_invoice_advance.purchase_invoice_advance import (
 			PurchaseInvoiceAdvance,
 		)
-		from erpnext.accounts.doctype.purchase_invoice_item.purchase_invoice_item import PurchaseInvoiceItem
-		from erpnext.accounts.doctype.purchase_taxes_and_charges.purchase_taxes_and_charges import (
+		from erplite.accounts.doctype.purchase_invoice_item.purchase_invoice_item import PurchaseInvoiceItem
+		from erplite.accounts.doctype.purchase_taxes_and_charges.purchase_taxes_and_charges import (
 			PurchaseTaxesandCharges,
 		)
-		from erpnext.accounts.doctype.tax_withheld_vouchers.tax_withheld_vouchers import TaxWithheldVouchers
-		from erpnext.buying.doctype.purchase_receipt_item_supplied.purchase_receipt_item_supplied import (
+		from erplite.accounts.doctype.tax_withheld_vouchers.tax_withheld_vouchers import TaxWithheldVouchers
+		from erplite.buying.doctype.purchase_receipt_item_supplied.purchase_receipt_item_supplied import (
 			PurchaseReceiptItemSupplied,
 		)
 
@@ -441,7 +441,7 @@ class PurchaseInvoice(BuyingController):
 				frappe.msgprint(_("Item Code required at Row No {0}").format(d.idx), raise_exception=True)
 
 	def set_expense_account(self, for_validate=False):
-		auto_accounting_for_stock = erpnext.is_perpetual_inventory_enabled(self.company)
+		auto_accounting_for_stock = erplite.is_perpetual_inventory_enabled(self.company)
 
 		if auto_accounting_for_stock:
 			stock_not_billed_account = self.get_company_default("stock_received_but_not_billed")
@@ -847,7 +847,7 @@ class PurchaseInvoice(BuyingController):
 			)
 
 	def get_gl_entries(self, warehouse_account=None):
-		self.auto_accounting_for_stock = erpnext.is_perpetual_inventory_enabled(self.company)
+		self.auto_accounting_for_stock = erplite.is_perpetual_inventory_enabled(self.company)
 
 		if self.auto_accounting_for_stock:
 			self.stock_received_but_not_billed = self.get_company_default("stock_received_but_not_billed")
@@ -1709,7 +1709,7 @@ class PurchaseInvoice(BuyingController):
 		)
 
 		for pr in set(updated_pr):
-			from erpnext.stock.doctype.purchase_receipt.purchase_receipt import update_billing_percentage
+			from erplite.stock.doctype.purchase_receipt.purchase_receipt import update_billing_percentage
 
 			pr_doc = frappe.get_doc("Purchase Receipt", pr)
 			update_billing_percentage(
@@ -1920,7 +1920,7 @@ def get_purchase_document_details(doc):
 
 
 def get_list_context(context=None):
-	from erpnext.controllers.website_list_for_contact import get_list_context
+	from erplite.controllers.website_list_for_contact import get_list_context
 
 	list_context = get_list_context(context)
 	list_context.update(
@@ -1934,14 +1934,14 @@ def get_list_context(context=None):
 	return list_context
 
 
-@erpnext.allow_regional
+@erplite.allow_regional
 def make_regional_gl_entries(gl_entries, doc):
 	return gl_entries
 
 
 @frappe.whitelist()
 def make_debit_note(source_name, target_doc=None):
-	from erpnext.controllers.sales_and_purchase_return import make_return_doc
+	from erplite.controllers.sales_and_purchase_return import make_return_doc
 
 	return make_return_doc("Purchase Invoice", source_name, target_doc)
 
@@ -1987,7 +1987,7 @@ def block_invoice(name, release_date, hold_comment=None):
 
 @frappe.whitelist()
 def make_inter_company_sales_invoice(source_name, target_doc=None):
-	from erpnext.accounts.doctype.sales_invoice.sales_invoice import make_inter_company_transaction
+	from erplite.accounts.doctype.sales_invoice.sales_invoice import make_inter_company_transaction
 
 	return make_inter_company_transaction("Purchase Invoice", source_name, target_doc)
 

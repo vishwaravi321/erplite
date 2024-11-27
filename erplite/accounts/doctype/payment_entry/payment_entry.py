@@ -14,38 +14,38 @@ from frappe.utils.data import comma_and, fmt_money, get_link_to_form
 from pypika import Case
 from pypika.functions import Coalesce, Sum
 
-import erpnext
-from erpnext.accounts.doctype.accounting_dimension.accounting_dimension import get_dimensions
-from erpnext.accounts.doctype.bank_account.bank_account import (
+import erplite
+from erplite.accounts.doctype.accounting_dimension.accounting_dimension import get_dimensions
+from erplite.accounts.doctype.bank_account.bank_account import (
 	get_bank_account_details,
 	get_default_company_bank_account,
 	get_party_bank_account,
 )
-from erpnext.accounts.doctype.invoice_discounting.invoice_discounting import (
+from erplite.accounts.doctype.invoice_discounting.invoice_discounting import (
 	get_party_account_based_on_invoice_discounting,
 )
-from erpnext.accounts.doctype.journal_entry.journal_entry import get_default_bank_cash_account
-from erpnext.accounts.doctype.tax_withholding_category.tax_withholding_category import (
+from erplite.accounts.doctype.journal_entry.journal_entry import get_default_bank_cash_account
+from erplite.accounts.doctype.tax_withholding_category.tax_withholding_category import (
 	get_party_tax_withholding_details,
 )
-from erpnext.accounts.general_ledger import (
+from erplite.accounts.general_ledger import (
 	make_gl_entries,
 	make_reverse_gl_entries,
 	process_gl_map,
 )
-from erpnext.accounts.party import get_party_account
-from erpnext.accounts.utils import (
+from erplite.accounts.party import get_party_account
+from erplite.accounts.utils import (
 	cancel_exchange_gain_loss_journal,
 	get_account_currency,
 	get_balance_on,
 	get_outstanding_invoices,
 )
-from erpnext.controllers.accounts_controller import (
+from erplite.controllers.accounts_controller import (
 	AccountsController,
 	get_supplier_block_status,
 	validate_taxes_and_charges,
 )
-from erpnext.setup.utils import get_exchange_rate
+from erplite.setup.utils import get_exchange_rate
 
 
 class InvalidPaymentEntry(ValidationError):
@@ -204,7 +204,7 @@ class PaymentEntry(AccountsController):
 		self.set_status()
 
 	def update_payment_requests(self, cancel=False):
-		from erpnext.accounts.doctype.payment_request.payment_request import (
+		from erplite.accounts.doctype.payment_request.payment_request import (
 			update_payment_requests_as_per_pe_references,
 		)
 
@@ -822,7 +822,7 @@ class PaymentEntry(AccountsController):
 			return
 
 		tax_withholding_details.update(
-			{"cost_center": self.cost_center or erpnext.get_default_cost_center(self.company)}
+			{"cost_center": self.cost_center or erplite.get_default_cost_center(self.company)}
 		)
 
 		accounts = []
@@ -1146,7 +1146,7 @@ class PaymentEntry(AccountsController):
 		if self.payment_type in ("Receive", "Pay") and not self.get("party_account_field"):
 			self.setup_party_account_field()
 
-		company_currency = erpnext.get_company_currency(self.company)
+		company_currency = erplite.get_company_currency(self.company)
 		if self.paid_from_account_currency != company_currency:
 			self.currency = self.paid_from_account_currency
 		elif self.paid_to_account_currency != company_currency:
@@ -2590,7 +2590,7 @@ def get_reference_details(
 	total_amount = outstanding_amount = exchange_rate = account = None
 
 	ref_doc = frappe.get_doc(reference_doctype, reference_name)
-	company_currency = ref_doc.get("company_currency") or erpnext.get_company_currency(ref_doc.company)
+	company_currency = ref_doc.get("company_currency") or erplite.get_company_currency(ref_doc.company)
 
 	# Only applies for Reverse Payment Entries
 	account_type = None
@@ -3012,7 +3012,7 @@ def update_accounting_dimensions(pe, doc):
 	"""
 	Updates accounting dimensions in Payment Entry based on the accounting dimensions in the reference document
 	"""
-	from erpnext.accounts.doctype.accounting_dimension.accounting_dimension import (
+	from erplite.accounts.doctype.accounting_dimension.accounting_dimension import (
 		get_accounting_dimensions,
 	)
 
@@ -3384,6 +3384,6 @@ def make_payment_order(source_name, target_doc=None):
 	return doclist
 
 
-@erpnext.allow_regional
+@erplite.allow_regional
 def add_regional_gl_entries(gl_entries, doc):
 	return

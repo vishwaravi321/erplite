@@ -10,13 +10,13 @@ from frappe.query_builder.functions import CombineDatetime
 from frappe.utils import cint, flt, get_datetime, getdate, nowdate
 from pypika import functions as fn
 
-import erpnext
-from erpnext.accounts.utils import get_account_currency
-from erpnext.assets.doctype.asset.asset import get_asset_account, is_cwip_accounting_enabled
-from erpnext.buying.utils import check_on_hold_or_closed_status
-from erpnext.controllers.accounts_controller import merge_taxes
-from erpnext.controllers.buying_controller import BuyingController
-from erpnext.stock.doctype.delivery_note.delivery_note import make_inter_company_transaction
+import erplite
+from erplite.accounts.utils import get_account_currency
+from erplite.assets.doctype.asset.asset import get_asset_account, is_cwip_accounting_enabled
+from erplite.buying.utils import check_on_hold_or_closed_status
+from erplite.controllers.accounts_controller import merge_taxes
+from erplite.controllers.buying_controller import BuyingController
+from erplite.stock.doctype.delivery_note.delivery_note import make_inter_company_transaction
 
 form_grid_templates = {"items": "templates/form_grid/item_grid.html"}
 
@@ -30,14 +30,14 @@ class PurchaseReceipt(BuyingController):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
-		from erpnext.accounts.doctype.pricing_rule_detail.pricing_rule_detail import PricingRuleDetail
-		from erpnext.accounts.doctype.purchase_taxes_and_charges.purchase_taxes_and_charges import (
+		from erplite.accounts.doctype.pricing_rule_detail.pricing_rule_detail import PricingRuleDetail
+		from erplite.accounts.doctype.purchase_taxes_and_charges.purchase_taxes_and_charges import (
 			PurchaseTaxesandCharges,
 		)
-		from erpnext.buying.doctype.purchase_receipt_item_supplied.purchase_receipt_item_supplied import (
+		from erplite.buying.doctype.purchase_receipt_item_supplied.purchase_receipt_item_supplied import (
 			PurchaseReceiptItemSupplied,
 		)
-		from erpnext.stock.doctype.purchase_receipt_item.purchase_receipt_item import PurchaseReceiptItem
+		from erplite.stock.doctype.purchase_receipt_item.purchase_receipt_item import PurchaseReceiptItem
 
 		additional_discount_percentage: DF.Float
 		address_display: DF.SmallText | None
@@ -225,7 +225,7 @@ class PurchaseReceipt(BuyingController):
 			)
 
 	def before_validate(self):
-		from erpnext.stock.doctype.putaway_rule.putaway_rule import apply_putaway_rule
+		from erplite.stock.doctype.putaway_rule.putaway_rule import apply_putaway_rule
 
 		if self.get("items") and self.apply_putaway_rule and not self.get("is_return"):
 			apply_putaway_rule(self.doctype, self.get("items"), self.company)
@@ -425,7 +425,7 @@ class PurchaseReceipt(BuyingController):
 		self.set_consumed_qty_in_subcontract_order()
 
 	def get_gl_entries(self, warehouse_account=None, via_landed_cost_voucher=False):
-		from erpnext.accounts.general_ledger import process_gl_map
+		from erplite.accounts.general_ledger import process_gl_map
 
 		gl_entries = []
 
@@ -436,7 +436,7 @@ class PurchaseReceipt(BuyingController):
 		return process_gl_map(gl_entries)
 
 	def make_item_gl_entries(self, gl_entries, warehouse_account=None):
-		from erpnext.accounts.doctype.purchase_invoice.purchase_invoice import (
+		from erplite.accounts.doctype.purchase_invoice.purchase_invoice import (
 			get_purchase_document_details,
 		)
 
@@ -662,7 +662,7 @@ class PurchaseReceipt(BuyingController):
 				)
 
 				if not (
-					(erpnext.is_perpetual_inventory_enabled(self.company) and d.item_code in stock_items)
+					(erplite.is_perpetual_inventory_enabled(self.company) and d.item_code in stock_items)
 					or (d.is_fixed_asset and not d.purchase_invoice)
 				):
 					continue
@@ -1137,7 +1137,7 @@ def get_item_wise_returned_qty(pr_doc):
 
 @frappe.whitelist()
 def make_purchase_invoice(source_name, target_doc=None, args=None):
-	from erpnext.accounts.party import get_payment_terms_template
+	from erplite.accounts.party import get_payment_terms_template
 
 	doc = frappe.get_doc("Purchase Receipt", source_name)
 	returned_qty_map = get_returned_qty_map(source_name)
@@ -1270,14 +1270,14 @@ def get_returned_qty_map(purchase_receipt):
 
 @frappe.whitelist()
 def make_purchase_return_against_rejected_warehouse(source_name):
-	from erpnext.controllers.sales_and_purchase_return import make_return_doc
+	from erplite.controllers.sales_and_purchase_return import make_return_doc
 
 	return make_return_doc("Purchase Receipt", source_name, return_against_rejected_qty=True)
 
 
 @frappe.whitelist()
 def make_purchase_return(source_name, target_doc=None):
-	from erpnext.controllers.sales_and_purchase_return import make_return_doc
+	from erplite.controllers.sales_and_purchase_return import make_return_doc
 
 	return make_return_doc("Purchase Receipt", source_name, target_doc)
 
@@ -1376,7 +1376,7 @@ def get_item_account_wise_additional_cost(purchase_document):
 	return item_account_wise_cost
 
 
-@erpnext.allow_regional
+@erplite.allow_regional
 def update_regional_gl_entries(gl_list, doc):
 	return
 

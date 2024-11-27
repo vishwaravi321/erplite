@@ -9,18 +9,18 @@ from frappe.query_builder import Criterion
 from frappe.query_builder.custom import ConstantColumn
 from frappe.utils import flt, fmt_money, get_link_to_form, getdate, nowdate, today
 
-import erpnext
-from erpnext.accounts.doctype.accounting_dimension.accounting_dimension import get_dimensions
-from erpnext.accounts.doctype.process_payment_reconciliation.process_payment_reconciliation import (
+import erplite
+from erplite.accounts.doctype.accounting_dimension.accounting_dimension import get_dimensions
+from erplite.accounts.doctype.process_payment_reconciliation.process_payment_reconciliation import (
 	is_any_doc_running,
 )
-from erpnext.accounts.utils import (
+from erplite.accounts.utils import (
 	QueryPaymentLedger,
 	create_gain_loss_journal,
 	get_outstanding_invoices,
 	reconcile_against_document,
 )
-from erpnext.controllers.accounts_controller import get_advance_payment_entries_for_regional
+from erplite.controllers.accounts_controller import get_advance_payment_entries_for_regional
 
 
 class PaymentReconciliation(Document):
@@ -32,13 +32,13 @@ class PaymentReconciliation(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
-		from erpnext.accounts.doctype.payment_reconciliation_allocation.payment_reconciliation_allocation import (
+		from erplite.accounts.doctype.payment_reconciliation_allocation.payment_reconciliation_allocation import (
 			PaymentReconciliationAllocation,
 		)
-		from erpnext.accounts.doctype.payment_reconciliation_invoice.payment_reconciliation_invoice import (
+		from erplite.accounts.doctype.payment_reconciliation_invoice.payment_reconciliation_invoice import (
 			PaymentReconciliationInvoice,
 		)
-		from erpnext.accounts.doctype.payment_reconciliation_payment.payment_reconciliation_payment import (
+		from erplite.accounts.doctype.payment_reconciliation_payment.payment_reconciliation_payment import (
 			PaymentReconciliationPayment,
 		)
 
@@ -211,7 +211,7 @@ class PaymentReconciliation(Document):
 		if self.get("cost_center"):
 			conditions.append(jea.cost_center == self.cost_center)
 
-		account_type = erpnext.get_party_account_type(self.party_type)
+		account_type = erplite.get_party_account_type(self.party_type)
 
 		if account_type == "Receivable":
 			dr_or_cr = jea.credit_in_account_currency - jea.debit_in_account_currency
@@ -293,7 +293,7 @@ class PaymentReconciliation(Document):
 
 		ple = qb.DocType("Payment Ledger Entry")
 
-		if erpnext.get_party_account_type(self.party_type) == "Receivable":
+		if erplite.get_party_account_type(self.party_type) == "Receivable":
 			self.common_filter_conditions.append(ple.account_type == "Receivable")
 		else:
 			self.common_filter_conditions.append(ple.account_type == "Payable")
@@ -500,7 +500,7 @@ class PaymentReconciliation(Document):
 		adjust_allocations_for_taxes(self)
 		dr_or_cr = (
 			"credit_in_account_currency"
-			if erpnext.get_party_account_type(self.party_type) == "Receivable"
+			if erplite.get_party_account_type(self.party_type) == "Receivable"
 			else "debit_in_account_currency"
 		)
 
@@ -752,7 +752,7 @@ def reconcile_dr_cr_note(dr_cr_notes, company, active_dimensions=None):
 			else "credit_in_account_currency"
 		)
 
-		company_currency = erpnext.get_company_currency(company)
+		company_currency = erplite.get_company_currency(company)
 
 		jv = frappe.get_doc(
 			{
@@ -769,7 +769,7 @@ def reconcile_dr_cr_note(dr_cr_notes, company, active_dimensions=None):
 						inv.dr_or_cr: abs(inv.allocated_amount),
 						"reference_type": inv.against_voucher_type,
 						"reference_name": inv.against_voucher,
-						"cost_center": inv.cost_center or erpnext.get_default_cost_center(company),
+						"cost_center": inv.cost_center or erplite.get_default_cost_center(company),
 						"exchange_rate": inv.exchange_rate,
 						"user_remark": f"{fmt_money(flt(inv.allocated_amount), currency=company_currency)} against {inv.against_voucher}",
 					},
@@ -784,7 +784,7 @@ def reconcile_dr_cr_note(dr_cr_notes, company, active_dimensions=None):
 						),
 						"reference_type": inv.voucher_type,
 						"reference_name": inv.voucher_no,
-						"cost_center": inv.cost_center or erpnext.get_default_cost_center(company),
+						"cost_center": inv.cost_center or erplite.get_default_cost_center(company),
 						"exchange_rate": inv.exchange_rate,
 						"user_remark": f"{fmt_money(flt(inv.allocated_amount), currency=company_currency)} from {inv.voucher_no}",
 					},
@@ -838,7 +838,7 @@ def reconcile_dr_cr_note(dr_cr_notes, company, active_dimensions=None):
 			)
 
 
-@erpnext.allow_regional
+@erplite.allow_regional
 def adjust_allocations_for_taxes(doc):
 	pass
 

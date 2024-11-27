@@ -23,11 +23,11 @@ from frappe.utils import (
 	nowdate,
 )
 
-import erpnext
-from erpnext import get_company_currency
-from erpnext.accounts.utils import get_fiscal_year
-from erpnext.exceptions import InvalidAccountCurrency, PartyDisabled, PartyFrozen
-from erpnext.utilities.regional import temporary_flag
+import erplite
+from erplite import get_company_currency
+from erplite.accounts.utils import get_fiscal_year
+from erplite.exceptions import InvalidAccountCurrency, PartyDisabled, PartyFrozen
+from erplite.utilities.regional import temporary_flag
 
 PURCHASE_TRANSACTION_TYPES = {
 	"Supplier Quotation",
@@ -268,7 +268,7 @@ def set_address_details(
 	return party_address, shipping_address
 
 
-@erpnext.allow_regional
+@erplite.allow_regional
 def get_regional_address_details(party_details, doctype, company):
 	pass
 
@@ -524,7 +524,7 @@ def validate_party_gle_currency(party_type, party, company, party_account_curren
 
 
 def validate_party_accounts(doc):
-	from erpnext.controllers.accounts_controller import validate_account_head
+	from erplite.controllers.accounts_controller import validate_account_head
 
 	companies = []
 
@@ -668,7 +668,7 @@ def set_taxes(
 	shipping_address=None,
 	use_for_shopping_cart=None,
 ):
-	from erpnext.accounts.doctype.tax_rule.tax_rule import get_party_details, get_tax_template
+	from erplite.accounts.doctype.tax_rule.tax_rule import get_party_details, get_tax_template
 
 	args = {party_type.lower(): party, "company": company}
 
