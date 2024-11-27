@@ -3,3 +3,5 @@ Buying
 Stock
 Selling
 Accounts
+Setup
+Utilities

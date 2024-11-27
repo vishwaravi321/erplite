@@ -373,19 +373,19 @@ doc_events = {
 		"on_cancel": ["erplite.accounts.doctype.dunning.dunning.resolve_dunning"],
 		"on_trash": "erplite.regional.check_deletion_permission",
 	},
-	"Address": {
-		"validate": [
-			"erplite.regional.italy.utils.set_state_code",
-		],
-	},
-	"Contact": {
-		# "on_trash": "erplite.support.doctype.issue.issue.update_issue",
-		"after_insert": "erplite.telephony.doctype.call_log.call_log.link_existing_conversations",
-		"validate": ["erplite.crm.utils.update_lead_phone_numbers"],
-	},
-	"Email Unsubscribe": {
-		"after_insert": "erplite.crm.doctype.email_campaign.email_campaign.unsubscribe_recipient"
-	},
+	# "Address": {
+	# 	"validate": [
+	# 		"erplite.regional.italy.utils.set_state_code",
+	# 	],
+	# },
+	# "Contact": {
+	# 	# "on_trash": "erplite.support.doctype.issue.issue.update_issue",
+	# 	# "after_insert": "erplite.telephony.doctype.call_log.call_log.link_existing_conversations",
+	# 	"validate": ["erplite.crm.utils.update_lead_phone_numbers"],
+	# },
+	# "Email Unsubscribe": {
+	# 	"after_insert": "erplite.crm.doctype.email_campaign.email_campaign.unsubscribe_recipient"
+	# },
 	"Integration Request": {
 		"validate": "erplite.accounts.doctype.payment_request.payment_request.validate_payment"
 	},
@@ -406,7 +406,7 @@ auto_cancel_exempted_doctypes = [
 scheduler_events = {
 	"cron": {
 		"0/15 * * * *": [
-			"erplite.manufacturing.doctype.bom_update_log.bom_update_log.resume_bom_cost_update_jobs",
+			# "erplite.manufacturing.doctype.bom_update_log.bom_update_log.resume_bom_cost_update_jobs",
 			"erplite.accounts.doctype.process_payment_reconciliation.process_payment_reconciliation.trigger_reconciliation_for_queued_docs",
 		],
 		"0/30 * * * *": [
@@ -421,40 +421,40 @@ scheduler_events = {
 			"erplite.stock.reorder_item.reorder_item",
 		],
 	},
-	"hourly": [
-		"erplite.erplite_integrations.doctype.plaid_settings.plaid_settings.automatic_synchronization",
-		"erplite.projects.doctype.project.project.project_status_update_reminder",
-		"erplite.projects.doctype.project.project.hourly_reminder",
-		"erplite.projects.doctype.project.project.collect_project_status",
-	],
+	# "hourly": [
+	# 	# "erplite.erplite_integrations.doctype.plaid_settings.plaid_settings.automatic_synchronization",
+	# 	"erplite.projects.doctype.project.project.project_status_update_reminder",
+	# 	"erplite.projects.doctype.project.project.hourly_reminder",
+	# 	"erplite.projects.doctype.project.project.collect_project_status",
+	# ],
 	"hourly_long": [
 		"erplite.stock.doctype.repost_item_valuation.repost_item_valuation.repost_entries",
 		"erplite.utilities.bulk_transaction.retry",
 	],
 	"daily": [
 		# "erplite.support.doctype.issue.issue.auto_close_tickets",
-		"erplite.crm.doctype.opportunity.opportunity.auto_close_opportunity",
-		"erplite.controllers.accounts_controller.update_invoice_status",
+		# "erplite.crm.doctype.opportunity.opportunity.auto_close_opportunity",
+		# "erplite.controllers.accounts_controller.update_invoice_status",
 		"erplite.accounts.doctype.fiscal_year.fiscal_year.auto_create_fiscal_year",
-		"erplite.projects.doctype.task.task.set_tasks_as_overdue",
+		# "erplite.projects.doctype.task.task.set_tasks_as_overdue",
 		"erplite.stock.doctype.serial_no.serial_no.update_maintenance_status",
 		"erplite.buying.doctype.supplier_scorecard.supplier_scorecard.refresh_scorecards",
 		"erplite.setup.doctype.company.company.cache_companies_monthly_sales_history",
-		"erplite.assets.doctype.asset.asset.update_maintenance_status",
-		"erplite.assets.doctype.asset.asset.make_post_gl_entry",
-		"erplite.crm.doctype.contract.contract.update_status_for_contracts",
-		"erplite.projects.doctype.project.project.update_project_sales_billing",
-		"erplite.projects.doctype.project.project.send_project_status_email_to_users",
-		"erplite.quality_management.doctype.quality_review.quality_review.review",
+		# "erplite.assets.doctype.asset.asset.update_maintenance_status",
+		# "erplite.assets.doctype.asset.asset.make_post_gl_entry",
+		# "erplite.crm.doctype.contract.contract.update_status_for_contracts",
+		# "erplite.projects.doctype.project.project.update_project_sales_billing",
+		# "erplite.projects.doctype.project.project.send_project_status_email_to_users",
+		# "erplite.quality_management.doctype.quality_review.quality_review.review",
 		# "erplite.support.doctype.service_level_agreement.service_level_agreement.check_agreement_status",
-		"erplite.crm.doctype.email_campaign.email_campaign.send_email_to_leads_or_contacts",
-		"erplite.crm.doctype.email_campaign.email_campaign.set_email_campaign_status",
+		# "erplite.crm.doctype.email_campaign.email_campaign.send_email_to_leads_or_contacts",
+		# "erplite.crm.doctype.email_campaign.email_campaign.set_email_campaign_status",
 		"erplite.selling.doctype.quotation.quotation.set_expired_status",
 		"erplite.buying.doctype.supplier_quotation.supplier_quotation.set_expired_status",
 		"erplite.accounts.doctype.process_statement_of_accounts.process_statement_of_accounts.send_auto_email",
 		"erplite.accounts.utils.auto_create_exchange_rate_revaluation_daily",
 		"erplite.accounts.utils.run_ledger_health_checks",
-		"erplite.assets.doctype.asset_maintenance_log.asset_maintenance_log.update_asset_maintenance_log_status",
+		# "erplite.assets.doctype.asset_maintenance_log.asset_maintenance_log.update_asset_maintenance_log_status",
 	],
 	"weekly": [
 		"erplite.accounts.utils.auto_create_exchange_rate_revaluation_weekly",
@@ -462,9 +462,9 @@ scheduler_events = {
 	"daily_long": [
 		"erplite.accounts.doctype.process_subscription.process_subscription.create_subscription_process",
 		"erplite.setup.doctype.email_digest.email_digest.send",
-		"erplite.manufacturing.doctype.bom_update_tool.bom_update_tool.auto_update_latest_price_in_all_boms",
-		"erplite.crm.utils.open_leads_opportunities_based_on_todays_event",
-		"erplite.assets.doctype.asset.depreciation.post_depreciation_entries",
+		# "erplite.manufacturing.doctype.bom_update_tool.bom_update_tool.auto_update_latest_price_in_all_boms",
+		# "erplite.crm.utils.open_leads_opportunities_based_on_todays_event",
+		# "erplite.assets.doctype.asset.depreciation.post_depreciation_entries",
 	],
 	"monthly_long": [
 		"erplite.accounts.deferred_revenue.process_deferred_accounting",
@@ -642,7 +642,7 @@ global_search_doctypes = {
 	],
 }
 
-additional_timeline_content = {"*": ["erplite.telephony.doctype.call_log.call_log.get_linked_call_logs"]}
+# additional_timeline_content = {"*": ["erplite.telephony.doctype.call_log.call_log.get_linked_call_logs"]}
 
 
 # extend_bootinfo = [
