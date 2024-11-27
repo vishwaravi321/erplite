@@ -8,7 +8,7 @@ from frappe.tests.utils import FrappeTestCase
 
 class TestPurchaseOrder(FrappeTestCase):
 	def test_make_purchase_order(self):
-		from erpnext.buying.doctype.supplier_quotation.supplier_quotation import make_purchase_order
+		from erplite.buying.doctype.supplier_quotation.supplier_quotation import make_purchase_order
 
 		sq = frappe.copy_doc(test_records[0]).insert()
 
