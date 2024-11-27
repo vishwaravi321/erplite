@@ -6,3 +6,4 @@ Accounts
 Setup
 Utilities
 Controllers
+Assets
