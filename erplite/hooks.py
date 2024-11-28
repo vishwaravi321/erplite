@@ -46,7 +46,6 @@ override_whitelisted_methods = {"frappe.www.contact.send_message": "erplite.temp
 welcome_email = "erplite.setup.utils.welcome_email"
 
 # setup wizard
-setup_wizard_requires = "assets/erplite/js/setup_wizard.js"
 setup_wizard_stages = "erplite.setup.setup_wizard.setup_wizard.get_setup_stages"
 setup_wizard_complete = "erplite.setup.setup_wizard.setup_wizard.setup_demo"
 setup_wizard_test = "erplite.setup.setup_wizard.test_setup_wizard.run_setup_wizard_test"
@@ -64,7 +63,6 @@ get_help_messages = "erplite.utilities.activation.get_help_messages"
 # filters_config = "erplite.startup.filters.get_filters_config"
 additional_print_settings = "erplite.controllers.print_settings.get_print_settings"
 
-on_session_creation = "erplite.portal.utils.create_customer_or_supplier"
 
 treeviews = [
 	"Account",
@@ -338,40 +336,39 @@ doc_events = {
 		"validate": "erplite.setup.doctype.employee.employee.validate_employee_role",
 		"on_update": [
 			"erplite.setup.doctype.employee.employee.update_user_permissions",
-			"erplite.portal.utils.set_default_role",
 		],
 	},
-	"Communication": {
-		# "on_update": [
-		# 	"erplite.support.doctype.service_level_agreement.service_level_agreement.on_communication_update",
-		# 	"erplite.support.doctype.issue.issue.set_first_response_time",
-		# ],
-		"after_insert": "erplite.crm.utils.link_communications_with_prospect",
-	},
-	"Event": {
-		"after_insert": "erplite.crm.utils.link_events_with_prospect",
-	},
-	"Sales Invoice": {
-		"on_submit": [
-			"erplite.regional.create_transaction_log",
-			"erplite.regional.italy.utils.sales_invoice_on_submit",
-		],
-		"on_cancel": ["erplite.regional.italy.utils.sales_invoice_on_cancel"],
-		"on_trash": "erplite.regional.check_deletion_permission",
-	},
-	"Purchase Invoice": {
-		"validate": [
-			"erplite.regional.united_arab_emirates.utils.update_grand_total_for_rcm",
-			"erplite.regional.united_arab_emirates.utils.validate_returns",
-		]
-	},
+	# "Communication": {
+	# 	# "on_update": [
+	# 	# 	"erplite.support.doctype.service_level_agreement.service_level_agreement.on_communication_update",
+	# 	# 	"erplite.support.doctype.issue.issue.set_first_response_time",
+	# 	# ],
+	# 	"after_insert": "erplite.crm.utils.link_communications_with_prospect",
+	# },
+	# "Event": {
+	# 	"after_insert": "erplite.crm.utils.link_events_with_prospect",
+	# },
+	# "Sales Invoice": {
+	# 	"on_submit": [
+	# 		"erplite.regional.create_transaction_log",
+	# 		"erplite.regional.italy.utils.sales_invoice_on_submit",
+	# 	],
+	# 	"on_cancel": ["erplite.regional.italy.utils.sales_invoice_on_cancel"],
+	# 	"on_trash": "erplite.regional.check_deletion_permission",
+	# },
+	# "Purchase Invoice": {
+	# 	"validate": [
+	# 		"erplite.regional.united_arab_emirates.utils.update_grand_total_for_rcm",
+	# 		"erplite.regional.united_arab_emirates.utils.validate_returns",
+	# 	]
+	# },
 	"Payment Entry": {
 		"on_submit": [
-			"erplite.regional.create_transaction_log",
+			# "erplite.regional.create_transaction_log",
 			"erplite.accounts.doctype.dunning.dunning.resolve_dunning",
 		],
 		"on_cancel": ["erplite.accounts.doctype.dunning.dunning.resolve_dunning"],
-		"on_trash": "erplite.regional.check_deletion_permission",
+		# "on_trash": "erplite.regional.check_deletion_permission",
 	},
 	# "Address": {
 	# 	"validate": [
