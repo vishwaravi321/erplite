@@ -109,7 +109,7 @@ frappe.query_reports["Stock Ledger Variance"] = {
 
 			frappe.confirm(__(message), () => {
 				frappe.call({
-					method: "erpnext.stock.report.stock_ledger_invariant_check.stock_ledger_invariant_check.create_reposting_entries",
+					method: "erplite.stock.report.stock_ledger_invariant_check.stock_ledger_invariant_check.create_reposting_entries",
 					args: {
 						rows: selected_rows,
 					},

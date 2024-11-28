@@ -15,7 +15,6 @@ from frappe.utils import cint, cstr, flt, get_link_to_form, getdate, new_line_se
 
 from erplite.buying.utils import check_on_hold_or_closed_status, validate_for_items
 from erplite.controllers.buying_controller import BuyingController
-from erplite.manufacturing.doctype.work_order.work_order import get_item_details
 from erplite.stock.doctype.item.item import get_item_defaults
 from erplite.stock.stock_balance import get_indented_qty, update_bin_qty
 
@@ -753,7 +752,6 @@ def raise_work_orders(material_request):
 						"expected_delivery_date": d.schedule_date,
 						"sales_order": d.sales_order,
 						"sales_order_item": d.get("sales_order_item"),
-						"bom_no": get_item_details(d.item_code).bom_no,
 						"material_request": mr.name,
 						"material_request_item": d.name,
 						"planned_start_date": mr.transaction_date,

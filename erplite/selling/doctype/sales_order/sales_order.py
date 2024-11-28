@@ -22,12 +22,12 @@ from erplite.accounts.doctype.sales_invoice.sales_invoice import (
 )
 from erplite.accounts.party import get_party_account
 from erplite.controllers.selling_controller import SellingController
-from erplite.manufacturing.doctype.blanket_order.blanket_order import (
-	validate_against_blanket_order,
-)
-from erplite.manufacturing.doctype.production_plan.production_plan import (
-	get_items_for_material_requests,
-)
+# from erplite.manufacturing.doctype.blanket_order.blanket_order import (
+# 	validate_against_blanket_order,
+# )
+# from erplite.manufacturing.doctype.production_plan.production_plan import (
+# 	get_items_for_material_requests,
+# )
 from erplite.selling.doctype.customer.customer import check_credit_limit
 from erplite.setup.doctype.item_group.item_group import get_item_group_defaults
 from erplite.stock.doctype.item.item import get_item_defaults
@@ -206,7 +206,7 @@ class SalesOrder(SellingController):
 		self.validate_drop_ship()
 		self.validate_reserved_stock()
 		self.validate_serial_no_based_delivery()
-		validate_against_blanket_order(self)
+		# validate_against_blanket_order(self)
 		validate_inter_company_party(
 			self.doctype, self.customer, self.company, self.inter_company_order_reference
 		)
@@ -1577,10 +1577,10 @@ def make_raw_material_request(items, company, sales_order, project=None):
 
 	items.update({"company": company, "sales_order": sales_order})
 
-	raw_materials = get_items_for_material_requests(items)
-	if not raw_materials:
-		frappe.msgprint(_("Material Request not created, as quantity for Raw Materials already available."))
-		return
+	# raw_materials = get_items_for_material_requests(items)
+	# if not raw_materials:
+	# 	frappe.msgprint(_("Material Request not created, as quantity for Raw Materials already available."))
+	# 	return
 
 	material_request = frappe.new_doc("Material Request")
 	material_request.update(

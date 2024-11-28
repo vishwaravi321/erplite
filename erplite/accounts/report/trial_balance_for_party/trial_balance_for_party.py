@@ -6,7 +6,7 @@ import frappe
 from frappe import _
 from frappe.utils import cint, flt
 
-from erpnext.accounts.report.trial_balance.trial_balance import validate_filters
+from erplite.accounts.report.trial_balance.trial_balance import validate_filters
 
 
 def execute(filters=None):

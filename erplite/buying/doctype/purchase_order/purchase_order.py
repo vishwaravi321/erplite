@@ -21,16 +21,14 @@ from erplite.accounts.doctype.tax_withholding_category.tax_withholding_category 
 from erplite.accounts.party import get_party_account, get_party_account_currency
 from erplite.buying.utils import check_on_hold_or_closed_status, validate_for_items
 from erplite.controllers.buying_controller import BuyingController
-from erplite.manufacturing.doctype.blanket_order.blanket_order import (
-	validate_against_blanket_order,
-)
+
 from erplite.setup.doctype.item_group.item_group import get_item_group_defaults
 from erplite.stock.doctype.item.item import get_item_defaults, get_last_purchase_details
 from erplite.stock.stock_balance import get_ordered_qty, update_bin_qty
 from erplite.stock.utils import get_bin
-from erplite.subcontracting.doctype.subcontracting_bom.subcontracting_bom import (
-	get_subcontracting_boms_for_finished_goods,
-)
+# from erplite.subcontracting.doctype.subcontracting_bom.subcontracting_bom import (
+# 	get_subcontracting_boms_for_finished_goods,
+# )
 
 form_grid_templates = {"items": "templates/form_grid/item_grid.html"}
 
@@ -208,7 +206,6 @@ class PurchaseOrder(BuyingController):
 		self.validate_with_previous_doc()
 		self.validate_for_subcontracting()
 		self.validate_minimum_order_qty()
-		validate_against_blanket_order(self)
 
 		if self.is_old_subcontracting_flow:
 			self.validate_bom_for_subcontracting_items()
@@ -596,16 +593,16 @@ class PurchaseOrder(BuyingController):
 			d.fg_item for d in self.items if (not d.item_code and d.fg_item)
 		}
 
-		if subcontracting_boms := get_subcontracting_boms_for_finished_goods(
-			finished_goods_without_service_item
-		):
-			for item in self.items:
-				if not item.item_code and item.fg_item in subcontracting_boms:
-					subcontracting_bom = subcontracting_boms[item.fg_item]
+		# if subcontracting_boms := get_subcontracting_boms_for_finished_goods(
+		# 	finished_goods_without_service_item
+		# ):
+		# 	for item in self.items:
+		# 		if not item.item_code and item.fg_item in subcontracting_boms:
+		# 			subcontracting_bom = subcontracting_boms[item.fg_item]
 
-					item.item_code = subcontracting_bom.service_item
-					item.qty = flt(item.fg_item_qty) * flt(subcontracting_bom.conversion_factor)
-					item.uom = subcontracting_bom.service_item_uom
+		# 			item.item_code = subcontracting_bom.service_item
+		# 			item.qty = flt(item.fg_item_qty) * flt(subcontracting_bom.conversion_factor)
+		# 			item.uom = subcontracting_bom.service_item_uom
 
 	def can_update_items(self) -> bool:
 		result = True

@@ -107,7 +107,7 @@ frappe.query_reports["Accounts Payable Summary"] = {
 	},
 };
 
-erpnext.utils.add_dimensions("Accounts Payable Summary", 9);
+erplite.utils.add_dimensions("Accounts Payable Summary", 9);
 
 function get_party_type_options() {
 	let options = [];

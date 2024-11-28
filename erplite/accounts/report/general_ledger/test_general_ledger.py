@@ -6,9 +6,9 @@ from frappe import qb
 from frappe.tests.utils import FrappeTestCase
 from frappe.utils import flt, today
 
-from erpnext.accounts.doctype.sales_invoice.test_sales_invoice import create_sales_invoice
-from erpnext.accounts.report.general_ledger.general_ledger import execute
-from erpnext.controllers.sales_and_purchase_return import make_return_doc
+from erplite.accounts.doctype.sales_invoice.test_sales_invoice import create_sales_invoice
+from erplite.accounts.report.general_ledger.general_ledger import execute
+from erplite.controllers.sales_and_purchase_return import make_return_doc
 
 
 class TestGeneralLedger(FrappeTestCase):

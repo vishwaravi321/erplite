@@ -36,7 +36,6 @@ from erplite.assets.doctype.asset.depreciation import (
 from erplite.assets.doctype.asset_activity.asset_activity import add_asset_activity
 from erplite.controllers.accounts_controller import validate_account_head
 from erplite.controllers.selling_controller import SellingController
-from erplite.projects.doctype.timesheet.timesheet import get_projectwise_timesheet_data
 from erplite.setup.doctype.company.company import update_company_current_month_sales
 from erplite.stock.doctype.delivery_note.delivery_note import update_billed_amount_based_on_so
 from erplite.stock.doctype.serial_no.serial_no import get_delivery_note_serial_no, get_serial_nos
@@ -326,7 +325,6 @@ class SalesInvoice(SellingController):
 			self.timesheets = []
 		self.update_packing_list()
 		self.set_billing_hours_and_amount()
-		self.update_timesheet_billing_for_project()
 		self.set_status()
 		if self.is_pos and not self.is_return:
 			self.verify_payment_amount_is_positive()
@@ -1082,38 +1080,6 @@ class SalesInvoice(SellingController):
 
 				if not timesheet.billing_amount and ts_doc.total_billable_amount:
 					timesheet.billing_amount = ts_doc.total_billable_amount
-
-	def update_timesheet_billing_for_project(self):
-		if not self.timesheets and self.project:
-			self.add_timesheet_data()
-		else:
-			self.calculate_billing_amount_for_timesheet()
-
-	@frappe.whitelist()
-	def add_timesheet_data(self):
-		self.set("timesheets", [])
-		if self.project:
-			for data in get_projectwise_timesheet_data(self.project):
-				self.append(
-					"timesheets",
-					{
-						"time_sheet": data.time_sheet,
-						"billing_hours": data.billing_hours,
-						"billing_amount": data.billing_amount,
-						"timesheet_detail": data.name,
-						"activity_type": data.activity_type,
-						"description": data.description,
-					},
-				)
-
-			self.calculate_billing_amount_for_timesheet()
-
-	def calculate_billing_amount_for_timesheet(self):
-		def timesheet_sum(field):
-			return sum((ts.get(field) or 0.0) for ts in self.timesheets)
-
-		self.total_billing_amount = timesheet_sum("billing_amount")
-		self.total_billing_hours = timesheet_sum("billing_hours")
 
 	def get_warehouse(self):
 		user_pos_profile = frappe.db.sql(

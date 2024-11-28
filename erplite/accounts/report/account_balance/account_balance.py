@@ -5,7 +5,7 @@
 import frappe
 from frappe import _
 
-from erpnext.accounts.utils import get_balance_on
+from erplite.accounts.utils import get_balance_on
 
 
 def execute(filters=None):
