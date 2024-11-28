@@ -97,33 +97,33 @@ class SubcontractingController(StockController):
 			if not is_stock_item:
 				frappe.throw(_("Row {0}: Item {1} must be a stock item.").format(item.idx, item.item_name))
 
-			if not item.get("is_scrap_item"):
-				if not is_sub_contracted_item:
-					frappe.throw(
-						_("Row {0}: Item {1} must be a subcontracted item.").format(item.idx, item.item_name)
-					)
+			# if not item.get("is_scrap_item"):
+			# 	if not is_sub_contracted_item:
+			# 		frappe.throw(
+			# 			_("Row {0}: Item {1} must be a subcontracted item.").format(item.idx, item.item_name)
+			# 		)
 
-				if item.bom:
-					is_active, bom_item = frappe.get_value("BOM", item.bom, ["is_active", "item"])
+			# 	if item.bom:
+			# 		is_active, bom_item = frappe.get_value("BOM", item.bom, ["is_active", "item"])
 
-					if not is_active:
-						frappe.throw(
-							_("Row {0}: Please select an active BOM for Item {1}.").format(
-								item.idx, item.item_name
-							)
-						)
-					if bom_item != item.item_code:
-						frappe.throw(
-							_("Row {0}: Please select an valid BOM for Item {1}.").format(
-								item.idx, item.item_name
-							)
-						)
-				else:
-					frappe.throw(
-						_("Row {0}: Please select a BOM for Item {1}.").format(item.idx, item.item_name)
-					)
-			else:
-				item.bom = None
+			# 		if not is_active:
+			# 			frappe.throw(
+			# 				_("Row {0}: Please select an active BOM for Item {1}.").format(
+			# 					item.idx, item.item_name
+			# 				)
+			# 			)
+			# 		if bom_item != item.item_code:
+			# 			frappe.throw(
+			# 				_("Row {0}: Please select an valid BOM for Item {1}.").format(
+			# 					item.idx, item.item_name
+			# 				)
+			# 			)
+			# 	else:
+			# 		frappe.throw(
+			# 			_("Row {0}: Please select a BOM for Item {1}.").format(item.idx, item.item_name)
+			# 		)
+			# else:
+			# 	item.bom = None
 
 	def __get_data_before_save(self):
 		item_dict = {}
@@ -241,8 +241,8 @@ class SubcontractingController(StockController):
 			)
 		)
 
-		if self.backflush_based_on == "BOM":
-			query = query.select(se_detail.original_item)
+		# if self.backflush_based_on == "BOM":
+		# 	query = query.select(se_detail.original_item)
 
 		return query.run(as_dict=True)
 
@@ -445,35 +445,35 @@ class SubcontractingController(StockController):
 		if item.serial_and_batch_bundle:
 			frappe.delete_doc("Serial and Batch Bundle", item.serial_and_batch_bundle, force=True)
 
-	def __get_materials_from_bom(self, item_code, bom_no, exploded_item=0):
-		doctype = "BOM Item" if not exploded_item else "BOM Explosion Item"
-		fields = [f"`tab{doctype}`.`stock_qty` / `tabBOM`.`quantity` as qty_consumed_per_unit"]
+	# def __get_materials_from_bom(self, item_code, bom_no, exploded_item=0):
+	# 	doctype = "BOM Item" if not exploded_item else "BOM Explosion Item"
+	# 	fields = [f"`tab{doctype}`.`stock_qty` / `tabBOM`.`quantity` as qty_consumed_per_unit"]
 
-		alias_dict = {
-			"item_code": "rm_item_code",
-			"name": "bom_detail_no",
-			"source_warehouse": "reserve_warehouse",
-		}
-		for field in [
-			"item_code",
-			"name",
-			"rate",
-			"stock_uom",
-			"source_warehouse",
-			"description",
-			"item_name",
-			"stock_uom",
-		]:
-			fields.append(f"`tab{doctype}`.`{field}` As {alias_dict.get(field, field)}")
+	# 	alias_dict = {
+	# 		"item_code": "rm_item_code",
+	# 		"name": "bom_detail_no",
+	# 		"source_warehouse": "reserve_warehouse",
+	# 	}
+	# 	for field in [
+	# 		"item_code",
+	# 		"name",
+	# 		"rate",
+	# 		"stock_uom",
+	# 		"source_warehouse",
+	# 		"description",
+	# 		"item_name",
+	# 		"stock_uom",
+	# 	]:
+	# 		fields.append(f"`tab{doctype}`.`{field}` As {alias_dict.get(field, field)}")
 
-		filters = [
-			[doctype, "parent", "=", bom_no],
-			[doctype, "docstatus", "=", 1],
-			["BOM", "item", "=", item_code],
-			[doctype, "sourced_by_supplier", "=", 0],
-		]
+	# 	filters = [
+	# 		[doctype, "parent", "=", bom_no],
+	# 		[doctype, "docstatus", "=", 1],
+	# 		["BOM", "item", "=", item_code],
+	# 		[doctype, "sourced_by_supplier", "=", 0],
+	# 	]
 
-		return frappe.get_all("BOM", fields=fields, filters=filters, order_by=f"`tab{doctype}`.`idx`") or []
+	# 	return frappe.get_all("BOM", fields=fields, filters=filters, order_by=f"`tab{doctype}`.`idx`") or []
 
 	def __update_reserve_warehouse(self, row, item):
 		if self.doctype == self.subcontract_data.order_doctype:
@@ -635,7 +635,7 @@ class SubcontractingController(StockController):
 			for batch_no, batch_qty in self.available_materials[key]["batch_no"].items():
 				if batch_qty >= qty or (
 					rm_obj.consumed_qty == 0
-					and self.backflush_based_on == "BOM"
+					# and self.backflush_based_on == "BOM"
 					and len(self.available_materials[key]["batch_no"]) == 1
 				):
 					if rm_obj.consumed_qty == 0:
@@ -707,7 +707,7 @@ class SubcontractingController(StockController):
 			return qty
 
 	def __set_supplied_items(self):
-		self.bom_items = {}
+		# self.bom_items = {}
 
 		has_supplied_items = True if self.get(self.raw_material_table) else False
 		for row in self.items:
@@ -717,17 +717,17 @@ class SubcontractingController(StockController):
 			):
 				continue
 
-			if self.doctype == self.subcontract_data.order_doctype or self.backflush_based_on == "BOM":
-				for bom_item in self.__get_materials_from_bom(
-					row.item_code, row.bom, row.get("include_exploded_items")
-				):
-					qty = flt(bom_item.qty_consumed_per_unit) * flt(row.qty) * row.conversion_factor
-					bom_item.main_item_code = row.item_code
-					self.__update_reserve_warehouse(bom_item, row)
-					self.__set_alternative_item(bom_item)
-					self.__add_supplied_item(row, bom_item, qty)
+			# if self.doctype == self.subcontract_data.order_doctype or self.backflush_based_on == "BOM":
+			# 	for bom_item in self.__get_materials_from_bom(
+			# 		row.item_code, row.bom, row.get("include_exploded_items")
+			# 	):
+			# 		qty = flt(bom_item.qty_consumed_per_unit) * flt(row.qty) * row.conversion_factor
+			# 		bom_item.main_item_code = row.item_code
+			# 		self.__update_reserve_warehouse(bom_item, row)
+			# 		self.__set_alternative_item(bom_item)
+			# 		self.__add_supplied_item(row, bom_item, qty)
 
-			elif self.backflush_based_on != "BOM":
+			if self.backflush_based_on != "BOM": #elif
 				for key, transfer_item in self.available_materials.items():
 					if (key[1], key[2]) == (
 						row.item_code,

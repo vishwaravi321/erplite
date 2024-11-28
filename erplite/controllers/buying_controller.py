@@ -428,19 +428,19 @@ class BuyingController(SubcontractingController):
 			if self.doctype in ["Purchase Receipt", "Purchase Invoice"] and not self.supplier_warehouse:
 				frappe.throw(_("Supplier Warehouse mandatory for sub-contracted {0}").format(self.doctype))
 
-			for item in self.get("items"):
-				if item in self.sub_contracted_items and not item.bom:
-					frappe.throw(_("Please select BOM in BOM field for Item {0}").format(item.item_code))
+			# for item in self.get("items"):
+			# 	if item in self.sub_contracted_items and not item.bom:
+			# 		frappe.throw(_("Please select BOM in BOM field for Item {0}").format(item.item_code))
 			if self.doctype != "Purchase Order":
 				return
 			for row in self.get("supplied_items"):
 				if not row.reserve_warehouse:
 					msg = f"Reserved Warehouse is mandatory for the Item {frappe.bold(row.rm_item_code)} in Raw Materials supplied"
 					frappe.throw(_(msg))
-		else:
-			for item in self.get("items"):
-				if item.get("bom"):
-					item.bom = None
+		# else:
+			# for item in self.get("items"):
+			# 	if item.get("bom"):
+			# 		item.bom = None
 
 	def set_qty_as_per_stock_uom(self):
 		allow_to_edit_stock_qty = frappe.db.get_single_value(
@@ -590,7 +590,7 @@ class BuyingController(SubcontractingController):
 							{
 								"incoming_rate": d.valuation_rate,
 								"recalculate_rate": 1
-								if (self.is_subcontracted and (d.bom or d.get("fg_item"))) or d.from_warehouse
+								if (self.is_subcontracted and (d.get("fg_item"))) or d.from_warehouse #d.bom
 								else 0,
 							}
 						)

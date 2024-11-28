@@ -681,12 +681,12 @@ class SalesOrder(SellingController):
 								"Item {0} has no Serial No. Only serilialized items can have delivery based on Serial No"
 							).format(item.item_code)
 						)
-					if not frappe.db.exists("BOM", {"item": item.item_code, "is_active": 1}):
-						frappe.throw(
-							_(
-								"No active BOM found for item {0}. Delivery by Serial No cannot be ensured"
-							).format(item.item_code)
-						)
+					# if not frappe.db.exists("BOM", {"item": item.item_code, "is_active": 1}):
+					# 	frappe.throw(
+					# 		_(
+					# 			"No active BOM found for item {0}. Delivery by Serial No cannot be ensured"
+					# 		).format(item.item_code)
+					# 	)
 				reserved_items.append(item.item_code)
 			else:
 				normal_items.append(item.item_code)
@@ -1522,38 +1522,38 @@ def is_product_bundle(item_code):
 	return frappe.db.exists("Product Bundle", {"name": item_code, "disabled": 0})
 
 
-@frappe.whitelist()
-def make_work_orders(items, sales_order, company, project=None):
-	"""Make Work Orders against the given Sales Order for the given `items`"""
-	items = json.loads(items).get("items")
-	out = []
+# @frappe.whitelist()
+# def make_work_orders(items, sales_order, company, project=None):
+# 	"""Make Work Orders against the given Sales Order for the given `items`"""
+# 	items = json.loads(items).get("items")
+# 	out = []
 
-	for i in items:
-		if not i.get("bom"):
-			frappe.throw(_("Please select BOM against item {0}").format(i.get("item_code")))
-		if not i.get("pending_qty"):
-			frappe.throw(_("Please select Qty against item {0}").format(i.get("item_code")))
+# 	for i in items:
+# 		if not i.get("bom"):
+# 			frappe.throw(_("Please select BOM against item {0}").format(i.get("item_code")))
+# 		if not i.get("pending_qty"):
+# 			frappe.throw(_("Please select Qty against item {0}").format(i.get("item_code")))
 
-		work_order = frappe.get_doc(
-			dict(
-				doctype="Work Order",
-				production_item=i["item_code"],
-				bom_no=i.get("bom"),
-				qty=i["pending_qty"],
-				company=company,
-				sales_order=sales_order,
-				sales_order_item=i["sales_order_item"],
-				project=project,
-				fg_warehouse=i["warehouse"],
-				description=i["description"],
-			)
-		).insert()
-		work_order.set_work_order_operations()
-		work_order.flags.ignore_mandatory = True
-		work_order.save()
-		out.append(work_order)
+# 		work_order = frappe.get_doc(
+# 			dict(
+# 				doctype="Work Order",
+# 				production_item=i["item_code"],
+# 				bom_no=i.get("bom"),
+# 				qty=i["pending_qty"],
+# 				company=company,
+# 				sales_order=sales_order,
+# 				sales_order_item=i["sales_order_item"],
+# 				project=project,
+# 				fg_warehouse=i["warehouse"],
+# 				description=i["description"],
+# 			)
+# 		).insert()
+# 		work_order.set_work_order_operations()
+# 		work_order.flags.ignore_mandatory = True
+# 		work_order.save()
+# 		out.append(work_order)
 
-	return [p.name for p in out]
+# 	return [p.name for p in out]
 
 
 @frappe.whitelist()
@@ -1737,7 +1737,7 @@ def get_work_order_items(sales_order, for_raw_material_request=0):
 
 		for table in [so.items, so.packed_items]:
 			for i in table:
-				bom = get_default_bom(i.item_code)
+				# bom = get_default_bom(i.item_code)
 				stock_qty = i.qty if i.doctype == "Packed Item" else i.stock_qty
 
 				if not for_raw_material_request:
@@ -1762,7 +1762,7 @@ def get_work_order_items(sales_order, for_raw_material_request=0):
 							name=i.name,
 							item_code=i.item_code,
 							description=i.description,
-							bom=bom or "",
+							# bom=bom or "",
 							warehouse=i.warehouse,
 							pending_qty=pending_qty,
 							required_qty=pending_qty if for_raw_material_request else 0,

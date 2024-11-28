@@ -15,7 +15,7 @@ def get_data():
 			"Supplier Quotation": ["items", "supplier_quotation"],
 			"Project": ["items", "project"],
 			"Sales Order": ["items", "sales_order"],
-			"BOM": ["items", "bom"],
+			# "BOM": ["items", "bom"],
 			"Production Plan": ["items", "production_plan"],
 			"Blanket Order": ["items", "blanket_order"],
 		},
@@ -28,7 +28,7 @@ def get_data():
 			},
 			{
 				"label": _("Manufacturing"),
-				"items": ["Material Request", "BOM", "Production Plan", "Blanket Order"],
+				"items": ["Material Request", "Production Plan", "Blanket Order"],
 			},
 			{
 				"label": _("Sub-contracting"),

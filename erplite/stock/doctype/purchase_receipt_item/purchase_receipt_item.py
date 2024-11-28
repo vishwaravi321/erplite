@@ -28,7 +28,7 @@ class PurchaseReceiptItem(Document):
 		base_rate_with_margin: DF.Currency
 		batch_no: DF.Link | None
 		billed_amt: DF.Currency
-		bom: DF.Link | None
+		# bom: DF.Link | None
 		brand: DF.Link | None
 		conversion_factor: DF.Float
 		cost_center: DF.Link | None

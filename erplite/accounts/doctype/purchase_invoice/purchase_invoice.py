@@ -2018,7 +2018,7 @@ def make_purchase_receipt(source_name, target_doc=None):
 				"field_map": {
 					"name": "purchase_invoice_item",
 					"parent": "purchase_invoice",
-					"bom": "bom",
+					# "bom": "bom",
 					"purchase_order": "purchase_order",
 					"po_detail": "purchase_order_item",
 					"material_request": "material_request",

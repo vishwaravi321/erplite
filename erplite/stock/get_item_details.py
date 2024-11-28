@@ -118,8 +118,8 @@ def get_item_details(args, doc=None, for_validate=False, overwrite_warehouse=Tru
 	if args.transaction_date and item.lead_time_days:
 		out.schedule_date = out.lead_time_date = add_days(args.transaction_date, item.lead_time_days)
 
-	if args.get("is_subcontracted"):
-		out.bom = args.get("bom") or get_default_bom(args.item_code)
+	# if args.get("is_subcontracted"):
+	# 	out.bom = args.get("bom") #or get_default_bom(args.item_code)
 
 	get_gross_profit(out)
 	if args.doctype == "Material Request":
@@ -364,7 +364,7 @@ def get_basic_details(args, item, overwrite_warehouse=True):
 			"last_purchase_rate": item.last_purchase_rate if args.get("doctype") in ["Purchase Order"] else 0,
 			"transaction_date": args.get("transaction_date"),
 			"against_blanket_order": args.get("against_blanket_order"),
-			"bom_no": item.get("default_bom"),
+			# "bom_no": item.get("default_bom"),
 			"weight_per_unit": args.get("weight_per_unit") or item.get("weight_per_unit"),
 			"weight_uom": args.get("weight_uom") or item.get("weight_uom"),
 			"grant_commission": item.get("grant_commission"),
@@ -1321,22 +1321,22 @@ def get_price_list_currency_and_exchange_rate(args):
 	)
 
 
-@frappe.whitelist()
-def get_default_bom(item_code=None):
-	def _get_bom(item):
-		bom = frappe.get_all("BOM", dict(item=item, is_active=True, is_default=True, docstatus=1), limit=1)
-		return bom[0].name if bom else None
+# @frappe.whitelist()
+# def get_default_bom(item_code=None):
+# 	def _get_bom(item):
+# 		bom = frappe.get_all("BOM", dict(item=item, is_active=True, is_default=True, docstatus=1), limit=1)
+# 		return bom[0].name if bom else None
 
-	if not item_code:
-		return
+# 	if not item_code:
+# 		return
 
-	bom_name = _get_bom(item_code)
+# 	bom_name = _get_bom(item_code)
 
-	template_item = frappe.db.get_value("Item", item_code, "variant_of")
-	if not bom_name and template_item:
-		bom_name = _get_bom(template_item)
+# 	template_item = frappe.db.get_value("Item", item_code, "variant_of")
+# 	if not bom_name and template_item:
+# 		bom_name = _get_bom(template_item)
 
-	return bom_name
+# 	return bom_name
 
 
 @frappe.whitelist()

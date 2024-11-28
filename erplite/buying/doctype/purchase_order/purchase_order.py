@@ -208,7 +208,7 @@ class PurchaseOrder(BuyingController):
 		self.validate_minimum_order_qty()
 
 		if self.is_old_subcontracting_flow:
-			self.validate_bom_for_subcontracting_items()
+			# self.validate_bom_for_subcontracting_items()
 			self.create_raw_materials_supplied()
 
 		self.validate_fg_item_for_subcontracting()
@@ -336,14 +336,14 @@ class PurchaseOrder(BuyingController):
 					).format(item_code, qty, itemwise_min_order_qty.get(item_code))
 				)
 
-	def validate_bom_for_subcontracting_items(self):
-		for item in self.items:
-			if not item.bom:
-				frappe.throw(
-					_("Row #{0}: BOM is not specified for subcontracting item {0}").format(
-						item.idx, item.item_code
-					)
-				)
+	# def validate_bom_for_subcontracting_items(self):
+	# 	for item in self.items:
+	# 		if not item.bom:
+	# 			frappe.throw(
+	# 				_("Row #{0}: BOM is not specified for subcontracting item {0}").format(
+	# 					item.idx, item.item_code
+	# 				)
+	# 			)
 
 	def validate_fg_item_for_subcontracting(self):
 		if self.is_subcontracted:
@@ -362,12 +362,12 @@ class PurchaseOrder(BuyingController):
 									item.idx, item.fg_item
 								)
 							)
-						elif not frappe.get_value("Item", item.fg_item, "default_bom"):
-							frappe.throw(
-								_("Row #{0}: Default BOM not found for FG Item {1}").format(
-									item.idx, item.fg_item
-								)
-							)
+						# elif not frappe.get_value("Item", item.fg_item, "default_bom"):
+						# 	frappe.throw(
+						# 		_("Row #{0}: Default BOM not found for FG Item {1}").format(
+						# 			item.idx, item.fg_item
+						# 		)
+						# 	)
 					if not item.fg_item_qty:
 						frappe.throw(_("Row #{0}: Finished Good Item Qty can not be zero").format(item.idx))
 		else:
@@ -726,7 +726,7 @@ def make_purchase_receipt(source_name, target_doc=None):
 				"field_map": {
 					"name": "purchase_order_item",
 					"parent": "purchase_order",
-					"bom": "bom",
+					# "bom": "bom",
 					"material_request": "material_request",
 					"material_request_item": "material_request_item",
 					"sales_order": "sales_order",

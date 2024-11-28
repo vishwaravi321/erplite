@@ -13,7 +13,7 @@ from erplite.controllers.subcontracting_controller import (
 	get_materials_from_supplier,
 	make_rm_stock_entry,
 )
-from erplite.manufacturing.doctype.production_plan.test_production_plan import make_bom
+# from erplite.manufacturing.doctype.production_plan.test_production_plan import make_bom
 from erplite.stock.doctype.item.test_item import make_item
 from erplite.stock.doctype.serial_and_batch_bundle.test_serial_and_batch_bundle import (
 	make_serial_batch_bundle,
@@ -30,7 +30,7 @@ class TestSubcontractingController(FrappeTestCase):
 		make_subcontracted_items()
 		make_raw_materials()
 		make_service_items()
-		make_bom_for_subcontracted_items()
+		# make_bom_for_subcontracted_items()
 
 	def test_remove_empty_rows(self):
 		sco = get_subcontracting_order()
@@ -75,59 +75,59 @@ class TestSubcontractingController(FrappeTestCase):
 		sco.create_raw_materials_supplied()
 		self.assertIsNotNone(sco.supplied_items)
 
-	def test_sco_with_bom(self):
-		"""
-		- Set backflush based on BOM.
-		- Create SCO for the item Subcontracted Item SA1 and add same item two times.
-		- Transfer the components from Stores to Supplier warehouse with batch no and serial nos.
-		- Create SCR against the SCO and check serial nos and batch no.
-		"""
+	# def test_sco_with_bom(self):
+	# 	"""
+	# 	- Set backflush based on BOM.
+	# 	- Create SCO for the item Subcontracted Item SA1 and add same item two times.
+	# 	- Transfer the components from Stores to Supplier warehouse with batch no and serial nos.
+	# 	- Create SCR against the SCO and check serial nos and batch no.
+	# 	"""
 
-		set_backflush_based_on("BOM")
-		service_items = [
-			{
-				"warehouse": "_Test Warehouse - _TC",
-				"item_code": "Subcontracted Service Item 1",
-				"qty": 5,
-				"rate": 100,
-				"fg_item": "Subcontracted Item SA1",
-				"fg_item_qty": 5,
-			},
-			{
-				"warehouse": "_Test Warehouse - _TC",
-				"item_code": "Subcontracted Service Item 1",
-				"qty": 6,
-				"rate": 100,
-				"fg_item": "Subcontracted Item SA1",
-				"fg_item_qty": 6,
-			},
-		]
-		sco = get_subcontracting_order(service_items=service_items)
-		rm_items = get_rm_items(sco.supplied_items)
-		itemwise_details = make_stock_in_entry(rm_items=rm_items)
+	# 	set_backflush_based_on("BOM")
+	# 	service_items = [
+	# 		{
+	# 			"warehouse": "_Test Warehouse - _TC",
+	# 			"item_code": "Subcontracted Service Item 1",
+	# 			"qty": 5,
+	# 			"rate": 100,
+	# 			"fg_item": "Subcontracted Item SA1",
+	# 			"fg_item_qty": 5,
+	# 		},
+	# 		{
+	# 			"warehouse": "_Test Warehouse - _TC",
+	# 			"item_code": "Subcontracted Service Item 1",
+	# 			"qty": 6,
+	# 			"rate": 100,
+	# 			"fg_item": "Subcontracted Item SA1",
+	# 			"fg_item_qty": 6,
+	# 		},
+	# 	]
+	# 	sco = get_subcontracting_order(service_items=service_items)
+	# 	rm_items = get_rm_items(sco.supplied_items)
+	# 	itemwise_details = make_stock_in_entry(rm_items=rm_items)
 
-		for item in rm_items:
-			item["sco_rm_detail"] = sco.items[0].name if item.get("qty") == 5 else sco.items[1].name
+	# 	for item in rm_items:
+	# 		item["sco_rm_detail"] = sco.items[0].name if item.get("qty") == 5 else sco.items[1].name
 
-		make_stock_transfer_entry(
-			sco_no=sco.name,
-			rm_items=rm_items,
-			itemwise_details=copy.deepcopy(itemwise_details),
-		)
-		scr = make_subcontracting_receipt(sco.name)
-		scr.save()
-		scr.submit()
+	# 	make_stock_transfer_entry(
+	# 		sco_no=sco.name,
+	# 		rm_items=rm_items,
+	# 		itemwise_details=copy.deepcopy(itemwise_details),
+	# 	)
+	# 	scr = make_subcontracting_receipt(sco.name)
+	# 	scr.save()
+	# 	scr.submit()
 
-		for key, value in get_supplied_items(scr).items():
-			transferred_detais = itemwise_details.get(key)
+	# 	for key, value in get_supplied_items(scr).items():
+	# 		transferred_detais = itemwise_details.get(key)
 
-			for field in ["qty", "serial_no", "batch_no"]:
-				if value.get(field):
-					transfer, consumed = (transferred_detais.get(field), value.get(field))
-					if field == "serial_no":
-						transfer, consumed = (sorted(transfer), sorted(consumed))
+	# 		for field in ["qty", "serial_no", "batch_no"]:
+	# 			if value.get(field):
+	# 				transfer, consumed = (transferred_detais.get(field), value.get(field))
+	# 				if field == "serial_no":
+	# 					transfer, consumed = (sorted(transfer), sorted(consumed))
 
-					self.assertEqual(transfer, consumed)
+	# 				self.assertEqual(transfer, consumed)
 
 	def test_sco_with_material_transfer(self):
 		"""
@@ -340,121 +340,121 @@ class TestSubcontractingController(FrappeTestCase):
 		)
 		frappe.db.set_single_value("Stock Settings", "use_serial_batch_fields", 1)
 
-	def test_item_with_batch_based_on_bom(self):
-		"""
-		- Set backflush based on BOM.
-		- Create SCO for item Subcontracted Item SA4 (has batch no).
-		- Transfer the components from Stores to Supplier warehouse with batch no and serial nos.
-		- Transfer the components in multiple batches.
-		- Create the 3 SCR against the SCO and split Subcontracted Items into two batches.
-		- Keep the qty as 2 for Subcontracted Item in the SCR.
-		"""
+	# def test_item_with_batch_based_on_bom(self):
+	# 	"""
+	# 	- Set backflush based on BOM.
+	# 	- Create SCO for item Subcontracted Item SA4 (has batch no).
+	# 	- Transfer the components from Stores to Supplier warehouse with batch no and serial nos.
+	# 	- Transfer the components in multiple batches.
+	# 	- Create the 3 SCR against the SCO and split Subcontracted Items into two batches.
+	# 	- Keep the qty as 2 for Subcontracted Item in the SCR.
+	# 	"""
 
-		set_backflush_based_on("BOM")
-		service_items = [
-			{
-				"warehouse": "_Test Warehouse - _TC",
-				"item_code": "Subcontracted Service Item 4",
-				"qty": 10,
-				"rate": 100,
-				"fg_item": "Subcontracted Item SA4",
-				"fg_item_qty": 10,
-			},
-		]
-		sco = get_subcontracting_order(service_items=service_items)
-		rm_items = [
-			{
-				"main_item_code": "Subcontracted Item SA4",
-				"item_code": "Subcontracted SRM Item 1",
-				"qty": 10.0,
-				"rate": 100.0,
-				"stock_uom": "Nos",
-				"warehouse": "_Test Warehouse - _TC",
-			},
-			{
-				"main_item_code": "Subcontracted Item SA4",
-				"item_code": "Subcontracted SRM Item 2",
-				"qty": 10.0,
-				"rate": 100.0,
-				"stock_uom": "Nos",
-				"warehouse": "_Test Warehouse - _TC",
-			},
-			{
-				"main_item_code": "Subcontracted Item SA4",
-				"item_code": "Subcontracted SRM Item 3",
-				"qty": 3.0,
-				"rate": 100.0,
-				"stock_uom": "Nos",
-				"warehouse": "_Test Warehouse - _TC",
-			},
-			{
-				"main_item_code": "Subcontracted Item SA4",
-				"item_code": "Subcontracted SRM Item 3",
-				"qty": 3.0,
-				"rate": 100.0,
-				"stock_uom": "Nos",
-				"warehouse": "_Test Warehouse - _TC",
-			},
-			{
-				"main_item_code": "Subcontracted Item SA4",
-				"item_code": "Subcontracted SRM Item 3",
-				"qty": 3.0,
-				"rate": 100.0,
-				"stock_uom": "Nos",
-				"warehouse": "_Test Warehouse - _TC",
-			},
-			{
-				"main_item_code": "Subcontracted Item SA4",
-				"item_code": "Subcontracted SRM Item 3",
-				"qty": 3.0,
-				"rate": 100.0,
-				"stock_uom": "Nos",
-				"warehouse": "_Test Warehouse - _TC",
-			},
-		]
-		itemwise_details = make_stock_in_entry(rm_items=rm_items)
+	# 	set_backflush_based_on("BOM")
+	# 	service_items = [
+	# 		{
+	# 			"warehouse": "_Test Warehouse - _TC",
+	# 			"item_code": "Subcontracted Service Item 4",
+	# 			"qty": 10,
+	# 			"rate": 100,
+	# 			"fg_item": "Subcontracted Item SA4",
+	# 			"fg_item_qty": 10,
+	# 		},
+	# 	]
+	# 	sco = get_subcontracting_order(service_items=service_items)
+	# 	rm_items = [
+	# 		{
+	# 			"main_item_code": "Subcontracted Item SA4",
+	# 			"item_code": "Subcontracted SRM Item 1",
+	# 			"qty": 10.0,
+	# 			"rate": 100.0,
+	# 			"stock_uom": "Nos",
+	# 			"warehouse": "_Test Warehouse - _TC",
+	# 		},
+	# 		{
+	# 			"main_item_code": "Subcontracted Item SA4",
+	# 			"item_code": "Subcontracted SRM Item 2",
+	# 			"qty": 10.0,
+	# 			"rate": 100.0,
+	# 			"stock_uom": "Nos",
+	# 			"warehouse": "_Test Warehouse - _TC",
+	# 		},
+	# 		{
+	# 			"main_item_code": "Subcontracted Item SA4",
+	# 			"item_code": "Subcontracted SRM Item 3",
+	# 			"qty": 3.0,
+	# 			"rate": 100.0,
+	# 			"stock_uom": "Nos",
+	# 			"warehouse": "_Test Warehouse - _TC",
+	# 		},
+	# 		{
+	# 			"main_item_code": "Subcontracted Item SA4",
+	# 			"item_code": "Subcontracted SRM Item 3",
+	# 			"qty": 3.0,
+	# 			"rate": 100.0,
+	# 			"stock_uom": "Nos",
+	# 			"warehouse": "_Test Warehouse - _TC",
+	# 		},
+	# 		{
+	# 			"main_item_code": "Subcontracted Item SA4",
+	# 			"item_code": "Subcontracted SRM Item 3",
+	# 			"qty": 3.0,
+	# 			"rate": 100.0,
+	# 			"stock_uom": "Nos",
+	# 			"warehouse": "_Test Warehouse - _TC",
+	# 		},
+	# 		{
+	# 			"main_item_code": "Subcontracted Item SA4",
+	# 			"item_code": "Subcontracted SRM Item 3",
+	# 			"qty": 3.0,
+	# 			"rate": 100.0,
+	# 			"stock_uom": "Nos",
+	# 			"warehouse": "_Test Warehouse - _TC",
+	# 		},
+	# 	]
+	# 	itemwise_details = make_stock_in_entry(rm_items=rm_items)
 
-		for item in rm_items:
-			item["sco_rm_detail"] = sco.items[0].name
+	# 	for item in rm_items:
+	# 		item["sco_rm_detail"] = sco.items[0].name
 
-		make_stock_transfer_entry(
-			sco_no=sco.name,
-			rm_items=rm_items,
-			itemwise_details=copy.deepcopy(itemwise_details),
-		)
+	# 	make_stock_transfer_entry(
+	# 		sco_no=sco.name,
+	# 		rm_items=rm_items,
+	# 		itemwise_details=copy.deepcopy(itemwise_details),
+	# 	)
 
-		scr1 = make_subcontracting_receipt(sco.name)
-		scr1.items[0].qty = 2
-		add_second_row_in_scr(scr1)
-		scr1.flags.ignore_mandatory = True
-		scr1.save()
-		scr1.set_missing_values()
-		scr1.submit()
+	# 	scr1 = make_subcontracting_receipt(sco.name)
+	# 	scr1.items[0].qty = 2
+	# 	add_second_row_in_scr(scr1)
+	# 	scr1.flags.ignore_mandatory = True
+	# 	scr1.save()
+	# 	scr1.set_missing_values()
+	# 	scr1.submit()
 
-		for _key, value in get_supplied_items(scr1).items():
-			self.assertEqual(value.qty, 4)
+	# 	for _key, value in get_supplied_items(scr1).items():
+	# 		self.assertEqual(value.qty, 4)
 
-		frappe.flags.add_debugger = True
-		scr2 = make_subcontracting_receipt(sco.name)
-		scr2.items[0].qty = 2
-		add_second_row_in_scr(scr2)
-		scr2.flags.ignore_mandatory = True
-		scr2.save()
-		scr2.set_missing_values()
-		scr2.submit()
+	# 	frappe.flags.add_debugger = True
+	# 	scr2 = make_subcontracting_receipt(sco.name)
+	# 	scr2.items[0].qty = 2
+	# 	add_second_row_in_scr(scr2)
+	# 	scr2.flags.ignore_mandatory = True
+	# 	scr2.save()
+	# 	scr2.set_missing_values()
+	# 	scr2.submit()
 
-		for _key, value in get_supplied_items(scr2).items():
-			self.assertEqual(value.qty, 4)
+	# 	for _key, value in get_supplied_items(scr2).items():
+	# 		self.assertEqual(value.qty, 4)
 
-		scr3 = make_subcontracting_receipt(sco.name)
-		scr3.items[0].qty = 2
-		scr3.flags.ignore_mandatory = True
-		scr3.save()
-		scr3.set_missing_values()
-		scr3.submit()
+	# 	scr3 = make_subcontracting_receipt(sco.name)
+	# 	scr3.items[0].qty = 2
+	# 	scr3.flags.ignore_mandatory = True
+	# 	scr3.save()
+	# 	scr3.set_missing_values()
+	# 	scr3.submit()
 
-		for _key, value in get_supplied_items(scr3).items():
-			self.assertEqual(value.qty, 2)
+	# 	for _key, value in get_supplied_items(scr3).items():
+	# 		self.assertEqual(value.qty, 2)
 
 	def test_item_with_batch_based_on_material_transfer(self):
 		"""
@@ -1076,7 +1076,7 @@ def add_second_row_in_scr(scr):
 		"item_name",
 		"qty",
 		"uom",
-		"bom",
+		# "bom",
 		"warehouse",
 		"stock_uom",
 		"subcontracting_order",
@@ -1289,29 +1289,29 @@ def make_service_items():
 		make_service_item(item, properties)
 
 
-def make_bom_for_subcontracted_items():
-	boms = {
-		"Subcontracted Item SA1": [
-			"Subcontracted SRM Item 1",
-			"Subcontracted SRM Item 2",
-			"Subcontracted SRM Item 3",
-		],
-		"Subcontracted Item SA2": ["Subcontracted SRM Item 2"],
-		"Subcontracted Item SA3": ["Subcontracted SRM Item 2"],
-		"Subcontracted Item SA4": [
-			"Subcontracted SRM Item 1",
-			"Subcontracted SRM Item 2",
-			"Subcontracted SRM Item 3",
-		],
-		"Subcontracted Item SA5": ["Subcontracted SRM Item 5"],
-		"Subcontracted Item SA6": ["Subcontracted SRM Item 3"],
-		"Subcontracted Item SA7": ["Subcontracted SRM Item 1"],
-		"Subcontracted Item SA8": ["Subcontracted SRM Item 8"],
-	}
+# def make_bom_for_subcontracted_items():
+# 	boms = {
+# 		"Subcontracted Item SA1": [
+# 			"Subcontracted SRM Item 1",
+# 			"Subcontracted SRM Item 2",
+# 			"Subcontracted SRM Item 3",
+# 		],
+# 		"Subcontracted Item SA2": ["Subcontracted SRM Item 2"],
+# 		"Subcontracted Item SA3": ["Subcontracted SRM Item 2"],
+# 		"Subcontracted Item SA4": [
+# 			"Subcontracted SRM Item 1",
+# 			"Subcontracted SRM Item 2",
+# 			"Subcontracted SRM Item 3",
+# 		],
+# 		"Subcontracted Item SA5": ["Subcontracted SRM Item 5"],
+# 		"Subcontracted Item SA6": ["Subcontracted SRM Item 3"],
+# 		"Subcontracted Item SA7": ["Subcontracted SRM Item 1"],
+# 		"Subcontracted Item SA8": ["Subcontracted SRM Item 8"],
+# 	}
 
-	for item_code, raw_materials in boms.items():
-		if not frappe.db.exists("BOM", {"item": item_code}):
-			make_bom(item=item_code, raw_materials=raw_materials, rate=100)
+# 	# for item_code, raw_materials in boms.items():
+# 	# 	if not frappe.db.exists("BOM", {"item": item_code}):
+# 	# 		make_bom(item=item_code, raw_materials=raw_materials, rate=100)
 
 
 def set_backflush_based_on(based_on):
@@ -1375,7 +1375,7 @@ def get_rm_items(supplied_items):
 
 
 def make_subcontracted_item(**args):
-	from erplite.manufacturing.doctype.production_plan.test_production_plan import make_bom
+	# from erplite.manufacturing.doctype.production_plan.test_production_plan import make_bom
 
 	args = frappe._dict(args)
 
@@ -1408,5 +1408,5 @@ def make_subcontracted_item(**args):
 
 		args.raw_materials = ["_Test FG Item", "Test Extra Item 1"]
 
-	if not frappe.db.get_value("BOM", {"item": args.item_code}, "name"):
-		make_bom(item=args.item_code, raw_materials=args.get("raw_materials"))
+	# if not frappe.db.get_value("BOM", {"item": args.item_code}, "name"):
+	# 	make_bom(item=args.item_code, raw_materials=args.get("raw_materials"))
