@@ -15,7 +15,7 @@ from frappe.desk.page.setup_wizard.setup_wizard import make_records
 from frappe.utils import cstr, getdate
 
 from erplite.accounts.doctype.account.account import RootNotEditable
-from erplite.regional.address_template.setup import set_up_address_templates
+# from erplite.regional.address_template.setup import set_up_address_templates
 
 
 def read_lines(filename: str) -> list[str]:
@@ -317,8 +317,8 @@ def install(country=None):
 	from erplite.buying.doctype.supplier_scorecard.supplier_scorecard import make_default_records
 
 	make_default_records()
-	make_records(records)
-	set_up_address_templates(default_country=country)
+	# make_records(records)
+	# set_up_address_templates(default_country=country)
 	update_selling_defaults()
 	update_buying_defaults()
 	add_uom_data()
