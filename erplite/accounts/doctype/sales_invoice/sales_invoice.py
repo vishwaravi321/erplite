@@ -50,21 +50,15 @@ class SalesInvoice(SellingController):
 	from typing import TYPE_CHECKING
 
 	if TYPE_CHECKING:
-		from frappe.types import DF
-
 		from erplite.accounts.doctype.payment_schedule.payment_schedule import PaymentSchedule
 		from erplite.accounts.doctype.pricing_rule_detail.pricing_rule_detail import PricingRuleDetail
 		from erplite.accounts.doctype.sales_invoice_advance.sales_invoice_advance import SalesInvoiceAdvance
 		from erplite.accounts.doctype.sales_invoice_item.sales_invoice_item import SalesInvoiceItem
 		from erplite.accounts.doctype.sales_invoice_payment.sales_invoice_payment import SalesInvoicePayment
-		from erplite.accounts.doctype.sales_invoice_timesheet.sales_invoice_timesheet import (
-			SalesInvoiceTimesheet,
-		)
-		from erplite.accounts.doctype.sales_taxes_and_charges.sales_taxes_and_charges import (
-			SalesTaxesandCharges,
-		)
+		from erplite.accounts.doctype.sales_taxes_and_charges.sales_taxes_and_charges import SalesTaxesandCharges
 		from erplite.selling.doctype.sales_team.sales_team import SalesTeam
 		from erplite.stock.doctype.packed_item.packed_item import PackedItem
+		from frappe.types import DF
 
 		account_for_change_amount: DF.Link | None
 		additional_discount_account: DF.Link | None
@@ -88,7 +82,6 @@ class SalesInvoice(SellingController):
 		base_total: DF.Currency
 		base_total_taxes_and_charges: DF.Currency
 		base_write_off_amount: DF.Currency
-		campaign: DF.Link | None
 		cash_bank_account: DF.Link | None
 		change_amount: DF.Currency
 		commission_rate: DF.Float
@@ -157,7 +150,6 @@ class SalesInvoice(SellingController):
 		posting_time: DF.Time | None
 		price_list_currency: DF.Link
 		pricing_rules: DF.Table[PricingRuleDetail]
-		project: DF.Link | None
 		redeem_loyalty_points: DF.Check
 		remarks: DF.SmallText | None
 		represents_company: DF.Link | None
@@ -175,23 +167,7 @@ class SalesInvoice(SellingController):
 		shipping_address: DF.SmallText | None
 		shipping_address_name: DF.Link | None
 		shipping_rule: DF.Link | None
-		source: DF.Link | None
-		status: DF.Literal[
-			"",
-			"Draft",
-			"Return",
-			"Credit Note Issued",
-			"Submitted",
-			"Paid",
-			"Partly Paid",
-			"Unpaid",
-			"Unpaid and Discounted",
-			"Partly Paid and Discounted",
-			"Overdue and Discounted",
-			"Overdue",
-			"Cancelled",
-			"Internal Transfer",
-		]
+		status: DF.Literal["", "Draft", "Return", "Credit Note Issued", "Submitted", "Paid", "Partly Paid", "Unpaid", "Unpaid and Discounted", "Partly Paid and Discounted", "Overdue and Discounted", "Overdue", "Cancelled", "Internal Transfer"]
 		subscription: DF.Link | None
 		tax_category: DF.Link | None
 		tax_id: DF.Data | None
@@ -200,7 +176,6 @@ class SalesInvoice(SellingController):
 		tc_name: DF.Link | None
 		terms: DF.TextEditor | None
 		territory: DF.Link | None
-		timesheets: DF.Table[SalesInvoiceTimesheet]
 		title: DF.Data | None
 		to_date: DF.Date | None
 		total: DF.Currency
