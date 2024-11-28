@@ -27,7 +27,7 @@ def after_install():
 	create_print_setting_custom_fields()
 	add_all_roles_to("Administrator")
 	create_default_success_action()
-	create_default_energy_point_rules()
+	# create_default_energy_point_rules()
 	create_incoterms()
 	create_default_role_profiles()
 	add_company_to_session_defaults()
@@ -145,16 +145,16 @@ def create_default_success_action():
 			doc.insert(ignore_permissions=True)
 
 
-def create_default_energy_point_rules():
-	for rule in get_default_energy_point_rules():
-		# check if any rule for ref. doctype exists
-		rule_exists = frappe.db.exists(
-			"Energy Point Rule", {"reference_doctype": rule.get("reference_doctype")}
-		)
-		if rule_exists:
-			continue
-		doc = frappe.get_doc(rule)
-		doc.insert(ignore_permissions=True)
+# def create_default_energy_point_rules():
+# 	for rule in get_default_energy_point_rules():
+# 		# check if any rule for ref. doctype exists
+# 		rule_exists = frappe.db.exists(
+# 			"Energy Point Rule", {"reference_doctype": rule.get("reference_doctype")}
+# 		)
+# 		if rule_exists:
+# 			continue
+# 		doc = frappe.get_doc(rule)
+# 		doc.insert(ignore_permissions=True)
 
 
 def add_company_to_session_defaults():
