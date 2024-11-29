@@ -100,7 +100,7 @@ webform_list_context = "erplite.controllers.website_list_for_contact.get_webform
 
 calendars = ["Task", "Work Order", "Sales Order", "Holiday List", "ToDo"]
 
-website_generators = ["BOM", "Sales Partner"]
+# website_generators = ["BOM", "Sales Partner"]
 
 website_context = {
 	"favicon": "/assets/erplite/images/erplite-favicon.svg",
@@ -184,7 +184,7 @@ website_route_rules = [
 		"to_route": "addresses",
 		"defaults": {"doctype": "Address", "parents": [{"label": "Addresses", "route": "addresses"}]},
 	},
-	{"from_route": "/boms", "to_route": "BOM"},
+	# {"from_route": "/boms", "to_route": "BOM"},
 	{"from_route": "/timesheets", "to_route": "Timesheet"},
 	{"from_route": "/material-requests", "to_route": "Material Request"},
 	{
@@ -604,7 +604,7 @@ global_search_doctypes = {
 		{"doctype": "Warehouse", "index": 3},
 		{"doctype": "Account", "index": 4},
 		{"doctype": "Employee", "index": 5},
-		{"doctype": "BOM", "index": 6},
+		# {"doctype": "BOM", "index": 6},
 		{"doctype": "Sales Invoice", "index": 7},
 		{"doctype": "Sales Order", "index": 8},
 		{"doctype": "Quotation", "index": 9},
