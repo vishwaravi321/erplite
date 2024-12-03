@@ -1,7 +1,7 @@
 app_name = "erpnext"
 app_title = "ERPNext"
 app_publisher = "Nxweb"
-app_description = "Erplite"
+app_description = "ERPNext"
 app_email = "support@nxweb.in"
 app_license = "mit"
 
