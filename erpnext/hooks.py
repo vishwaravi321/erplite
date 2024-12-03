@@ -1,5 +1,5 @@
-app_name = "erplite"
-app_title = "Erplite"
+app_name = "erpnext"
+app_title = "ERPNext"
 app_publisher = "Nxweb"
 app_description = "Erplite"
 app_email = "support@nxweb.in"
@@ -7,21 +7,21 @@ app_license = "mit"
 
 add_to_apps_screen = [
 	{
-		"name": "erplite",
-		"logo": "/assets/erplite/images/erplite-logo-blue.png",
-		"title": "erplite",
+		"name": "erpnext",
+		"logo": "/assets/erpnext/images/erpnext-logo-blue.png",
+		"title": "erpnext",
 		"route": "/app/home",
-		"has_permission": "erplite.check_app_permission",
+		"has_permission": "erpnext.check_app_permission",
 	}
 ]
 
 develop_version = "15.x.x-develop"
 
-app_include_js = "erplite.bundle.js"
-app_include_css = "erplite.bundle.css"
-web_include_js = "erplite-web.bundle.js"
-web_include_css = "erplite-web.bundle.css"
-email_css = "email_erplite.bundle.css"
+app_include_js = "erpnext.bundle.js"
+app_include_css = "erpnext.bundle.css"
+web_include_js = "erpnext-web.bundle.js"
+web_include_css = "erpnext-web.bundle.css"
+email_css = "email_erpnext.bundle.css"
 
 doctype_js = {
 	"Address": "public/js/address.js",
@@ -39,29 +39,29 @@ doctype_list_js = {
 	],
 }
 
-override_doctype_class = {"Address": "erplite.accounts.custom.address.erpliteAddress"}
+override_doctype_class = {"Address": "erpnext.accounts.custom.address.erpnextAddress"}
 
-override_whitelisted_methods = {"frappe.www.contact.send_message": "erplite.templates.utils.send_message"}
+override_whitelisted_methods = {"frappe.www.contact.send_message": "erpnext.templates.utils.send_message"}
 
-welcome_email = "erplite.setup.utils.welcome_email"
+welcome_email = "erpnext.setup.utils.welcome_email"
 
 # setup wizard
-setup_wizard_stages = "erplite.setup.setup_wizard.setup_wizard.get_setup_stages"
-setup_wizard_complete = "erplite.setup.setup_wizard.setup_wizard.setup_demo"
-setup_wizard_test = "erplite.setup.setup_wizard.test_setup_wizard.run_setup_wizard_test"
+setup_wizard_stages = "erpnext.setup.setup_wizard.setup_wizard.get_setup_stages"
+setup_wizard_complete = "erpnext.setup.setup_wizard.setup_wizard.setup_demo"
+setup_wizard_test = "erpnext.setup.setup_wizard.test_setup_wizard.run_setup_wizard_test"
 
 before_install = [
-	"erplite.setup.install.check_setup_wizard_not_completed",
-	"erplite.setup.install.check_frappe_version",
+	"erpnext.setup.install.check_setup_wizard_not_completed",
+	"erpnext.setup.install.check_frappe_version",
 ]
-after_install = "erplite.setup.install.after_install"
+after_install = "erpnext.setup.install.after_install"
 
-# boot_session = "erplite.startup.boot.boot_session"
-# notification_config = "erplite.startup.notifications.get_notification_config"
-get_help_messages = "erplite.utilities.activation.get_help_messages"
-# leaderboards = "erplite.startup.leaderboard.get_leaderboards"
-# filters_config = "erplite.startup.filters.get_filters_config"
-additional_print_settings = "erplite.controllers.print_settings.get_print_settings"
+# boot_session = "erpnext.startup.boot.boot_session"
+# notification_config = "erpnext.startup.notifications.get_notification_config"
+get_help_messages = "erpnext.utilities.activation.get_help_messages"
+# leaderboards = "erpnext.startup.leaderboard.get_leaderboards"
+# filters_config = "erpnext.startup.filters.get_filters_config"
+additional_print_settings = "erpnext.controllers.print_settings.get_print_settings"
 
 
 treeviews = [
@@ -91,20 +91,20 @@ demo_transaction_doctypes = [
 
 jinja = {
 	"methods": [
-		"erplite.stock.serial_batch_bundle.get_serial_or_batch_nos",
+		"erpnext.stock.serial_batch_bundle.get_serial_or_batch_nos",
 	],
 }
 
 # website
-webform_list_context = "erplite.controllers.website_list_for_contact.get_webform_list_context"
+webform_list_context = "erpnext.controllers.website_list_for_contact.get_webform_list_context"
 
 calendars = ["Task", "Work Order", "Sales Order", "Holiday List", "ToDo"]
 
 # website_generators = ["BOM", "Sales Partner"]
 
 website_context = {
-	"favicon": "/assets/erplite/images/erplite-favicon.svg",
-	"splash_image": "/assets/erplite/images/erplite-logo.svg",
+	"favicon": "/assets/erpnext/images/erpnext-favicon.svg",
+	"splash_image": "/assets/erpnext/images/erpnext-logo.svg",
 }
 
 # nosemgrep
@@ -273,27 +273,27 @@ default_roles = [
 ]
 
 sounds = [
-	{"name": "incoming-call", "src": "/assets/erplite/sounds/incoming-call.mp3", "volume": 0.2},
-	{"name": "call-disconnect", "src": "/assets/erplite/sounds/call-disconnect.mp3", "volume": 0.2},
+	{"name": "incoming-call", "src": "/assets/erpnext/sounds/incoming-call.mp3", "volume": 0.2},
+	{"name": "call-disconnect", "src": "/assets/erpnext/sounds/call-disconnect.mp3", "volume": 0.2},
 ]
 
-has_upload_permission = {"Employee": "erplite.setup.doctype.employee.employee.has_upload_permission"}
+has_upload_permission = {"Employee": "erpnext.setup.doctype.employee.employee.has_upload_permission"}
 
 has_website_permission = {
-	"Sales Order": "erplite.controllers.website_list_for_contact.has_website_permission",
-	"Quotation": "erplite.controllers.website_list_for_contact.has_website_permission",
-	"Sales Invoice": "erplite.controllers.website_list_for_contact.has_website_permission",
-	"Supplier Quotation": "erplite.controllers.website_list_for_contact.has_website_permission",
-	"Purchase Order": "erplite.controllers.website_list_for_contact.has_website_permission",
-	"Purchase Invoice": "erplite.controllers.website_list_for_contact.has_website_permission",
-	"Material Request": "erplite.controllers.website_list_for_contact.has_website_permission",
-	"Delivery Note": "erplite.controllers.website_list_for_contact.has_website_permission",
-	# "Issue": "erplite.support.doctype.issue.issue.has_website_permission",
-	"Timesheet": "erplite.controllers.website_list_for_contact.has_website_permission",
-	"Project": "erplite.controllers.website_list_for_contact.has_website_permission",
+	"Sales Order": "erpnext.controllers.website_list_for_contact.has_website_permission",
+	"Quotation": "erpnext.controllers.website_list_for_contact.has_website_permission",
+	"Sales Invoice": "erpnext.controllers.website_list_for_contact.has_website_permission",
+	"Supplier Quotation": "erpnext.controllers.website_list_for_contact.has_website_permission",
+	"Purchase Order": "erpnext.controllers.website_list_for_contact.has_website_permission",
+	"Purchase Invoice": "erpnext.controllers.website_list_for_contact.has_website_permission",
+	"Material Request": "erpnext.controllers.website_list_for_contact.has_website_permission",
+	"Delivery Note": "erpnext.controllers.website_list_for_contact.has_website_permission",
+	# "Issue": "erpnext.support.doctype.issue.issue.has_website_permission",
+	"Timesheet": "erpnext.controllers.website_list_for_contact.has_website_permission",
+	"Project": "erpnext.controllers.website_list_for_contact.has_website_permission",
 }
 
-before_tests = "erplite.setup.utils.before_tests"
+before_tests = "erpnext.setup.utils.before_tests"
 
 
 period_closing_doctypes = [
@@ -320,77 +320,77 @@ period_closing_doctypes = [
 doc_events = {
 	"*": {
 		"validate": [
-			# "erplite.support.doctype.service_level_agreement.service_level_agreement.apply",
-			"erplite.setup.doctype.transaction_deletion_record.transaction_deletion_record.check_for_running_deletion_job",
+			# "erpnext.support.doctype.service_level_agreement.service_level_agreement.apply",
+			"erpnext.setup.doctype.transaction_deletion_record.transaction_deletion_record.check_for_running_deletion_job",
 		],
 	},
 	tuple(period_closing_doctypes): {
-		"validate": "erplite.accounts.doctype.accounting_period.accounting_period.validate_accounting_period_on_doc_save",
+		"validate": "erpnext.accounts.doctype.accounting_period.accounting_period.validate_accounting_period_on_doc_save",
 	},
 	"Stock Entry": {
-		"on_submit": "erplite.stock.doctype.material_request.material_request.update_completed_and_requested_qty",
-		"on_cancel": "erplite.stock.doctype.material_request.material_request.update_completed_and_requested_qty",
+		"on_submit": "erpnext.stock.doctype.material_request.material_request.update_completed_and_requested_qty",
+		"on_cancel": "erpnext.stock.doctype.material_request.material_request.update_completed_and_requested_qty",
 	},
 	"User": {
 		"after_insert": "frappe.contacts.doctype.contact.contact.update_contact",
-		"validate": "erplite.setup.doctype.employee.employee.validate_employee_role",
+		"validate": "erpnext.setup.doctype.employee.employee.validate_employee_role",
 		"on_update": [
-			"erplite.setup.doctype.employee.employee.update_user_permissions",
+			"erpnext.setup.doctype.employee.employee.update_user_permissions",
 		],
 	},
 	# "Communication": {
 	# 	# "on_update": [
-	# 	# 	"erplite.support.doctype.service_level_agreement.service_level_agreement.on_communication_update",
-	# 	# 	"erplite.support.doctype.issue.issue.set_first_response_time",
+	# 	# 	"erpnext.support.doctype.service_level_agreement.service_level_agreement.on_communication_update",
+	# 	# 	"erpnext.support.doctype.issue.issue.set_first_response_time",
 	# 	# ],
-	# 	"after_insert": "erplite.crm.utils.link_communications_with_prospect",
+	# 	"after_insert": "erpnext.crm.utils.link_communications_with_prospect",
 	# },
 	# "Event": {
-	# 	"after_insert": "erplite.crm.utils.link_events_with_prospect",
+	# 	"after_insert": "erpnext.crm.utils.link_events_with_prospect",
 	# },
 	# "Sales Invoice": {
 	# 	"on_submit": [
-	# 		"erplite.regional.create_transaction_log",
-	# 		"erplite.regional.italy.utils.sales_invoice_on_submit",
+	# 		"erpnext.regional.create_transaction_log",
+	# 		"erpnext.regional.italy.utils.sales_invoice_on_submit",
 	# 	],
-	# 	"on_cancel": ["erplite.regional.italy.utils.sales_invoice_on_cancel"],
-	# 	"on_trash": "erplite.regional.check_deletion_permission",
+	# 	"on_cancel": ["erpnext.regional.italy.utils.sales_invoice_on_cancel"],
+	# 	"on_trash": "erpnext.regional.check_deletion_permission",
 	# },
 	# "Purchase Invoice": {
 	# 	"validate": [
-	# 		"erplite.regional.united_arab_emirates.utils.update_grand_total_for_rcm",
-	# 		"erplite.regional.united_arab_emirates.utils.validate_returns",
+	# 		"erpnext.regional.united_arab_emirates.utils.update_grand_total_for_rcm",
+	# 		"erpnext.regional.united_arab_emirates.utils.validate_returns",
 	# 	]
 	# },
 	"Payment Entry": {
 		"on_submit": [
-			# "erplite.regional.create_transaction_log",
-			"erplite.accounts.doctype.dunning.dunning.resolve_dunning",
+			# "erpnext.regional.create_transaction_log",
+			"erpnext.accounts.doctype.dunning.dunning.resolve_dunning",
 		],
-		"on_cancel": ["erplite.accounts.doctype.dunning.dunning.resolve_dunning"],
-		# "on_trash": "erplite.regional.check_deletion_permission",
+		"on_cancel": ["erpnext.accounts.doctype.dunning.dunning.resolve_dunning"],
+		# "on_trash": "erpnext.regional.check_deletion_permission",
 	},
 	# "Address": {
 	# 	"validate": [
-	# 		"erplite.regional.italy.utils.set_state_code",
+	# 		"erpnext.regional.italy.utils.set_state_code",
 	# 	],
 	# },
 	# "Contact": {
-	# 	# "on_trash": "erplite.support.doctype.issue.issue.update_issue",
-	# 	# "after_insert": "erplite.telephony.doctype.call_log.call_log.link_existing_conversations",
-	# 	"validate": ["erplite.crm.utils.update_lead_phone_numbers"],
+	# 	# "on_trash": "erpnext.support.doctype.issue.issue.update_issue",
+	# 	# "after_insert": "erpnext.telephony.doctype.call_log.call_log.link_existing_conversations",
+	# 	"validate": ["erpnext.crm.utils.update_lead_phone_numbers"],
 	# },
 	# "Email Unsubscribe": {
-	# 	"after_insert": "erplite.crm.doctype.email_campaign.email_campaign.unsubscribe_recipient"
+	# 	"after_insert": "erpnext.crm.doctype.email_campaign.email_campaign.unsubscribe_recipient"
 	# },
 	"Integration Request": {
-		"validate": "erplite.accounts.doctype.payment_request.payment_request.validate_payment"
+		"validate": "erpnext.accounts.doctype.payment_request.payment_request.validate_payment"
 	},
 }
 
 # function should expect the variable and doc as arguments
 naming_series_variables = {
-	"FY": "erplite.accounts.utils.parse_naming_series_variable",
+	"FY": "erpnext.accounts.utils.parse_naming_series_variable",
 }
 
 # On cancel event Payment Entry will be exempted and all linked submittable doctype will get cancelled.
@@ -403,79 +403,79 @@ auto_cancel_exempted_doctypes = [
 scheduler_events = {
 	"cron": {
 		"0/15 * * * *": [
-			# "erplite.manufacturing.doctype.bom_update_log.bom_update_log.resume_bom_cost_update_jobs",
-			"erplite.accounts.doctype.process_payment_reconciliation.process_payment_reconciliation.trigger_reconciliation_for_queued_docs",
+			# "erpnext.manufacturing.doctype.bom_update_log.bom_update_log.resume_bom_cost_update_jobs",
+			"erpnext.accounts.doctype.process_payment_reconciliation.process_payment_reconciliation.trigger_reconciliation_for_queued_docs",
 		],
 		"0/30 * * * *": [
-			"erplite.utilities.doctype.video.video.update_youtube_data",
+			"erpnext.utilities.doctype.video.video.update_youtube_data",
 		],
 		# Hourly but offset by 30 minutes
 		"30 * * * *": [
-			"erplite.accounts.doctype.gl_entry.gl_entry.rename_gle_sle_docs",
+			"erpnext.accounts.doctype.gl_entry.gl_entry.rename_gle_sle_docs",
 		],
 		# Daily but offset by 45 minutes
 		"45 0 * * *": [
-			"erplite.stock.reorder_item.reorder_item",
+			"erpnext.stock.reorder_item.reorder_item",
 		],
 	},
 	# "hourly": [
-	# 	# "erplite.erplite_integrations.doctype.plaid_settings.plaid_settings.automatic_synchronization",
-	# 	"erplite.projects.doctype.project.project.project_status_update_reminder",
-	# 	"erplite.projects.doctype.project.project.hourly_reminder",
-	# 	"erplite.projects.doctype.project.project.collect_project_status",
+	# 	# "erpnext.erpnext_integrations.doctype.plaid_settings.plaid_settings.automatic_synchronization",
+	# 	"erpnext.projects.doctype.project.project.project_status_update_reminder",
+	# 	"erpnext.projects.doctype.project.project.hourly_reminder",
+	# 	"erpnext.projects.doctype.project.project.collect_project_status",
 	# ],
 	"hourly_long": [
-		"erplite.stock.doctype.repost_item_valuation.repost_item_valuation.repost_entries",
-		"erplite.utilities.bulk_transaction.retry",
+		"erpnext.stock.doctype.repost_item_valuation.repost_item_valuation.repost_entries",
+		"erpnext.utilities.bulk_transaction.retry",
 	],
 	"daily": [
-		# "erplite.support.doctype.issue.issue.auto_close_tickets",
-		# "erplite.crm.doctype.opportunity.opportunity.auto_close_opportunity",
-		# "erplite.controllers.accounts_controller.update_invoice_status",
-		"erplite.accounts.doctype.fiscal_year.fiscal_year.auto_create_fiscal_year",
-		# "erplite.projects.doctype.task.task.set_tasks_as_overdue",
-		"erplite.stock.doctype.serial_no.serial_no.update_maintenance_status",
-		"erplite.buying.doctype.supplier_scorecard.supplier_scorecard.refresh_scorecards",
-		"erplite.setup.doctype.company.company.cache_companies_monthly_sales_history",
-		# "erplite.assets.doctype.asset.asset.update_maintenance_status",
-		# "erplite.assets.doctype.asset.asset.make_post_gl_entry",
-		# "erplite.crm.doctype.contract.contract.update_status_for_contracts",
-		# "erplite.projects.doctype.project.project.update_project_sales_billing",
-		# "erplite.projects.doctype.project.project.send_project_status_email_to_users",
-		# "erplite.quality_management.doctype.quality_review.quality_review.review",
-		# "erplite.support.doctype.service_level_agreement.service_level_agreement.check_agreement_status",
-		# "erplite.crm.doctype.email_campaign.email_campaign.send_email_to_leads_or_contacts",
-		# "erplite.crm.doctype.email_campaign.email_campaign.set_email_campaign_status",
-		"erplite.selling.doctype.quotation.quotation.set_expired_status",
-		"erplite.buying.doctype.supplier_quotation.supplier_quotation.set_expired_status",
-		"erplite.accounts.doctype.process_statement_of_accounts.process_statement_of_accounts.send_auto_email",
-		"erplite.accounts.utils.auto_create_exchange_rate_revaluation_daily",
-		"erplite.accounts.utils.run_ledger_health_checks",
-		# "erplite.assets.doctype.asset_maintenance_log.asset_maintenance_log.update_asset_maintenance_log_status",
+		# "erpnext.support.doctype.issue.issue.auto_close_tickets",
+		# "erpnext.crm.doctype.opportunity.opportunity.auto_close_opportunity",
+		# "erpnext.controllers.accounts_controller.update_invoice_status",
+		"erpnext.accounts.doctype.fiscal_year.fiscal_year.auto_create_fiscal_year",
+		# "erpnext.projects.doctype.task.task.set_tasks_as_overdue",
+		"erpnext.stock.doctype.serial_no.serial_no.update_maintenance_status",
+		"erpnext.buying.doctype.supplier_scorecard.supplier_scorecard.refresh_scorecards",
+		"erpnext.setup.doctype.company.company.cache_companies_monthly_sales_history",
+		# "erpnext.assets.doctype.asset.asset.update_maintenance_status",
+		# "erpnext.assets.doctype.asset.asset.make_post_gl_entry",
+		# "erpnext.crm.doctype.contract.contract.update_status_for_contracts",
+		# "erpnext.projects.doctype.project.project.update_project_sales_billing",
+		# "erpnext.projects.doctype.project.project.send_project_status_email_to_users",
+		# "erpnext.quality_management.doctype.quality_review.quality_review.review",
+		# "erpnext.support.doctype.service_level_agreement.service_level_agreement.check_agreement_status",
+		# "erpnext.crm.doctype.email_campaign.email_campaign.send_email_to_leads_or_contacts",
+		# "erpnext.crm.doctype.email_campaign.email_campaign.set_email_campaign_status",
+		"erpnext.selling.doctype.quotation.quotation.set_expired_status",
+		"erpnext.buying.doctype.supplier_quotation.supplier_quotation.set_expired_status",
+		"erpnext.accounts.doctype.process_statement_of_accounts.process_statement_of_accounts.send_auto_email",
+		"erpnext.accounts.utils.auto_create_exchange_rate_revaluation_daily",
+		"erpnext.accounts.utils.run_ledger_health_checks",
+		# "erpnext.assets.doctype.asset_maintenance_log.asset_maintenance_log.update_asset_maintenance_log_status",
 	],
 	"weekly": [
-		"erplite.accounts.utils.auto_create_exchange_rate_revaluation_weekly",
+		"erpnext.accounts.utils.auto_create_exchange_rate_revaluation_weekly",
 	],
 	"daily_long": [
-		"erplite.accounts.doctype.process_subscription.process_subscription.create_subscription_process",
-		"erplite.setup.doctype.email_digest.email_digest.send",
-		# "erplite.manufacturing.doctype.bom_update_tool.bom_update_tool.auto_update_latest_price_in_all_boms",
-		# "erplite.crm.utils.open_leads_opportunities_based_on_todays_event",
-		# "erplite.assets.doctype.asset.depreciation.post_depreciation_entries",
+		"erpnext.accounts.doctype.process_subscription.process_subscription.create_subscription_process",
+		"erpnext.setup.doctype.email_digest.email_digest.send",
+		# "erpnext.manufacturing.doctype.bom_update_tool.bom_update_tool.auto_update_latest_price_in_all_boms",
+		# "erpnext.crm.utils.open_leads_opportunities_based_on_todays_event",
+		# "erpnext.assets.doctype.asset.depreciation.post_depreciation_entries",
 	],
 	"monthly_long": [
-		"erplite.accounts.deferred_revenue.process_deferred_accounting",
-		"erplite.accounts.utils.auto_create_exchange_rate_revaluation_monthly",
+		"erpnext.accounts.deferred_revenue.process_deferred_accounting",
+		"erpnext.accounts.utils.auto_create_exchange_rate_revaluation_monthly",
 	],
 }
 
-email_brand_image = "assets/erplite/images/erplite-logo.jpg"
+email_brand_image = "assets/erpnext/images/erpnext-logo.jpg"
 
 default_mail_footer = """
 	<span>
 		Sent via
-		<a class="text-muted" href="https://erplite.com?source=via_email_footer" target="_blank">
-			erplite
+		<a class="text-muted" href="https://erpnext.com?source=via_email_footer" target="_blank">
+			erpnext
 		</a>
 	</span>
 """
@@ -483,12 +483,12 @@ default_mail_footer = """
 get_translated_dict = {("doctype", "Global Defaults"): "frappe.geo.country_info.get_translated_dict"}
 
 bot_parsers = [
-	"erplite.utilities.bot.FindItemBot",
+	"erpnext.utilities.bot.FindItemBot",
 ]
 
-get_site_info = "erplite.utilities.get_site_info"
+get_site_info = "erpnext.utilities.get_site_info"
 
-payment_gateway_enabled = "erplite.accounts.utils.create_payment_gateway_account"
+payment_gateway_enabled = "erpnext.accounts.utils.create_payment_gateway_account"
 
 communication_doctypes = ["Customer", "Supplier"]
 
@@ -555,31 +555,31 @@ accounting_dimension_doctypes = [
 ]
 
 get_matching_queries = (
-	"erplite.accounts.doctype.bank_reconciliation_tool.bank_reconciliation_tool.get_matching_queries"
+	"erpnext.accounts.doctype.bank_reconciliation_tool.bank_reconciliation_tool.get_matching_queries"
 )
 
-get_amounts_not_reflected_in_system_for_bank_reconciliation_statement = "erplite.accounts.report.bank_reconciliation_statement.bank_reconciliation_statement.get_amounts_not_reflected_in_system_for_bank_reconciliation_statement"
+get_amounts_not_reflected_in_system_for_bank_reconciliation_statement = "erpnext.accounts.report.bank_reconciliation_statement.bank_reconciliation_statement.get_amounts_not_reflected_in_system_for_bank_reconciliation_statement"
 
 get_payment_entries_for_bank_clearance = (
-	"erplite.accounts.doctype.bank_clearance.bank_clearance.get_payment_entries_for_bank_clearance"
+	"erpnext.accounts.doctype.bank_clearance.bank_clearance.get_payment_entries_for_bank_clearance"
 )
 
-get_entries_for_bank_clearance_summary = "erplite.accounts.report.bank_clearance_summary.bank_clearance_summary.get_entries_for_bank_clearance_summary"
+get_entries_for_bank_clearance_summary = "erpnext.accounts.report.bank_clearance_summary.bank_clearance_summary.get_entries_for_bank_clearance_summary"
 
-get_entries_for_bank_reconciliation_statement = "erplite.accounts.report.bank_reconciliation_statement.bank_reconciliation_statement.get_entries_for_bank_reconciliation_statement"
+get_entries_for_bank_reconciliation_statement = "erpnext.accounts.report.bank_reconciliation_statement.bank_reconciliation_statement.get_entries_for_bank_reconciliation_statement"
 
 regional_overrides = {
-	"France": {"erplite.tests.test_regional.test_method": "erplite.regional.france.utils.test_method"},
+	"France": {"erpnext.tests.test_regional.test_method": "erpnext.regional.france.utils.test_method"},
 	"United Arab Emirates": {
-		"erplite.controllers.taxes_and_totals.update_itemised_tax_data": "erplite.regional.united_arab_emirates.utils.update_itemised_tax_data",
-		"erplite.accounts.doctype.purchase_invoice.purchase_invoice.make_regional_gl_entries": "erplite.regional.united_arab_emirates.utils.make_regional_gl_entries",
+		"erpnext.controllers.taxes_and_totals.update_itemised_tax_data": "erpnext.regional.united_arab_emirates.utils.update_itemised_tax_data",
+		"erpnext.accounts.doctype.purchase_invoice.purchase_invoice.make_regional_gl_entries": "erpnext.regional.united_arab_emirates.utils.make_regional_gl_entries",
 	},
 	"Saudi Arabia": {
-		"erplite.controllers.taxes_and_totals.update_itemised_tax_data": "erplite.regional.united_arab_emirates.utils.update_itemised_tax_data"
+		"erpnext.controllers.taxes_and_totals.update_itemised_tax_data": "erpnext.regional.united_arab_emirates.utils.update_itemised_tax_data"
 	},
 	"Italy": {
-		"erplite.controllers.taxes_and_totals.update_itemised_tax_data": "erplite.regional.italy.utils.update_itemised_tax_data",
-		"erplite.controllers.accounts_controller.validate_regional": "erplite.regional.italy.utils.sales_invoice_validate",
+		"erpnext.controllers.taxes_and_totals.update_itemised_tax_data": "erpnext.regional.italy.utils.update_itemised_tax_data",
+		"erpnext.controllers.accounts_controller.validate_regional": "erpnext.regional.italy.utils.sales_invoice_validate",
 	},
 }
 user_privacy_documents = [
@@ -595,7 +595,7 @@ user_privacy_documents = [
 	},
 ]
 
-# erplite doctypes for Global Search
+# erpnext doctypes for Global Search
 global_search_doctypes = {
 	"Default": [
 		{"doctype": "Customer", "index": 0},
@@ -639,12 +639,12 @@ global_search_doctypes = {
 	],
 }
 
-# additional_timeline_content = {"*": ["erplite.telephony.doctype.call_log.call_log.get_linked_call_logs"]}
+# additional_timeline_content = {"*": ["erpnext.telephony.doctype.call_log.call_log.get_linked_call_logs"]}
 
 
 # extend_bootinfo = [
-# 	"erplite.support.doctype.service_level_agreement.service_level_agreement.add_sla_doctypes",
-# 	"erplite.startup.boot.bootinfo",
+# 	"erpnext.support.doctype.service_level_agreement.service_level_agreement.add_sla_doctypes",
+# 	"erpnext.startup.boot.bootinfo",
 # ]
 
 

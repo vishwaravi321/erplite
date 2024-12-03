@@ -1,5 +1,5 @@
 [project]
-name = "erplite"
+name = "erpnext"
 authors = [
     { name = "Nxweb", email = "support@nxweb.in"}
 ]
