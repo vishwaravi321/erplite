@@ -6,7 +6,7 @@ from frappe import _
 from frappe.model.document import Document
 from frappe.utils.background_jobs import is_job_enqueued
 
-from erplite.accounts.doctype.account.account import merge_account
+from erpnext.accounts.doctype.account.account import merge_account
 
 
 class LedgerMerge(Document):
@@ -18,7 +18,7 @@ class LedgerMerge(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
-		from erplite.accounts.doctype.ledger_merge_accounts.ledger_merge_accounts import (
+		from erpnext.accounts.doctype.ledger_merge_accounts.ledger_merge_accounts import (
 			LedgerMergeAccounts,
 		)
 

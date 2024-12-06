@@ -5,23 +5,23 @@ import unittest
 
 import frappe
 
-from erplite.accounts.doctype.accounting_dimension.test_accounting_dimension import (
+from erpnext.accounts.doctype.accounting_dimension.test_accounting_dimension import (
 	create_dimension,
 	disable_dimension,
 )
-from erplite.accounts.doctype.pos_closing_entry.pos_closing_entry import (
+from erpnext.accounts.doctype.pos_closing_entry.pos_closing_entry import (
 	make_closing_entry_from_opening,
 )
-from erplite.accounts.doctype.pos_invoice.pos_invoice import make_sales_return
-from erplite.accounts.doctype.pos_invoice.test_pos_invoice import create_pos_invoice
-from erplite.accounts.doctype.pos_opening_entry.test_pos_opening_entry import create_opening_entry
-from erplite.accounts.doctype.pos_profile.test_pos_profile import make_pos_profile
-from erplite.selling.page.point_of_sale.point_of_sale import get_items
-from erplite.stock.doctype.item.test_item import make_item
-from erplite.stock.doctype.serial_and_batch_bundle.test_serial_and_batch_bundle import (
+from erpnext.accounts.doctype.pos_invoice.pos_invoice import make_sales_return
+from erpnext.accounts.doctype.pos_invoice.test_pos_invoice import create_pos_invoice
+from erpnext.accounts.doctype.pos_opening_entry.test_pos_opening_entry import create_opening_entry
+from erpnext.accounts.doctype.pos_profile.test_pos_profile import make_pos_profile
+from erpnext.selling.page.point_of_sale.point_of_sale import get_items
+from erpnext.stock.doctype.item.test_item import make_item
+from erpnext.stock.doctype.serial_and_batch_bundle.test_serial_and_batch_bundle import (
 	get_batch_from_bundle,
 )
-from erplite.stock.doctype.stock_entry.test_stock_entry import make_stock_entry
+from erpnext.stock.doctype.stock_entry.test_stock_entry import make_stock_entry
 
 
 class TestPOSClosingEntry(unittest.TestCase):
@@ -185,13 +185,13 @@ class TestPOSClosingEntry(unittest.TestCase):
 
 	def test_merging_into_sales_invoice_for_batched_item(self):
 		frappe.flags.print_message = False
-		from erplite.accounts.doctype.pos_closing_entry.test_pos_closing_entry import (
+		from erpnext.accounts.doctype.pos_closing_entry.test_pos_closing_entry import (
 			init_user_and_profile,
 		)
-		from erplite.accounts.doctype.pos_invoice_merge_log.pos_invoice_merge_log import (
+		from erpnext.accounts.doctype.pos_invoice_merge_log.pos_invoice_merge_log import (
 			consolidate_pos_invoices,
 		)
-		from erplite.stock.doctype.batch.batch import get_batch_qty
+		from erpnext.stock.doctype.batch.batch import get_batch_qty
 
 		frappe.db.sql("delete from `tabPOS Invoice`")
 		item_doc = make_item(

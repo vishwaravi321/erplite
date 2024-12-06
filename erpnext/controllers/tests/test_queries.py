@@ -3,7 +3,7 @@ from functools import partial
 
 import frappe
 
-from erplite.controllers import queries
+from erpnext.controllers import queries
 
 
 def add_default_params(func, doctype):

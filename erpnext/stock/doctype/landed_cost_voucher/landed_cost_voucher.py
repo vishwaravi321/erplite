@@ -9,9 +9,9 @@ from frappe.model.meta import get_field_precision
 from frappe.query_builder.custom import ConstantColumn
 from frappe.utils import flt
 
-import erplite
-from erplite.controllers.taxes_and_totals import init_landed_taxes_and_totals
-from erplite.stock.doctype.serial_no.serial_no import get_serial_nos
+import erpnext
+from erpnext.controllers.taxes_and_totals import init_landed_taxes_and_totals
+from erpnext.stock.doctype.serial_no.serial_no import get_serial_nos
 
 
 class LandedCostVoucher(Document):
@@ -23,11 +23,11 @@ class LandedCostVoucher(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
-		from erplite.stock.doctype.landed_cost_item.landed_cost_item import LandedCostItem
-		from erplite.stock.doctype.landed_cost_purchase_receipt.landed_cost_purchase_receipt import (
+		from erpnext.stock.doctype.landed_cost_item.landed_cost_item import LandedCostItem
+		from erpnext.stock.doctype.landed_cost_purchase_receipt.landed_cost_purchase_receipt import (
 			LandedCostPurchaseReceipt,
 		)
-		from erplite.stock.doctype.landed_cost_taxes_and_charges.landed_cost_taxes_and_charges import (
+		from erpnext.stock.doctype.landed_cost_taxes_and_charges.landed_cost_taxes_and_charges import (
 			LandedCostTaxesandCharges,
 		)
 
@@ -55,7 +55,7 @@ class LandedCostVoucher(Document):
 					item.description = d.description
 					item.qty = d.qty
 					item.rate = d.base_rate
-					item.cost_center = d.cost_center or erplite.get_default_cost_center(self.company)
+					item.cost_center = d.cost_center or erpnext.get_default_cost_center(self.company)
 					item.amount = d.base_amount
 					item.receipt_document_type = pr.receipt_document_type
 					item.receipt_document = pr.receipt_document

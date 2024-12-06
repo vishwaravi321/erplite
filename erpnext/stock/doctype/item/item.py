@@ -24,15 +24,15 @@ from frappe.utils import (
 from frappe.utils.html_utils import clean_html
 from pypika import Order
 
-import erplite
-from erplite.controllers.item_variant import (
+import erpnext
+from erpnext.controllers.item_variant import (
 	ItemVariantExistsError,
 	copy_attributes_to_variant,
 	get_variant,
 	make_variant_item_code,
 	validate_item_variant_attributes,
 )
-from erplite.stock.doctype.item_default.item_default import ItemDefault
+from erpnext.stock.doctype.item_default.item_default import ItemDefault
 
 
 class DuplicateReorderRows(frappe.ValidationError):
@@ -60,14 +60,14 @@ class Item(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
-		from erplite.stock.doctype.item_barcode.item_barcode import ItemBarcode
-		from erplite.stock.doctype.item_customer_detail.item_customer_detail import ItemCustomerDetail
-		from erplite.stock.doctype.item_default.item_default import ItemDefault
-		from erplite.stock.doctype.item_reorder.item_reorder import ItemReorder
-		from erplite.stock.doctype.item_supplier.item_supplier import ItemSupplier
-		from erplite.stock.doctype.item_tax.item_tax import ItemTax
-		from erplite.stock.doctype.item_variant_attribute.item_variant_attribute import ItemVariantAttribute
-		from erplite.stock.doctype.uom_conversion_detail.uom_conversion_detail import UOMConversionDetail
+		from erpnext.stock.doctype.item_barcode.item_barcode import ItemBarcode
+		from erpnext.stock.doctype.item_customer_detail.item_customer_detail import ItemCustomerDetail
+		from erpnext.stock.doctype.item_default.item_default import ItemDefault
+		from erpnext.stock.doctype.item_reorder.item_reorder import ItemReorder
+		from erpnext.stock.doctype.item_supplier.item_supplier import ItemSupplier
+		from erpnext.stock.doctype.item_tax.item_tax import ItemTax
+		from erpnext.stock.doctype.item_variant_attribute.item_variant_attribute import ItemVariantAttribute
+		from erpnext.stock.doctype.uom_conversion_detail.uom_conversion_detail import UOMConversionDetail
 
 		allow_alternative_item: DF.Check
 		allow_negative_stock: DF.Check
@@ -249,7 +249,7 @@ class Item(Document):
 					"item_code": self.name,
 					"uom": self.stock_uom,
 					"brand": self.brand,
-					"currency": erplite.get_default_currency(),
+					"currency": erpnext.get_default_currency(),
 					"price_list_rate": self.standard_rate,
 				}
 			)
@@ -263,7 +263,7 @@ class Item(Document):
 		if not self.valuation_rate and not self.standard_rate and not self.is_customer_provided_item:
 			frappe.throw(_("Valuation Rate is mandatory if Opening Stock entered"))
 
-		from erplite.stock.doctype.stock_entry.stock_entry_utils import make_stock_entry
+		from erpnext.stock.doctype.stock_entry.stock_entry_utils import make_stock_entry
 
 		# default warehouse, or Stores
 		for default in self.item_defaults or [
@@ -461,7 +461,7 @@ class Item(Document):
 						"" if item_barcode.barcode_type not in options else item_barcode.barcode_type
 					)
 					if item_barcode.barcode_type:
-						barcode_type = convert_erplite_to_barcodenumber(
+						barcode_type = convert_erpnext_to_barcodenumber(
 							item_barcode.barcode_type.upper(), item_barcode.barcode
 						)
 						if barcode_type in barcodenumber.barcodes():
@@ -654,7 +654,7 @@ class Item(Document):
 		frappe.db.set_value("Item", new_name, "last_purchase_rate", last_purchase_rate)
 
 	def recalculate_bin_qty(self, new_name):
-		from erplite.stock.stock_balance import repost_stock
+		from erpnext.stock.stock_balance import repost_stock
 
 		existing_allow_negative_stock = frappe.db.get_value("Stock Settings", None, "allow_negative_stock")
 		frappe.db.set_single_value("Stock Settings", "allow_negative_stock", 1)
@@ -779,7 +779,7 @@ class Item(Document):
 					frappe.msgprint(_("Item Variants updated"))
 				else:
 					frappe.enqueue(
-						"erplite.stock.doctype.item.item.update_variants",
+						"erpnext.stock.doctype.item.item.update_variants",
 						variants=variants,
 						template=self,
 						now=frappe.flags.in_test,
@@ -1055,8 +1055,8 @@ class Item(Document):
 				)
 
 
-def convert_erplite_to_barcodenumber(erplite_number, barcode):
-	if erplite_number == "EAN":
+def convert_erpnext_to_barcodenumber(erpnext_number, barcode):
+	if erpnext_number == "EAN":
 		ean_type = {
 			8: "EAN8",
 			13: "EAN13",
@@ -1065,7 +1065,7 @@ def convert_erplite_to_barcodenumber(erplite_number, barcode):
 		if barcode_length in ean_type:
 			return ean_type[barcode_length]
 
-		return erplite_number
+		return erpnext_number
 
 	convert = {
 		"UPC-A": "UPCA",
@@ -1074,10 +1074,10 @@ def convert_erplite_to_barcodenumber(erplite_number, barcode):
 		"ISBN-13": "ISBN13",
 	}
 
-	if erplite_number in convert:
-		return convert[erplite_number]
+	if erpnext_number in convert:
+		return convert[erpnext_number]
 
-	return erplite_number
+	return erpnext_number
 
 
 def make_item_price(item, price_list_name, item_price):
@@ -1400,13 +1400,13 @@ def validate_item_default_company_links(item_defaults: list[ItemDefault]) -> Non
 
 @frappe.whitelist()
 def get_asset_naming_series():
-	from erplite.assets.doctype.asset.asset import get_asset_naming_series
+	from erpnext.assets.doctype.asset.asset import get_asset_naming_series
 
 	return get_asset_naming_series()
 
 
 @frappe.request_cache
 def get_child_warehouses(warehouse):
-	from erplite.stock.doctype.warehouse.warehouse import get_child_warehouses
+	from erpnext.stock.doctype.warehouse.warehouse import get_child_warehouses
 
 	return get_child_warehouses(warehouse)

@@ -9,7 +9,7 @@ import frappe
 from frappe import _
 from frappe.utils import add_days, cint, flt, nowdate
 
-import erplite
+import erpnext
 
 
 def reorder_item():
@@ -31,7 +31,7 @@ def _reorder_item():
 		)
 	)
 	default_company = (
-		erplite.get_default_company() or frappe.db.sql("""select name from tabCompany limit 1""")[0][0]
+		erpnext.get_default_company() or frappe.db.sql("""select name from tabCompany limit 1""")[0][0]
 	)
 
 	items_to_consider = get_items_for_reorder()
@@ -369,7 +369,7 @@ def get_comapny_wise_users(company):
 
 
 def notify_errors(exceptions_list):
-	subject = _("[Important] [erplite] Auto Reorder Errors")
+	subject = _("[Important] [erpnext] Auto Reorder Errors")
 	content = (
 		_("Dear System Manager,")
 		+ "<br>"

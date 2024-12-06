@@ -19,13 +19,13 @@ from frappe.utils import (
 )
 from frappe.utils.user import get_users_with_role
 
-import erplite
-from erplite.accounts.doctype.accounting_dimension.accounting_dimension import (
+import erpnext
+from erpnext.accounts.doctype.accounting_dimension.accounting_dimension import (
 	get_checks_for_pl_and_bs_accounts,
 )
-from erplite.accounts.doctype.journal_entry.journal_entry import make_reverse_journal_entry
-from erplite.assets.doctype.asset_activity.asset_activity import add_asset_activity
-from erplite.assets.doctype.asset_depreciation_schedule.asset_depreciation_schedule import (
+from erpnext.accounts.doctype.journal_entry.journal_entry import make_reverse_journal_entry
+from erpnext.assets.doctype.asset_activity.asset_activity import add_asset_activity
+from erpnext.assets.doctype.asset_depreciation_schedule.asset_depreciation_schedule import (
 	get_asset_depr_schedule_doc,
 	get_asset_depr_schedule_name,
 	get_temp_asset_depr_schedule_doc,
@@ -513,7 +513,7 @@ def depreciate_asset(asset_doc, date, notes):
 	cancel_depreciation_entries(asset_doc, date)
 
 
-@erplite.allow_regional
+@erpnext.allow_regional
 def cancel_depreciation_entries(asset_doc, date):
 	pass
 

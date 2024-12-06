@@ -6,7 +6,7 @@ import frappe
 from frappe import _
 from frappe.utils import cint, get_link_to_form
 
-from erplite.controllers.status_updater import StatusUpdater
+from erpnext.controllers.status_updater import StatusUpdater
 
 
 class POSOpeningEntry(StatusUpdater):
@@ -18,7 +18,7 @@ class POSOpeningEntry(StatusUpdater):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
-		from erplite.accounts.doctype.pos_opening_entry_detail.pos_opening_entry_detail import (
+		from erpnext.accounts.doctype.pos_opening_entry_detail.pos_opening_entry_detail import (
 			POSOpeningEntryDetail,
 		)
 

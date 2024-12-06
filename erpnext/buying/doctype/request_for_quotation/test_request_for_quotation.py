@@ -8,16 +8,16 @@ import frappe
 from frappe.tests.utils import FrappeTestCase
 from frappe.utils import nowdate
 
-from erplite.buying.doctype.request_for_quotation.request_for_quotation import (
+from erpnext.buying.doctype.request_for_quotation.request_for_quotation import (
 	RequestforQuotation,
 	create_supplier_quotation,
 	get_pdf,
 	make_supplier_quotation_from_rfq,
 )
-from erplite.crm.doctype.opportunity.opportunity import make_request_for_quotation as make_rfq
-from erplite.crm.doctype.opportunity.test_opportunity import make_opportunity
-from erplite.stock.doctype.item.test_item import make_item
-from erplite.templates.pages.rfq import check_supplier_has_docname_access
+from erpnext.crm.doctype.opportunity.opportunity import make_request_for_quotation as make_rfq
+from erpnext.crm.doctype.opportunity.test_opportunity import make_opportunity
+from erpnext.stock.doctype.item.test_item import make_item
+from erpnext.templates.pages.rfq import check_supplier_has_docname_access
 
 
 class TestRequestforQuotation(FrappeTestCase):

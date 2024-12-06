@@ -13,13 +13,13 @@ from frappe.utils.jinja import validate_template
 from frappe.utils.pdf import get_pdf
 from frappe.www.printview import get_print_style
 
-from erplite import get_company_currency
-from erplite.accounts.party import get_party_account_currency
-from erplite.accounts.report.accounts_receivable.accounts_receivable import execute as get_ar_soa
-from erplite.accounts.report.accounts_receivable_summary.accounts_receivable_summary import (
+from erpnext import get_company_currency
+from erpnext.accounts.party import get_party_account_currency
+from erpnext.accounts.report.accounts_receivable.accounts_receivable import execute as get_ar_soa
+from erpnext.accounts.report.accounts_receivable_summary.accounts_receivable_summary import (
 	execute as get_ageing,
 )
-from erplite.accounts.report.general_ledger.general_ledger import execute as get_soa
+from erpnext.accounts.report.general_ledger.general_ledger import execute as get_soa
 
 
 class ProcessStatementOfAccounts(Document):
@@ -31,11 +31,11 @@ class ProcessStatementOfAccounts(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
-		from erplite.accounts.doctype.process_statement_of_accounts_customer.process_statement_of_accounts_customer import (
+		from erpnext.accounts.doctype.process_statement_of_accounts_customer.process_statement_of_accounts_customer import (
 			ProcessStatementOfAccountsCustomer,
 		)
-		from erplite.accounts.doctype.psoa_cost_center.psoa_cost_center import PSOACostCenter
-		from erplite.accounts.doctype.psoa_project.psoa_project import PSOAProject
+		from erpnext.accounts.doctype.psoa_cost_center.psoa_cost_center import PSOACostCenter
+		from erpnext.accounts.doctype.psoa_project.psoa_project import PSOAProject
 
 		account: DF.Link | None
 		ageing_based_on: DF.Literal["Due Date", "Posting Date"]
@@ -234,9 +234,9 @@ def get_ar_filters(doc, entry):
 def get_html(doc, filters, entry, col, res, ageing):
 	base_template_path = "frappe/www/printview.html"
 	template_path = (
-		"erplite/accounts/doctype/process_statement_of_accounts/process_statement_of_accounts.html"
+		"erpnext/accounts/doctype/process_statement_of_accounts/process_statement_of_accounts.html"
 		if doc.report == "General Ledger"
-		else "erplite/accounts/doctype/process_statement_of_accounts/process_statement_of_accounts_accounts_receivable.html"
+		else "erpnext/accounts/doctype/process_statement_of_accounts/process_statement_of_accounts_accounts_receivable.html"
 	)
 
 	if doc.letter_head:

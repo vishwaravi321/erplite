@@ -8,10 +8,10 @@ from frappe import _
 from frappe.model.meta import get_field_precision
 from frappe.utils import cint, flt, format_datetime, get_datetime
 
-import erplite
-from erplite.stock.serial_batch_bundle import get_batches_from_bundle
-from erplite.stock.serial_batch_bundle import get_serial_nos as get_serial_nos_from_bundle
-from erplite.stock.utils import get_incoming_rate, get_valuation_method
+import erpnext
+from erpnext.stock.serial_batch_bundle import get_batches_from_bundle
+from erpnext.stock.serial_batch_bundle import get_serial_nos as get_serial_nos_from_bundle
+from erpnext.stock.utils import get_incoming_rate, get_valuation_method
 
 
 class StockOverReturnError(frappe.ValidationError):
@@ -165,7 +165,7 @@ def validate_quantity(doc, args, ref, valid_items, already_returned_items):
 
 	already_returned_data = already_returned_items.get(args.item_code) or {}
 
-	company_currency = erplite.get_company_currency(doc.company)
+	company_currency = erpnext.get_company_currency(doc.company)
 	stock_qty_precision = get_field_precision(
 		frappe.get_meta(doc.doctype + " Item").get_field("stock_qty"), company_currency
 	)
@@ -203,7 +203,7 @@ def validate_quantity(doc, args, ref, valid_items, already_returned_items):
 
 
 def get_ref_item_dict(valid_items, ref_item_row):
-	from erplite.stock.doctype.serial_no.serial_no import get_serial_nos
+	from erpnext.stock.doctype.serial_no.serial_no import get_serial_nos
 
 	key = ref_item_row.item_code
 	if ref_item_row.get("name"):
@@ -405,8 +405,8 @@ def make_return_doc(doctype: str, source_name: str, target_doc=None, return_agai
 			doc.run_method("calculate_taxes_and_totals")
 
 	def update_serial_batch_no(source_doc, target_doc, source_parent, item_details, qty_field):
-		from erplite.stock.doctype.serial_no.serial_no import get_serial_nos
-		from erplite.stock.serial_batch_bundle import SerialBatchCreation
+		from erpnext.stock.doctype.serial_no.serial_no import get_serial_nos
+		from erpnext.stock.serial_batch_bundle import SerialBatchCreation
 
 		returned_serial_nos = []
 		returned_batches = frappe._dict()
@@ -622,7 +622,7 @@ def make_return_doc(doctype: str, source_name: str, target_doc=None, return_agai
 			update_non_bundled_serial_nos(source_doc, target_doc, source_parent)
 
 	def update_non_bundled_serial_nos(source_doc, target_doc, source_parent):
-		from erplite.stock.doctype.serial_no.serial_no import get_serial_nos
+		from erpnext.stock.doctype.serial_no.serial_no import get_serial_nos
 
 		if source_doc.serial_no:
 			returned_serial_nos = get_returned_non_bundled_serial_nos(source_doc, source_parent)
@@ -641,7 +641,7 @@ def make_return_doc(doctype: str, source_name: str, target_doc=None, return_agai
 				target_doc.rejected_serial_no = "\n".join(rejected_serial_nos)
 
 	def get_returned_non_bundled_serial_nos(child_doc, parent_doc, serial_no_field="serial_no"):
-		from erplite.stock.doctype.serial_no.serial_no import get_serial_nos
+		from erpnext.stock.doctype.serial_no.serial_no import get_serial_nos
 
 		return_ref_field = frappe.scrub(child_doc.doctype)
 		if child_doc.doctype == "Delivery Note Item":
@@ -788,10 +788,10 @@ def get_filters(
 
 
 def get_returned_serial_nos(child_doc, parent_doc, serial_no_field=None, ignore_voucher_detail_no=None):
-	from erplite.stock.doctype.serial_no.serial_no import (
+	from erpnext.stock.doctype.serial_no.serial_no import (
 		get_serial_nos as get_serial_nos_from_serial_no,
 	)
-	from erplite.stock.serial_batch_bundle import get_serial_nos
+	from erpnext.stock.serial_batch_bundle import get_serial_nos
 
 	if not serial_no_field:
 		serial_no_field = "serial_and_batch_bundle"
@@ -838,7 +838,7 @@ def get_returned_serial_nos(child_doc, parent_doc, serial_no_field=None, ignore_
 
 
 def get_returned_batches(child_doc, parent_doc, batch_no_field=None, ignore_voucher_detail_no=None):
-	from erplite.stock.serial_batch_bundle import get_batches_from_bundle
+	from erpnext.stock.serial_batch_bundle import get_batches_from_bundle
 
 	batches = frappe._dict()
 
@@ -1079,7 +1079,7 @@ def filter_serial_batches(parent_doc, data, row, warehouse_field=None, qty_field
 
 
 def get_available_batch_qty(parent_doc, batch_no, warehouse):
-	from erplite.stock.doctype.batch.batch import get_batch_qty
+	from erpnext.stock.doctype.batch.batch import get_batch_qty
 
 	return get_batch_qty(
 		batch_no,
@@ -1091,7 +1091,7 @@ def get_available_batch_qty(parent_doc, batch_no, warehouse):
 
 
 def make_serial_batch_bundle_for_return(data, child_doc, parent_doc, warehouse_field=None, qty_field=None):
-	from erplite.stock.serial_batch_bundle import SerialBatchCreation
+	from erpnext.stock.serial_batch_bundle import SerialBatchCreation
 
 	type_of_transaction = "Outward"
 	if parent_doc.doctype in ["Sales Invoice", "Delivery Note", "POS Invoice"]:

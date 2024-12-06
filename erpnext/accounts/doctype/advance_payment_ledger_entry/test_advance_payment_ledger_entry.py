@@ -5,10 +5,10 @@ import frappe
 from frappe.tests.utils import FrappeTestCase
 from frappe.utils import nowdate, today
 
-from erplite.accounts.doctype.payment_entry.test_payment_entry import get_payment_entry
-from erplite.accounts.test.accounts_mixin import AccountsTestMixin
-from erplite.buying.doctype.purchase_order.test_purchase_order import create_purchase_order
-from erplite.selling.doctype.sales_order.test_sales_order import make_sales_order
+from erpnext.accounts.doctype.payment_entry.test_payment_entry import get_payment_entry
+from erpnext.accounts.test.accounts_mixin import AccountsTestMixin
+from erpnext.buying.doctype.purchase_order.test_purchase_order import create_purchase_order
+from erpnext.selling.doctype.sales_order.test_sales_order import make_sales_order
 
 
 class TestAdvancePaymentLedgerEntry(AccountsTestMixin, FrappeTestCase):

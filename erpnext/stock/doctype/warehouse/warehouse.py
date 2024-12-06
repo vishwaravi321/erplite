@@ -8,7 +8,7 @@ from frappe.utils import cint
 from frappe.utils.nestedset import NestedSet
 from pypika.terms import ExistsCriterion
 
-from erplite.stock import get_warehouse_account
+from erpnext.stock import get_warehouse_account
 
 
 class Warehouse(NestedSet):

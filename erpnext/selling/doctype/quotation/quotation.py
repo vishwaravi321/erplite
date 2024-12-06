@@ -7,7 +7,7 @@ from frappe import _
 from frappe.model.mapper import get_mapped_doc
 from frappe.utils import flt, getdate, nowdate
 
-from erplite.controllers.selling_controller import SellingController
+from erpnext.controllers.selling_controller import SellingController
 
 form_grid_templates = {"items": "templates/form_grid/item_grid.html"}
 
@@ -21,17 +21,17 @@ class Quotation(SellingController):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
-		from erplite.accounts.doctype.payment_schedule.payment_schedule import PaymentSchedule
-		from erplite.accounts.doctype.pricing_rule_detail.pricing_rule_detail import PricingRuleDetail
-		from erplite.accounts.doctype.sales_taxes_and_charges.sales_taxes_and_charges import (
+		from erpnext.accounts.doctype.payment_schedule.payment_schedule import PaymentSchedule
+		from erpnext.accounts.doctype.pricing_rule_detail.pricing_rule_detail import PricingRuleDetail
+		from erpnext.accounts.doctype.sales_taxes_and_charges.sales_taxes_and_charges import (
 			SalesTaxesandCharges,
 		)
-		from erplite.crm.doctype.competitor_detail.competitor_detail import CompetitorDetail
-		from erplite.selling.doctype.quotation_item.quotation_item import QuotationItem
-		from erplite.setup.doctype.quotation_lost_reason_detail.quotation_lost_reason_detail import (
+		from erpnext.crm.doctype.competitor_detail.competitor_detail import CompetitorDetail
+		from erpnext.selling.doctype.quotation_item.quotation_item import QuotationItem
+		from erpnext.setup.doctype.quotation_lost_reason_detail.quotation_lost_reason_detail import (
 			QuotationLostReasonDetail,
 		)
-		from erplite.stock.doctype.packed_item.packed_item import PackedItem
+		from erpnext.stock.doctype.packed_item.packed_item import PackedItem
 
 		additional_discount_percentage: DF.Float
 		address_display: DF.SmallText | None
@@ -135,7 +135,7 @@ class Quotation(SellingController):
 		if self.items:
 			self.with_items = 1
 
-		from erplite.stock.doctype.packed_item.packed_item import make_packing_list
+		from erpnext.stock.doctype.packed_item.packed_item import make_packing_list
 
 		make_packing_list(self)
 
@@ -321,7 +321,7 @@ class Quotation(SellingController):
 
 
 def get_list_context(context=None):
-	from erplite.controllers.website_list_for_contact import get_list_context
+	from erpnext.controllers.website_list_for_contact import get_list_context
 
 	list_context = get_list_context(context)
 	list_context.update(
@@ -539,7 +539,7 @@ def _make_customer(source_name, ignore_permissions=False):
 
 
 def create_customer_from_lead(lead_name, ignore_permissions=False):
-	from erplite.crm.doctype.lead.lead import _make_customer
+	from erpnext.crm.doctype.lead.lead import _make_customer
 
 	customer = _make_customer(lead_name, ignore_permissions=ignore_permissions)
 	customer.flags.ignore_permissions = ignore_permissions
@@ -552,7 +552,7 @@ def create_customer_from_lead(lead_name, ignore_permissions=False):
 
 
 def create_customer_from_prospect(prospect_name, ignore_permissions=False):
-	from erplite.crm.doctype.prospect.prospect import make_customer as make_customer_from_prospect
+	from erpnext.crm.doctype.prospect.prospect import make_customer as make_customer_from_prospect
 
 	customer = make_customer_from_prospect(prospect_name)
 	customer.flags.ignore_permissions = ignore_permissions

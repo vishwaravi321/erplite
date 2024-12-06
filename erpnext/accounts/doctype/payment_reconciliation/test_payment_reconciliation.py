@@ -7,15 +7,15 @@ from frappe import qb
 from frappe.tests.utils import FrappeTestCase, change_settings
 from frappe.utils import add_days, add_years, flt, getdate, nowdate, today
 
-from erplite import get_default_cost_center
-from erplite.accounts.doctype.payment_entry.payment_entry import get_payment_entry
-from erplite.accounts.doctype.payment_entry.test_payment_entry import create_payment_entry
-from erplite.accounts.doctype.purchase_invoice.test_purchase_invoice import make_purchase_invoice
-from erplite.accounts.doctype.sales_invoice.test_sales_invoice import create_sales_invoice
-from erplite.accounts.party import get_party_account
-from erplite.accounts.utils import get_fiscal_year
-from erplite.buying.doctype.purchase_order.test_purchase_order import create_purchase_order
-from erplite.stock.doctype.item.test_item import create_item
+from erpnext import get_default_cost_center
+from erpnext.accounts.doctype.payment_entry.payment_entry import get_payment_entry
+from erpnext.accounts.doctype.payment_entry.test_payment_entry import create_payment_entry
+from erpnext.accounts.doctype.purchase_invoice.test_purchase_invoice import make_purchase_invoice
+from erpnext.accounts.doctype.sales_invoice.test_sales_invoice import create_sales_invoice
+from erpnext.accounts.party import get_party_account
+from erpnext.accounts.utils import get_fiscal_year
+from erpnext.buying.doctype.purchase_order.test_purchase_order import create_purchase_order
+from erpnext.stock.doctype.item.test_item import create_item
 
 test_dependencies = ["Item"]
 
@@ -2101,7 +2101,7 @@ def create_fiscal_year(company, year_start_date, year_end_date):
 
 
 def make_period_closing_voucher(company, cost_center, posting_date=None, submit=True):
-	from erplite.accounts.doctype.account.test_account import create_account
+	from erpnext.accounts.doctype.account.test_account import create_account
 
 	parent_account = frappe.db.get_value(
 		"Account", {"company": company, "account_name": "Current Liabilities", "is_group": 1}, "name"

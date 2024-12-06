@@ -6,7 +6,7 @@ import frappe
 from frappe import _
 from frappe.model.document import Document
 
-from erplite.stock.utils import get_stock_balance, get_stock_value_on
+from erpnext.stock.utils import get_stock_balance, get_stock_value_on
 
 
 class QuickStockBalance(Document):

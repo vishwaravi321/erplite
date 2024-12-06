@@ -4,7 +4,7 @@
 import frappe
 from frappe.tests.utils import FrappeTestCase
 
-from erplite.controllers.queries import item_query
+from erpnext.controllers.queries import item_query
 
 test_dependencies = ["Item", "Customer", "Supplier"]
 

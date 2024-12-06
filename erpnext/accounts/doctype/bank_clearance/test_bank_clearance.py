@@ -6,13 +6,13 @@ import unittest
 import frappe
 from frappe.utils import add_months, getdate
 
-from erplite.accounts.doctype.cost_center.test_cost_center import create_cost_center
-from erplite.accounts.doctype.payment_entry.test_payment_entry import get_payment_entry
-from erplite.accounts.doctype.purchase_invoice.test_purchase_invoice import make_purchase_invoice
-from erplite.accounts.doctype.sales_invoice.test_sales_invoice import create_sales_invoice
-from erplite.stock.doctype.item.test_item import create_item
-from erplite.stock.doctype.warehouse.test_warehouse import create_warehouse
-from erplite.tests.utils import if_lending_app_installed, if_lending_app_not_installed
+from erpnext.accounts.doctype.cost_center.test_cost_center import create_cost_center
+from erpnext.accounts.doctype.payment_entry.test_payment_entry import get_payment_entry
+from erpnext.accounts.doctype.purchase_invoice.test_purchase_invoice import make_purchase_invoice
+from erpnext.accounts.doctype.sales_invoice.test_sales_invoice import create_sales_invoice
+from erpnext.stock.doctype.item.test_item import create_item
+from erpnext.stock.doctype.warehouse.test_warehouse import create_warehouse
+from erpnext.tests.utils import if_lending_app_installed, if_lending_app_not_installed
 
 
 class TestBankClearance(unittest.TestCase):
@@ -158,7 +158,7 @@ def add_transactions():
 
 
 def make_payment_entry():
-	from erplite.buying.doctype.supplier.test_supplier import create_supplier
+	from erpnext.buying.doctype.supplier.test_supplier import create_supplier
 
 	supplier = create_supplier(supplier_name="_Test Supplier")
 	pi = make_purchase_invoice(
@@ -177,7 +177,7 @@ def make_payment_entry():
 
 
 def make_pos_sales_invoice():
-	from erplite.accounts.doctype.opening_invoice_creation_tool.test_opening_invoice_creation_tool import (
+	from erpnext.accounts.doctype.opening_invoice_creation_tool.test_opening_invoice_creation_tool import (
 		make_customer,
 	)
 

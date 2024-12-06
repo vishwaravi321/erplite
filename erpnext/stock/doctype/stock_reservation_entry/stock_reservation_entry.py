@@ -9,7 +9,7 @@ from frappe.model.document import Document
 from frappe.query_builder.functions import Sum
 from frappe.utils import cint, flt, nowdate, nowtime
 
-from erplite.stock.utils import get_or_make_bin, get_stock_balance
+from erpnext.stock.utils import get_or_make_bin, get_stock_balance
 
 
 class StockReservationEntry(Document):
@@ -21,7 +21,7 @@ class StockReservationEntry(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
-		from erplite.stock.doctype.serial_and_batch_entry.serial_and_batch_entry import (
+		from erpnext.stock.doctype.serial_and_batch_entry.serial_and_batch_entry import (
 			SerialandBatchEntry,
 		)
 
@@ -51,7 +51,7 @@ class StockReservationEntry(Document):
 	# end: auto-generated types
 
 	def validate(self) -> None:
-		from erplite.stock.utils import validate_disabled_warehouse, validate_warehouse_company
+		from erpnext.stock.utils import validate_disabled_warehouse, validate_warehouse_company
 
 		self.validate_amended_doc()
 		self.validate_mandatory()
@@ -162,9 +162,9 @@ class StockReservationEntry(Document):
 			and (self.has_serial_no or self.has_batch_no)
 			and cint(frappe.db.get_single_value("Stock Settings", "auto_reserve_serial_and_batch"))
 		):
-			from erplite.stock.doctype.batch.batch import get_available_batches
-			from erplite.stock.doctype.serial_no.serial_no import get_serial_nos_for_outward
-			from erplite.stock.serial_batch_bundle import get_serial_nos_batch
+			from erpnext.stock.doctype.batch.batch import get_available_batches
+			from erpnext.stock.doctype.serial_no.serial_no import get_serial_nos_for_outward
+			from erpnext.stock.serial_batch_bundle import get_serial_nos_batch
 
 			self.reservation_based_on = "Serial and Batch"
 			self.sb_entries.clear()
@@ -515,7 +515,7 @@ def get_available_qty_to_reserve(
 ) -> float:
 	"""Returns `Available Qty to Reserve (Actual Qty - Reserved Qty)` for Item, Warehouse and Batch combination."""
 
-	from erplite.stock.doctype.batch.batch import get_batch_qty
+	from erpnext.stock.doctype.batch.batch import get_batch_qty
 
 	if batch_no:
 		return get_batch_qty(
@@ -554,7 +554,7 @@ def get_available_serial_nos_to_reserve(
 ) -> list[tuple]:
 	"""Returns Available Serial Nos to Reserve (Available Serial Nos - Reserved Serial Nos)` for Item, Warehouse and Batch combination."""
 
-	from erplite.stock.doctype.serial_and_batch_bundle.serial_and_batch_bundle import (
+	from erpnext.stock.doctype.serial_and_batch_bundle.serial_and_batch_bundle import (
 		get_available_serial_nos,
 	)
 
@@ -888,7 +888,7 @@ def create_stock_reservation_entries_for_so_items(
 ) -> None:
 	"""Creates Stock Reservation Entries for Sales Order Items."""
 
-	from erplite.selling.doctype.sales_order.sales_order import get_unreserved_qty
+	from erpnext.selling.doctype.sales_order.sales_order import get_unreserved_qty
 
 	if not from_voucher_type and (
 		sales_order.get("_action") == "submit"

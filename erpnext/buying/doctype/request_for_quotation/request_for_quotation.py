@@ -13,10 +13,10 @@ from frappe.utils import get_url
 from frappe.utils.print_format import download_pdf
 from frappe.utils.user import get_user_fullname
 
-from erplite.accounts.party import get_party_account_currency, get_party_details
-from erplite.buying.utils import validate_for_items
-from erplite.controllers.buying_controller import BuyingController
-from erplite.stock.doctype.material_request.material_request import set_missing_values
+from erpnext.accounts.party import get_party_account_currency, get_party_details
+from erpnext.buying.utils import validate_for_items
+from erpnext.controllers.buying_controller import BuyingController
+from erpnext.stock.doctype.material_request.material_request import set_missing_values
 
 STANDARD_USERS = ("Guest", "Administrator")
 
@@ -30,10 +30,10 @@ class RequestforQuotation(BuyingController):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
-		from erplite.buying.doctype.request_for_quotation_item.request_for_quotation_item import (
+		from erpnext.buying.doctype.request_for_quotation_item.request_for_quotation_item import (
 			RequestforQuotationItem,
 		)
-		from erplite.buying.doctype.request_for_quotation_supplier.request_for_quotation_supplier import (
+		from erpnext.buying.doctype.request_for_quotation_supplier.request_for_quotation_supplier import (
 			RequestforQuotationSupplier,
 		)
 
@@ -355,7 +355,7 @@ def check_portal_enabled(reference_doctype):
 
 
 def get_list_context(context=None):
-	from erplite.controllers.website_list_for_contact import get_list_context
+	from erpnext.controllers.website_list_for_contact import get_list_context
 
 	list_context = get_list_context(context)
 	list_context.update(

@@ -6,17 +6,17 @@ import unittest
 import frappe
 from frappe.utils import cint, flt, getdate, now_datetime
 
-from erplite.assets.doctype.asset.depreciation import post_depreciation_entries
-from erplite.assets.doctype.asset.test_asset import (
+from erpnext.assets.doctype.asset.depreciation import post_depreciation_entries
+from erpnext.assets.doctype.asset.test_asset import (
 	create_asset,
 	create_asset_data,
 	set_depreciation_settings_in_company,
 )
-from erplite.assets.doctype.asset_depreciation_schedule.asset_depreciation_schedule import (
+from erpnext.assets.doctype.asset_depreciation_schedule.asset_depreciation_schedule import (
 	get_asset_depr_schedule_doc,
 )
-from erplite.stock.doctype.item.test_item import create_item
-from erplite.stock.doctype.serial_and_batch_bundle.test_serial_and_batch_bundle import (
+from erpnext.stock.doctype.item.test_item import create_item
+from erpnext.stock.doctype.serial_and_batch_bundle.test_serial_and_batch_bundle import (
 	make_serial_batch_bundle,
 )
 
@@ -457,7 +457,7 @@ def create_asset_capitalization_data():
 
 
 def create_asset_capitalization(**args):
-	from erplite.stock.doctype.warehouse.test_warehouse import create_warehouse
+	from erpnext.stock.doctype.warehouse.test_warehouse import create_warehouse
 
 	args = frappe._dict(args)
 
@@ -552,7 +552,7 @@ def create_asset_capitalization(**args):
 
 
 def create_stock_reconciliation(asset_capitalization, stock_rate=0):
-	from erplite.stock.doctype.stock_reconciliation.test_stock_reconciliation import (
+	from erpnext.stock.doctype.stock_reconciliation.test_stock_reconciliation import (
 		EmptyStockReconciliationItemsError,
 		create_stock_reconciliation,
 	)

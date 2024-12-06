@@ -9,14 +9,14 @@ from frappe.test_runner import make_test_records
 from frappe.tests.utils import FrappeTestCase
 from frappe.utils import flt
 
-from erplite.accounts.party import get_due_date
-from erplite.exceptions import PartyDisabled, PartyFrozen
-from erplite.selling.doctype.customer.customer import (
+from erpnext.accounts.party import get_due_date
+from erpnext.exceptions import PartyDisabled, PartyFrozen
+from erpnext.selling.doctype.customer.customer import (
 	get_credit_limit,
 	get_customer_outstanding,
 	parse_full_name,
 )
-from erplite.tests.utils import create_test_contact_and_address
+from erpnext.tests.utils import create_test_contact_and_address
 
 test_ignore = ["Price List"]
 test_dependencies = ["Payment Term", "Payment Terms Template"]
@@ -66,7 +66,7 @@ class TestCustomer(FrappeTestCase):
 		doc.delete()
 
 	def test_party_details(self):
-		from erplite.accounts.party import get_party_details
+		from erpnext.accounts.party import get_party_details
 
 		to_check = {
 			"selling_price_list": None,
@@ -100,7 +100,7 @@ class TestCustomer(FrappeTestCase):
 			self.assertEqual(value, val)
 
 	def test_party_details_tax_category(self):
-		from erplite.accounts.party import get_party_details
+		from erpnext.accounts.party import get_party_details
 
 		frappe.delete_doc_if_exists("Address", "_Test Address With Tax Category-Billing")
 		frappe.delete_doc_if_exists("Address", "_Test Address With Tax Category-Shipping")
@@ -201,7 +201,7 @@ class TestCustomer(FrappeTestCase):
 
 		frappe.db.set_value("Customer", "_Test Customer", "is_frozen", 1)
 
-		from erplite.selling.doctype.sales_order.test_sales_order import make_sales_order
+		from erpnext.selling.doctype.sales_order.test_sales_order import make_sales_order
 
 		so = make_sales_order(do_not_save=True)
 
@@ -226,7 +226,7 @@ class TestCustomer(FrappeTestCase):
 
 		frappe.db.set_value("Customer", "_Test Customer", "disabled", 1)
 
-		from erplite.selling.doctype.sales_order.test_sales_order import make_sales_order
+		from erpnext.selling.doctype.sales_order.test_sales_order import make_sales_order
 
 		so = make_sales_order(do_not_save=True)
 
@@ -255,7 +255,7 @@ class TestCustomer(FrappeTestCase):
 		self.assertEqual(test_customer_1.customer_name, duplicate_customer.customer_name)
 
 	def get_customer_outstanding_amount(self):
-		from erplite.selling.doctype.sales_order.test_sales_order import make_sales_order
+		from erpnext.selling.doctype.sales_order.test_sales_order import make_sales_order
 
 		outstanding_amt = get_customer_outstanding("_Test Customer", "_Test Company")
 
@@ -268,9 +268,9 @@ class TestCustomer(FrappeTestCase):
 		return get_customer_outstanding("_Test Customer", "_Test Company")
 
 	def test_customer_credit_limit(self):
-		from erplite.accounts.doctype.sales_invoice.test_sales_invoice import create_sales_invoice
-		from erplite.selling.doctype.sales_order.test_sales_order import make_sales_order
-		from erplite.stock.doctype.delivery_note.test_delivery_note import create_delivery_note
+		from erpnext.accounts.doctype.sales_invoice.test_sales_invoice import create_sales_invoice
+		from erpnext.selling.doctype.sales_order.test_sales_order import make_sales_order
+		from erpnext.stock.doctype.delivery_note.test_delivery_note import create_delivery_note
 
 		outstanding_amt = self.get_customer_outstanding_amount()
 		credit_limit = get_credit_limit("_Test Customer", "_Test Company")
@@ -298,8 +298,8 @@ class TestCustomer(FrappeTestCase):
 			set_credit_limit("_Test Customer", "_Test Company", credit_limit)
 
 	def test_customer_credit_limit_after_submit(self):
-		from erplite.controllers.accounts_controller import update_child_qty_rate
-		from erplite.selling.doctype.sales_order.test_sales_order import make_sales_order
+		from erpnext.controllers.accounts_controller import update_child_qty_rate
+		from erpnext.selling.doctype.sales_order.test_sales_order import make_sales_order
 
 		outstanding_amt = self.get_customer_outstanding_amount()
 		credit_limit = get_credit_limit("_Test Customer", "_Test Company")

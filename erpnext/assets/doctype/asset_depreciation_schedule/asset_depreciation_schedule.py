@@ -18,8 +18,8 @@ from frappe.utils import (
 	month_diff,
 )
 
-import erplite
-from erplite.accounts.utils import get_fiscal_year
+import erpnext
+from erpnext.accounts.utils import get_fiscal_year
 
 
 class AssetDepreciationSchedule(Document):
@@ -31,7 +31,7 @@ class AssetDepreciationSchedule(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
-		from erplite.assets.doctype.depreciation_schedule.depreciation_schedule import (
+		from erpnext.assets.doctype.depreciation_schedule.depreciation_schedule import (
 			DepreciationSchedule,
 		)
 
@@ -814,7 +814,7 @@ def get_asset_shift_factors_map():
 	return dict(frappe.db.get_all("Asset Shift Factor", ["shift_name", "shift_factor"], as_list=True))
 
 
-@erplite.allow_regional
+@erpnext.allow_regional
 def get_wdv_or_dd_depr_amount(
 	asset,
 	fb_row,

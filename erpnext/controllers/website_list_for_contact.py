@@ -29,7 +29,7 @@ def get_list_context(context=None):
 
 
 def get_webform_list_context(module):
-	if get_module_app(module) != "erplite":
+	if get_module_app(module) != "erpnext":
 		return
 	return {"get_list": get_webform_transaction_list}
 

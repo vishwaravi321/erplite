@@ -18,16 +18,16 @@ from frappe.utils import (
 	today,
 )
 
-import erplite
-from erplite.accounts.general_ledger import make_reverse_gl_entries
-from erplite.assets.doctype.asset.depreciation import (
+import erpnext
+from erpnext.accounts.general_ledger import make_reverse_gl_entries
+from erpnext.assets.doctype.asset.depreciation import (
 	get_comma_separated_links,
 	get_depreciation_accounts,
 	get_disposal_account_and_cost_center,
 )
-from erplite.assets.doctype.asset_activity.asset_activity import add_asset_activity
-from erplite.assets.doctype.asset_category.asset_category import get_asset_category_account
-from erplite.assets.doctype.asset_depreciation_schedule.asset_depreciation_schedule import (
+from erpnext.assets.doctype.asset_activity.asset_activity import add_asset_activity
+from erpnext.assets.doctype.asset_category.asset_category import get_asset_category_account
+from erpnext.assets.doctype.asset_depreciation_schedule.asset_depreciation_schedule import (
 	cancel_asset_depr_schedules,
 	convert_draft_asset_depr_schedules_into_active,
 	get_asset_depr_schedule_doc,
@@ -36,7 +36,7 @@ from erplite.assets.doctype.asset_depreciation_schedule.asset_depreciation_sched
 	make_draft_asset_depr_schedules_if_not_present,
 	update_draft_asset_depr_schedules,
 )
-from erplite.controllers.accounts_controller import AccountsController
+from erpnext.controllers.accounts_controller import AccountsController
 
 
 class Asset(AccountsController):
@@ -48,7 +48,7 @@ class Asset(AccountsController):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
-		from erplite.assets.doctype.asset_finance_book.asset_finance_book import AssetFinanceBook
+		from erpnext.assets.doctype.asset_finance_book.asset_finance_book import AssetFinanceBook
 
 		additional_asset_cost: DF.Currency
 		amended_from: DF.Link | None
@@ -609,7 +609,7 @@ class Asset(AccountsController):
 
 	def get_default_finance_book_idx(self):
 		if not self.get("default_finance_book") and self.company:
-			self.default_finance_book = erplite.get_default_finance_book(self.company)
+			self.default_finance_book = erpnext.get_default_finance_book(self.company)
 
 		if self.get("default_finance_book"):
 			for d in self.get("finance_books"):
@@ -751,7 +751,7 @@ class Asset(AccountsController):
 			)
 
 		if gl_entries:
-			from erplite.accounts.general_ledger import make_gl_entries
+			from erpnext.accounts.general_ledger import make_gl_entries
 
 			make_gl_entries(gl_entries)
 			self.db_set("booked_fixed_asset", 1)

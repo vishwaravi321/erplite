@@ -6,7 +6,7 @@ import frappe
 from frappe import _
 from frappe.utils import cint, flt
 
-from erplite.controllers.status_updater import StatusUpdater
+from erpnext.controllers.status_updater import StatusUpdater
 
 
 class PackingSlip(StatusUpdater):
@@ -18,7 +18,7 @@ class PackingSlip(StatusUpdater):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
-		from erplite.stock.doctype.packing_slip_item.packing_slip_item import PackingSlipItem
+		from erpnext.stock.doctype.packing_slip_item.packing_slip_item import PackingSlipItem
 
 		amended_from: DF.Link | None
 		delivery_note: DF.Link
@@ -57,7 +57,7 @@ class PackingSlip(StatusUpdater):
 		]
 
 	def validate(self) -> None:
-		from erplite.utilities.transaction_base import validate_uom_is_integer
+		from erpnext.utilities.transaction_base import validate_uom_is_integer
 
 		self.validate_delivery_note()
 		self.validate_case_nos()
@@ -205,7 +205,7 @@ class PackingSlip(StatusUpdater):
 @frappe.whitelist()
 @frappe.validate_and_sanitize_search_inputs
 def item_details(doctype, txt, searchfield, start, page_len, filters):
-	from erplite.controllers.queries import get_match_cond
+	from erpnext.controllers.queries import get_match_cond
 
 	return frappe.db.sql(
 		"""select name, item_name, description from `tabItem`

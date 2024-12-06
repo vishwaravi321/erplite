@@ -5,12 +5,12 @@ import unittest
 
 import frappe
 
-from erplite.accounts.doctype.account.test_account import create_account
-from erplite.accounts.doctype.sales_invoice.test_sales_invoice import (
+from erpnext.accounts.doctype.account.test_account import create_account
+from erpnext.accounts.doctype.sales_invoice.test_sales_invoice import (
 	check_gl_entries,
 	create_sales_invoice,
 )
-from erplite.stock.doctype.item.test_item import create_item
+from erpnext.stock.doctype.item.test_item import create_item
 
 
 class TestProcessDeferredAccounting(unittest.TestCase):

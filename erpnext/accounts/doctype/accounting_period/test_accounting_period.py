@@ -6,11 +6,11 @@ import unittest
 import frappe
 from frappe.utils import add_months, nowdate
 
-from erplite.accounts.doctype.accounting_period.accounting_period import (
+from erpnext.accounts.doctype.accounting_period.accounting_period import (
 	ClosedAccountingPeriod,
 	OverlapError,
 )
-from erplite.accounts.doctype.sales_invoice.test_sales_invoice import create_sales_invoice
+from erpnext.accounts.doctype.sales_invoice.test_sales_invoice import create_sales_invoice
 
 test_dependencies = ["Item"]
 

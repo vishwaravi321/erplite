@@ -6,12 +6,12 @@ import frappe
 from frappe import _
 from frappe.model.document import Document
 
-from erplite.accounts.deferred_revenue import (
+from erpnext.accounts.deferred_revenue import (
 	build_conditions,
 	convert_deferred_expense_to_expense,
 	convert_deferred_revenue_to_income,
 )
-from erplite.accounts.general_ledger import make_gl_entries
+from erpnext.accounts.general_ledger import make_gl_entries
 
 
 class ProcessDeferredAccounting(Document):

@@ -22,12 +22,12 @@ from frappe.utils import (
 )
 from frappe.utils.csvutils import build_csv_response
 
-from erplite.stock.serial_batch_bundle import (
+from erpnext.stock.serial_batch_bundle import (
 	BatchNoValuation,
 	SerialNoValuation,
 	get_batches_from_bundle,
 )
-from erplite.stock.serial_batch_bundle import get_serial_nos as get_serial_nos_from_bundle
+from erpnext.stock.serial_batch_bundle import get_serial_nos as get_serial_nos_from_bundle
 
 
 class SerialNoExistsInFutureTransactionError(frappe.ValidationError):
@@ -55,7 +55,7 @@ class SerialandBatchBundle(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
-		from erplite.stock.doctype.serial_and_batch_entry.serial_and_batch_entry import (
+		from erpnext.stock.doctype.serial_and_batch_entry.serial_and_batch_entry import (
 			SerialandBatchEntry,
 		)
 
@@ -773,7 +773,7 @@ class SerialandBatchBundle(Document):
 			)
 
 	def validate_serial_and_batch_no_for_returned(self):
-		from erplite.stock.doctype.serial_no.serial_no import get_serial_nos
+		from erpnext.stock.doctype.serial_no.serial_no import get_serial_nos
 
 		if not self.returned_against:
 			return
@@ -1462,7 +1462,7 @@ def create_serial_batch_no_ledgers(
 
 
 def get_batch(item_code):
-	from erplite.stock.doctype.batch.batch import make_batch
+	from erpnext.stock.doctype.batch.batch import make_batch
 
 	return make_batch(
 		frappe._dict(
@@ -1675,7 +1675,7 @@ def get_non_expired_batches(batches):
 
 
 def get_serial_nos_based_on_posting_date(kwargs, ignore_serial_nos):
-	from erplite.stock.doctype.serial_no.serial_no import get_serial_nos
+	from erpnext.stock.doctype.serial_no.serial_no import get_serial_nos
 
 	serial_nos = set()
 	data = get_stock_ledgers_for_serial_nos(kwargs)
@@ -1738,8 +1738,8 @@ def get_reserved_serial_nos(kwargs) -> list:
 
 
 def get_reserved_serial_nos_for_pos(kwargs):
-	from erplite.controllers.sales_and_purchase_return import get_returned_serial_nos
-	from erplite.stock.doctype.serial_no.serial_no import get_serial_nos
+	from erpnext.controllers.sales_and_purchase_return import get_returned_serial_nos
+	from erpnext.stock.doctype.serial_no.serial_no import get_serial_nos
 
 	ignore_serial_nos = []
 	pos_invoices = frappe.get_all(
@@ -2312,7 +2312,7 @@ def get_stock_ledgers_for_serial_nos(kwargs):
 
 
 def get_stock_ledgers_batches(kwargs):
-	from erplite.stock.utils import get_combine_datetime
+	from erpnext.stock.utils import get_combine_datetime
 
 	stock_ledger_entry = frappe.qb.DocType("Stock Ledger Entry")
 	batch_table = frappe.qb.DocType("Batch")
