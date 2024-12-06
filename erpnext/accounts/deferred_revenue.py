@@ -15,10 +15,10 @@ from frappe.utils import (
 	today,
 )
 
-from erplite.accounts.doctype.accounting_dimension.accounting_dimension import (
+from erpnext.accounts.doctype.accounting_dimension.accounting_dimension import (
 	get_accounting_dimensions,
 )
-from erplite.accounts.utils import get_account_currency
+from erpnext.accounts.utils import get_account_currency
 
 
 def validate_service_stop_date(doc):
@@ -477,7 +477,7 @@ def make_gl_entries(
 	deferred_process=None,
 ):
 	# GL Entry for crediting the amount in the deferred expense
-	from erplite.accounts.general_ledger import make_gl_entries
+	from erpnext.accounts.general_ledger import make_gl_entries
 
 	if amount == 0:
 		return

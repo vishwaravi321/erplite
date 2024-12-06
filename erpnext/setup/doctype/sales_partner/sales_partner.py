@@ -17,7 +17,7 @@ class SalesPartner(WebsiteGenerator):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
-		from erplite.setup.doctype.target_detail.target_detail import TargetDetail
+		from erpnext.setup.doctype.target_detail.target_detail import TargetDetail
 
 		commission_rate: DF.Float
 		description: DF.TextEditor | None
