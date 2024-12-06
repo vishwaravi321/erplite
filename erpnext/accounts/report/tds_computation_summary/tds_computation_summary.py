@@ -1,11 +1,11 @@
 import frappe
 from frappe import _
 
-from erplite.accounts.report.tax_withholding_details.tax_withholding_details import (
+from erpnext.accounts.report.tax_withholding_details.tax_withholding_details import (
 	get_result,
 	get_tds_docs,
 )
-from erplite.accounts.utils import get_fiscal_year
+from erpnext.accounts.utils import get_fiscal_year
 
 
 def execute(filters=None):

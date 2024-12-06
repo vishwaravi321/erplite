@@ -8,7 +8,7 @@ import frappe
 from frappe import _
 from frappe.utils import cint, flt
 
-from erplite.setup.utils import get_exchange_rate
+from erpnext.setup.utils import get_exchange_rate
 
 
 def execute(filters=None):

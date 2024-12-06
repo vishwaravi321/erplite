@@ -6,7 +6,7 @@ import copy
 import frappe
 from frappe import _
 
-from erplite.stock.doctype.serial_no.serial_no import get_serial_nos
+from erpnext.stock.doctype.serial_no.serial_no import get_serial_nos
 
 
 def execute(filters=None):

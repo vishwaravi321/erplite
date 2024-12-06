@@ -7,8 +7,8 @@ import frappe
 from frappe import _
 from frappe.utils import get_date_str, nowdate
 
-from erplite.accounts.dashboard_fixtures import _get_fiscal_year
-from erplite.buying.dashboard_fixtures import get_company_for_dashboards
+from erpnext.accounts.dashboard_fixtures import _get_fiscal_year
+from erpnext.buying.dashboard_fixtures import get_company_for_dashboards
 
 
 def get_data():

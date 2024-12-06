@@ -11,12 +11,12 @@ from frappe import _
 from frappe.utils import add_days, add_months, cint, cstr, flt, formatdate, get_first_day, getdate
 from pypika.terms import ExistsCriterion
 
-from erplite.accounts.doctype.accounting_dimension.accounting_dimension import (
+from erpnext.accounts.doctype.accounting_dimension.accounting_dimension import (
 	get_accounting_dimensions,
 	get_dimension_with_children,
 )
-from erplite.accounts.report.utils import convert_to_presentation_currency, get_currency
-from erplite.accounts.utils import get_fiscal_year
+from erpnext.accounts.report.utils import convert_to_presentation_currency, get_currency
+from erpnext.accounts.utils import get_fiscal_year
 
 
 def get_period_list(

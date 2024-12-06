@@ -4,7 +4,7 @@
 import frappe
 from frappe.tests.utils import FrappeTestCase
 
-from erplite.stock.report.stock_ageing.stock_ageing import FIFOSlots, format_report_data
+from erpnext.stock.report.stock_ageing.stock_ageing import FIFOSlots, format_report_data
 
 
 class TestStockAgeing(FrappeTestCase):

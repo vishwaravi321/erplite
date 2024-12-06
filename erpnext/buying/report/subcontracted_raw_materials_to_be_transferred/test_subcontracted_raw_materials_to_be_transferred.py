@@ -1,20 +1,20 @@
 # Python bytecode 2.7 (62211)
-# Embedded file name: /Users/anuragmishra/frappe-develop/apps/erplite/erplite/buying/report/subcontracted_raw_materials_to_be_transferred/test_subcontracted_raw_materials_to_be_transferred.py
+# Embedded file name: /Users/anuragmishra/frappe-develop/apps/erpnext/erpnext/buying/report/subcontracted_raw_materials_to_be_transferred/test_subcontracted_raw_materials_to_be_transferred.py
 # Compiled at: 2019-05-06 10:24:35
 # Decompiled by https://python-decompiler.com
 
 import frappe
 from frappe.tests.utils import FrappeTestCase
 
-from erplite.buying.report.subcontracted_raw_materials_to_be_transferred.subcontracted_raw_materials_to_be_transferred import (
+from erpnext.buying.report.subcontracted_raw_materials_to_be_transferred.subcontracted_raw_materials_to_be_transferred import (
 	execute,
 )
-from erplite.controllers.subcontracting_controller import make_rm_stock_entry
-from erplite.controllers.tests.test_subcontracting_controller import (
+from erpnext.controllers.subcontracting_controller import make_rm_stock_entry
+from erpnext.controllers.tests.test_subcontracting_controller import (
 	get_subcontracting_order,
 	make_service_item,
 )
-from erplite.stock.doctype.stock_entry.test_stock_entry import make_stock_entry
+from erpnext.stock.doctype.stock_entry.test_stock_entry import make_stock_entry
 
 
 class TestSubcontractedItemToBeTransferred(FrappeTestCase):

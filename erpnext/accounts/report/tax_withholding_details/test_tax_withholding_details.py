@@ -5,15 +5,15 @@ import frappe
 from frappe.tests.utils import FrappeTestCase
 from frappe.utils import today
 
-from erplite.accounts.doctype.payment_entry.test_payment_entry import create_payment_entry
-from erplite.accounts.doctype.purchase_invoice.test_purchase_invoice import make_purchase_invoice
-from erplite.accounts.doctype.sales_invoice.test_sales_invoice import create_sales_invoice
-from erplite.accounts.doctype.tax_withholding_category.test_tax_withholding_category import (
+from erpnext.accounts.doctype.payment_entry.test_payment_entry import create_payment_entry
+from erpnext.accounts.doctype.purchase_invoice.test_purchase_invoice import make_purchase_invoice
+from erpnext.accounts.doctype.sales_invoice.test_sales_invoice import create_sales_invoice
+from erpnext.accounts.doctype.tax_withholding_category.test_tax_withholding_category import (
 	create_tax_withholding_category,
 )
-from erplite.accounts.report.tax_withholding_details.tax_withholding_details import execute
-from erplite.accounts.test.accounts_mixin import AccountsTestMixin
-from erplite.accounts.utils import get_fiscal_year
+from erpnext.accounts.report.tax_withholding_details.tax_withholding_details import execute
+from erpnext.accounts.test.accounts_mixin import AccountsTestMixin
+from erpnext.accounts.utils import get_fiscal_year
 
 
 class TestTaxWithholdingDetails(AccountsTestMixin, FrappeTestCase):

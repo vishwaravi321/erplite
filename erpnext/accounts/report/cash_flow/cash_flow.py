@@ -6,17 +6,17 @@ import frappe
 from frappe import _
 from frappe.utils import cstr
 
-from erplite.accounts.report.financial_statements import (
+from erpnext.accounts.report.financial_statements import (
 	get_columns,
 	get_cost_centers_with_children,
 	get_data,
 	get_filtered_list_for_consolidated_report,
 	get_period_list,
 )
-from erplite.accounts.report.profit_and_loss_statement.profit_and_loss_statement import (
+from erpnext.accounts.report.profit_and_loss_statement.profit_and_loss_statement import (
 	get_net_profit_loss,
 )
-from erplite.accounts.utils import get_fiscal_year
+from erpnext.accounts.utils import get_fiscal_year
 
 
 def execute(filters=None):

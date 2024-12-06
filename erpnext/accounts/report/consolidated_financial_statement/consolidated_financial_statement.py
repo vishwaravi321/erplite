@@ -9,35 +9,35 @@ from frappe import _
 from frappe.query_builder import Criterion
 from frappe.utils import flt, getdate
 
-import erplite
-from erplite.accounts.report.balance_sheet.balance_sheet import (
+import erpnext
+from erpnext.accounts.report.balance_sheet.balance_sheet import (
 	get_chart_data,
 	get_provisional_profit_loss,
 )
-from erplite.accounts.report.balance_sheet.balance_sheet import (
+from erpnext.accounts.report.balance_sheet.balance_sheet import (
 	get_report_summary as get_bs_summary,
 )
-from erplite.accounts.report.cash_flow.cash_flow import (
+from erpnext.accounts.report.cash_flow.cash_flow import (
 	add_total_row_account,
 	get_account_type_based_gl_data,
 	get_cash_flow_accounts,
 )
-from erplite.accounts.report.cash_flow.cash_flow import get_report_summary as get_cash_flow_summary
-from erplite.accounts.report.financial_statements import (
+from erpnext.accounts.report.cash_flow.cash_flow import get_report_summary as get_cash_flow_summary
+from erpnext.accounts.report.financial_statements import (
 	filter_out_zero_value_rows,
 	get_fiscal_year_data,
 	sort_accounts,
 )
-from erplite.accounts.report.profit_and_loss_statement.profit_and_loss_statement import (
+from erpnext.accounts.report.profit_and_loss_statement.profit_and_loss_statement import (
 	get_chart_data as get_pl_chart_data,
 )
-from erplite.accounts.report.profit_and_loss_statement.profit_and_loss_statement import (
+from erpnext.accounts.report.profit_and_loss_statement.profit_and_loss_statement import (
 	get_net_profit_loss,
 )
-from erplite.accounts.report.profit_and_loss_statement.profit_and_loss_statement import (
+from erpnext.accounts.report.profit_and_loss_statement.profit_and_loss_statement import (
 	get_report_summary as get_pl_summary,
 )
-from erplite.accounts.report.utils import convert, convert_to_presentation_currency
+from erpnext.accounts.report.utils import convert, convert_to_presentation_currency
 
 
 def execute(filters=None):
@@ -300,7 +300,7 @@ def get_columns(companies, filters):
 		apply_currency_formatter = 1 if not filters.presentation_currency else 0
 		currency = filters.presentation_currency
 		if not currency:
-			currency = erplite.get_company_currency(company)
+			currency = erpnext.get_company_currency(company)
 
 		columns.append(
 			{
@@ -398,8 +398,8 @@ def calculate_values(accounts_by_name, gl_entries_by_account, companies, filters
 						or (filters.get("accumulated_in_group_company"))
 						and entry.company in companies.get(company)
 					):
-						parent_company_currency = erplite.get_company_currency(d.company)
-						child_company_currency = erplite.get_company_currency(entry.company)
+						parent_company_currency = erpnext.get_company_currency(d.company)
+						child_company_currency = erpnext.get_company_currency(entry.company)
 
 						debit, credit = flt(entry.debit), flt(entry.credit)
 

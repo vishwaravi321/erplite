@@ -3,7 +3,7 @@ import unittest
 import frappe
 from frappe.utils.make_random import get_random
 
-from erplite.tests.utils import ReportFilters, ReportName, execute_script_report
+from erpnext.tests.utils import ReportFilters, ReportName, execute_script_report
 
 DEFAULT_FILTERS = {
 	"company": "_Test Company",

@@ -66,7 +66,7 @@ def get_columns():
 
 
 def get_item_info(filters):
-	from erplite.stock.report.stock_ledger.stock_ledger import get_item_group_condition
+	from erpnext.stock.report.stock_ledger.stock_ledger import get_item_group_condition
 
 	item = frappe.qb.DocType("Item")
 	query = (

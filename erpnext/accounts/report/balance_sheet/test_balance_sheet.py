@@ -5,13 +5,13 @@ import frappe
 from frappe.tests.utils import FrappeTestCase
 from frappe.utils import today
 
-from erplite.accounts.report.balance_sheet.balance_sheet import execute
+from erpnext.accounts.report.balance_sheet.balance_sheet import execute
 
 
 class TestBalanceSheet(FrappeTestCase):
 	def test_balance_sheet(self):
-		from erplite.accounts.doctype.purchase_invoice.test_purchase_invoice import make_purchase_invoice
-		from erplite.accounts.doctype.sales_invoice.test_sales_invoice import (
+		from erpnext.accounts.doctype.purchase_invoice.test_purchase_invoice import make_purchase_invoice
+		from erpnext.accounts.doctype.sales_invoice.test_sales_invoice import (
 			create_sales_invoice,
 		)
 

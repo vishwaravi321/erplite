@@ -4,7 +4,7 @@
 
 from frappe import _
 
-from erplite.accounts.report.non_billed_report import get_ordered_to_be_billed_data
+from erpnext.accounts.report.non_billed_report import get_ordered_to_be_billed_data
 
 
 def execute(filters=None):
