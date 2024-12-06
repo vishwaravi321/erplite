@@ -90,15 +90,16 @@ class SellingController(StockController):
 			self.update_if_missing(party_details)
 
 		elif lead:
-			from erpnext.crm.doctype.lead.lead import get_lead_details
+			pass
+			# from erpnext.crm.doctype.lead.lead import get_lead_details
 
-			self.update_if_missing(
-				get_lead_details(
-					lead,
-					posting_date=self.get("transaction_date") or self.get("posting_date"),
-					company=self.company,
-				)
-			)
+			# self.update_if_missing(
+			# 	get_lead_details(
+			# 		lead,
+			# 		posting_date=self.get("transaction_date") or self.get("posting_date"),
+			# 		company=self.company,
+			# 	)
+			# )
 
 		if self.get("taxes_and_charges") and not self.get("taxes") and not for_validate:
 			taxes = get_taxes_and_charges("Sales Taxes and Charges Template", self.taxes_and_charges)

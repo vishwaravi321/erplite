@@ -26,7 +26,7 @@ class Quotation(SellingController):
 		from erpnext.accounts.doctype.sales_taxes_and_charges.sales_taxes_and_charges import (
 			SalesTaxesandCharges,
 		)
-		from erpnext.crm.doctype.competitor_detail.competitor_detail import CompetitorDetail
+		# from erpnext.crm.doctype.competitor_detail.competitor_detail import CompetitorDetail
 		from erpnext.selling.doctype.quotation_item.quotation_item import QuotationItem
 		from erpnext.setup.doctype.quotation_lost_reason_detail.quotation_lost_reason_detail import (
 			QuotationLostReasonDetail,
@@ -50,7 +50,7 @@ class Quotation(SellingController):
 		company: DF.Link
 		company_address: DF.Link | None
 		company_address_display: DF.SmallText | None
-		competitors: DF.TableMultiSelect[CompetitorDetail]
+		# competitors: DF.TableMultiSelect[CompetitorDetail]
 		contact_display: DF.SmallText | None
 		contact_email: DF.Data | None
 		contact_mobile: DF.SmallText | None
@@ -539,29 +539,31 @@ def _make_customer(source_name, ignore_permissions=False):
 
 
 def create_customer_from_lead(lead_name, ignore_permissions=False):
-	from erpnext.crm.doctype.lead.lead import _make_customer
+	pass
+	# from erpnext.crm.doctype.lead.lead import _make_customer
 
-	customer = _make_customer(lead_name, ignore_permissions=ignore_permissions)
-	customer.flags.ignore_permissions = ignore_permissions
+	# customer = _make_customer(lead_name, ignore_permissions=ignore_permissions)
+	# customer.flags.ignore_permissions = ignore_permissions
 
-	try:
-		customer.insert()
-		return customer
-	except frappe.MandatoryError as e:
-		handle_mandatory_error(e, customer, lead_name)
+	# try:
+	# 	customer.insert()
+	# 	return customer
+	# except frappe.MandatoryError as e:
+	# 	handle_mandatory_error(e, customer, lead_name)
 
 
 def create_customer_from_prospect(prospect_name, ignore_permissions=False):
-	from erpnext.crm.doctype.prospect.prospect import make_customer as make_customer_from_prospect
+	# from erpnext.crm.doctype.prospect.prospect import make_customer as make_customer_from_prospect
 
-	customer = make_customer_from_prospect(prospect_name)
-	customer.flags.ignore_permissions = ignore_permissions
+	# customer = make_customer_from_prospect(prospect_name)
+	# customer.flags.ignore_permissions = ignore_permissions
 
-	try:
-		customer.insert()
-		return customer
-	except frappe.MandatoryError as e:
-		handle_mandatory_error(e, customer, prospect_name)
+	# try:
+	# 	customer.insert()
+	# 	return customer
+	# except frappe.MandatoryError as e:
+	# 	handle_mandatory_error(e, customer, prospect_name)
+	pass
 
 
 def handle_mandatory_error(e, customer, lead_name):
