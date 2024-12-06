@@ -6,7 +6,7 @@ import frappe
 from frappe import _, session
 from frappe.utils import comma_or, cstr, flt, has_common
 
-from erplite.utilities.transaction_base import TransactionBase
+from erpnext.utilities.transaction_base import TransactionBase
 
 
 class AuthorizationControl(TransactionBase):

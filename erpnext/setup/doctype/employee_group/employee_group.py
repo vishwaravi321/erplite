@@ -14,7 +14,7 @@ class EmployeeGroup(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
-		from erplite.setup.doctype.employee_group_table.employee_group_table import EmployeeGroupTable
+		from erpnext.setup.doctype.employee_group_table.employee_group_table import EmployeeGroupTable
 
 		employee_group_name: DF.Data
 		employee_list: DF.Table[EmployeeGroupTable]

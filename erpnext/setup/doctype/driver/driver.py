@@ -14,7 +14,7 @@ class Driver(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
-		from erplite.setup.doctype.driving_license_category.driving_license_category import (
+		from erpnext.setup.doctype.driving_license_category.driving_license_category import (
 			DrivingLicenseCategory,
 		)
 

@@ -9,14 +9,14 @@ from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
 from frappe.desk.page.setup_wizard.setup_wizard import add_all_roles_to
 from frappe.utils import cint
 
-import erplite
-from erplite.setup.default_energy_point_rules import get_default_energy_point_rules
-from erplite.setup.doctype.incoterm.incoterm import create_incoterms
+import erpnext
+from erpnext.setup.default_energy_point_rules import get_default_energy_point_rules
+from erpnext.setup.doctype.incoterm.incoterm import create_incoterms
 
 from .default_success_action import get_default_success_action
 
 default_mail_footer = """<div style="padding: 7px; text-align: right; color: #888"><small>Sent via
-	<a style="color: #888" href="http://erplite.org">erplite</a></div>"""
+	<a style="color: #888" href="http://erpnext.org">erpnext</a></div>"""
 
 
 def after_install():
@@ -40,7 +40,7 @@ def after_install():
 
 def check_setup_wizard_not_completed():
 	if cint(frappe.db.get_single_value("System Settings", "setup_complete") or 0):
-		message = """erplite can only be installed on a fresh site where the setup wizard is not completed.
+		message = """erpnext can only be installed on a fresh site where the setup wizard is not completed.
 You can reinstall this site (after saving your data) using: bench --site [sitename] reinstall"""
 		frappe.throw(message)  # nosemgrep
 
@@ -50,13 +50,13 @@ def check_frappe_version():
 		return v.split(".")[0]
 
 	frappe_version = major_version(frappe.__version__)
-	erplite_version = major_version(erplite.__version__)
+	erpnext_version = major_version(erpnext.__version__)
 
-	if frappe_version == erplite_version:
+	if frappe_version == erpnext_version:
 		return
 
 	click.secho(
-		f"You're attempting to install erplite version {erplite_version} with Frappe version {frappe_version}. "
+		f"You're attempting to install erpnext version {erpnext_version} with Frappe version {frappe_version}. "
 		"This is not supported and will result in broken install. Switch to correct branch before installing.",
 		fg="red",
 	)
@@ -166,11 +166,11 @@ def add_company_to_session_defaults():
 def add_standard_navbar_items():
 	navbar_settings = frappe.get_single("Navbar Settings")
 
-	erplite_navbar_items = [
+	erpnext_navbar_items = [
 		{
 			"item_label": "Documentation",
 			"item_type": "Route",
-			"route": "https://docs.erplite.com/",
+			"route": "https://docs.erpnext.com/",
 			"is_standard": 1,
 		},
 		{
@@ -188,7 +188,7 @@ def add_standard_navbar_items():
 		{
 			"item_label": "Report an Issue",
 			"item_type": "Route",
-			"route": "https://github.com/frappe/erplite/issues",
+			"route": "https://github.com/frappe/erpnext/issues",
 			"is_standard": 1,
 		},
 	]
@@ -196,7 +196,7 @@ def add_standard_navbar_items():
 	current_navbar_items = navbar_settings.help_dropdown
 	navbar_settings.set("help_dropdown", [])
 
-	for item in erplite_navbar_items:
+	for item in erpnext_navbar_items:
 		current_labels = [item.get("item_label") for item in current_navbar_items]
 		if item.get("item_label") not in current_labels:
 			navbar_settings.append("help_dropdown", item)
@@ -218,7 +218,7 @@ def add_standard_navbar_items():
 
 
 def add_app_name():
-	frappe.db.set_single_value("System Settings", "app_name", "erplite")
+	frappe.db.set_single_value("System Settings", "app_name", "erpnext")
 
 
 def hide_workspaces():

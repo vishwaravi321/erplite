@@ -20,10 +20,10 @@ class TransactionDeletionRecord(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
-		from erplite.accounts.doctype.transaction_deletion_record_details.transaction_deletion_record_details import (
+		from erpnext.accounts.doctype.transaction_deletion_record_details.transaction_deletion_record_details import (
 			TransactionDeletionRecordDetails,
 		)
-		from erplite.setup.doctype.transaction_deletion_record_item.transaction_deletion_record_item import (
+		from erpnext.setup.doctype.transaction_deletion_record_item.transaction_deletion_record_item import (
 			TransactionDeletionRecordItem,
 		)
 
