@@ -26,9 +26,7 @@ class PurchaseOrderItem(Document):
 		base_rate: DF.Currency
 		base_rate_with_margin: DF.Currency
 		billed_amt: DF.Currency
-		blanket_order: DF.Link | None
 		blanket_order_rate: DF.Currency
-		# bom: DF.Link | None
 		brand: DF.Link | None
 		company_total_stock: DF.Float
 		conversion_factor: DF.Float
@@ -67,10 +65,8 @@ class PurchaseOrderItem(Document):
 		price_list_rate: DF.Currency
 		pricing_rules: DF.SmallText | None
 		product_bundle: DF.Link | None
-		production_plan: DF.Link | None
 		production_plan_item: DF.Data | None
 		production_plan_sub_assembly_item: DF.Data | None
-		project: DF.Link | None
 		qty: DF.Float
 		rate: DF.Currency
 		rate_with_margin: DF.Currency

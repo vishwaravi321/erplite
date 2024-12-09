@@ -16,7 +16,6 @@
   "supplier",
   "supplier_name",
   "supplier_delivery_note",
-  "subcontracting_receipt",
   "column_break1",
   "posting_date",
   "posting_time",
@@ -29,7 +28,6 @@
   "accounting_dimensions_section",
   "cost_center",
   "dimension_col_break",
-  "project",
   "currency_and_price_list",
   "currency",
   "conversion_rate",
@@ -930,12 +928,6 @@
    "width": "50%"
   },
   {
-   "fieldname": "project",
-   "fieldtype": "Link",
-   "label": "Project",
-   "options": "Project"
-  },
-  {
    "fieldname": "per_billed",
    "fieldtype": "Percent",
    "label": "% Amount Billed",
@@ -1243,14 +1235,6 @@
    "label": "Named Place"
   },
   {
-   "depends_on": "eval: (doc.is_subcontracted && !doc.is_old_subcontracting_flow)",
-   "fieldname": "subcontracting_receipt",
-   "fieldtype": "Link",
-   "label": "Subcontracting Receipt",
-   "options": "Subcontracting Receipt",
-   "search_index": 1
-  },
-  {
    "fieldname": "tax_withholding_net_total",
    "fieldtype": "Currency",
    "hidden": 1,
@@ -1273,7 +1257,7 @@
  "idx": 261,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-11-13 16:55:14.129055",
+ "modified": "2024-12-09 14:44:49.084563",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Purchase Receipt",

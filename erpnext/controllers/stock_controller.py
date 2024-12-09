@@ -1041,9 +1041,10 @@ class StockController(AccountsController):
 				frappe.msgprint(_(msg), alert=True, indicator="orange")
 
 	def update_blanket_order(self):
-		blanket_orders = list(set([d.blanket_order for d in self.items if d.blanket_order]))
-		for blanket_order in blanket_orders:
-			frappe.get_doc("Blanket Order", blanket_order).update_ordered_qty()
+		pass
+		# blanket_orders = list(set([d.blanket_order for d in self.items if d.blanket_order]))
+		# for blanket_order in blanket_orders:
+		# 	frappe.get_doc("Blanket Order", blanket_order).update_ordered_qty()
 
 	def validate_customer_provided_item(self):
 		for d in self.get("items"):

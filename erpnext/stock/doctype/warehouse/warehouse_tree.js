@@ -1,15 +1,15 @@
 frappe.treeview_settings["Warehouse"] = {
-	get_tree_nodes: "erplite.stock.doctype.warehouse.warehouse.get_children",
-	add_tree_node: "erplite.stock.doctype.warehouse.warehouse.add_node",
+	get_tree_nodes: "erpnext.stock.doctype.warehouse.warehouse.get_children",
+	add_tree_node: "erpnext.stock.doctype.warehouse.warehouse.add_node",
 	get_tree_root: false,
 	root_label: "Warehouses",
 	filters: [
 		{
 			fieldname: "company",
 			fieldtype: "Select",
-			options: erplite.utils.get_tree_options("company"),
+			options: erpnext.utils.get_tree_options("company"),
 			label: __("Company"),
-			default: erplite.utils.get_tree_default("company"),
+			default: erpnext.utils.get_tree_default("company"),
 		},
 	],
 	fields: [

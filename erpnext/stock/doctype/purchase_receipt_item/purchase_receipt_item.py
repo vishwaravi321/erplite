@@ -28,7 +28,6 @@ class PurchaseReceiptItem(Document):
 		base_rate_with_margin: DF.Currency
 		batch_no: DF.Link | None
 		billed_amt: DF.Currency
-		# bom: DF.Link | None
 		brand: DF.Link | None
 		conversion_factor: DF.Float
 		cost_center: DF.Link | None
@@ -65,7 +64,6 @@ class PurchaseReceiptItem(Document):
 		price_list_rate: DF.Currency
 		pricing_rules: DF.SmallText | None
 		product_bundle: DF.Link | None
-		project: DF.Link | None
 		provisional_expense_account: DF.Link | None
 		purchase_invoice: DF.Link | None
 		purchase_invoice_item: DF.Data | None

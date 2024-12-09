@@ -244,7 +244,7 @@ class SalesInvoice(SellingController):
 
 		self.set_tax_withholding()
 
-		self.validate_proj_cust()
+		# self.validate_proj_cust()
 		self.validate_pos_return()
 		self.validate_with_previous_doc()
 		self.validate_uom_is_integer("stock_uom", "stock_qty")
@@ -292,14 +292,14 @@ class SalesInvoice(SellingController):
 			)
 
 		self.set_against_income_account()
-		self.validate_time_sheets_are_submitted()
+		# self.validate_time_sheets_are_submitted()
 		self.validate_multiple_billing("Delivery Note", "dn_detail", "amount")
 		if not self.is_return:
 			self.validate_serial_numbers()
 		else:
 			self.timesheets = []
 		self.update_packing_list()
-		self.set_billing_hours_and_amount()
+		# self.set_billing_hours_and_amount()
 		self.set_status()
 		if self.is_pos and not self.is_return:
 			self.verify_payment_amount_is_positive()
@@ -446,11 +446,11 @@ class SalesInvoice(SellingController):
 		if not cint(self.is_pos) == 1 and not self.is_return:
 			self.update_against_document_in_jv()
 
-		self.update_time_sheet(self.name)
+		# self.update_time_sheet(self.name)
 
 		if frappe.db.get_single_value("Selling Settings", "sales_update_frequency") == "Each Transaction":
 			update_company_current_month_sales(self.company)
-			self.update_project()
+			# self.update_project()
 		update_linked_doc(self.doctype, self.name, self.inter_company_invoice_reference)
 
 		# create the loyalty point ledger entry if the customer is enrolled in any loyalty program
@@ -502,7 +502,7 @@ class SalesInvoice(SellingController):
 		self.check_if_consolidated_invoice()
 
 		super().before_cancel()
-		self.update_time_sheet(None)
+		# self.update_time_sheet(None)
 
 	def on_cancel(self):
 		check_if_return_invoice_linked_with_payment_entry(self)
@@ -537,7 +537,7 @@ class SalesInvoice(SellingController):
 
 		if frappe.db.get_single_value("Selling Settings", "sales_update_frequency") == "Each Transaction":
 			update_company_current_month_sales(self.company)
-			self.update_project()
+			# self.update_project()
 		if not self.is_return and not self.is_consolidated and self.loyalty_program:
 			self.delete_loyalty_point_entry()
 		elif self.is_return and self.return_against and not self.is_consolidated and self.loyalty_program:
@@ -662,25 +662,25 @@ class SalesInvoice(SellingController):
 				"allow_print_before_pay": pos.get("allow_print_before_pay"),
 			}
 
-	def update_time_sheet(self, sales_invoice):
-		for d in self.timesheets:
-			if d.time_sheet:
-				timesheet = frappe.get_doc("Timesheet", d.time_sheet)
-				self.update_time_sheet_detail(timesheet, d, sales_invoice)
-				timesheet.calculate_total_amounts()
-				timesheet.calculate_percentage_billed()
-				timesheet.flags.ignore_validate_update_after_submit = True
-				timesheet.set_status()
-				timesheet.db_update_all()
+	# def update_time_sheet(self, sales_invoice):
+	# 	for d in self.timesheets:
+	# 		if d.time_sheet:
+	# 			timesheet = frappe.get_doc("Timesheet", d.time_sheet)
+	# 			self.update_time_sheet_detail(timesheet, d, sales_invoice)
+	# 			timesheet.calculate_total_amounts()
+	# 			timesheet.calculate_percentage_billed()
+	# 			timesheet.flags.ignore_validate_update_after_submit = True
+	# 			timesheet.set_status()
+	# 			timesheet.db_update_all()
 
-	def update_time_sheet_detail(self, timesheet, args, sales_invoice):
-		for data in timesheet.time_logs:
-			if (
-				(self.project and args.timesheet_detail == data.name)
-				or (not self.project and not data.sales_invoice)
-				or (not sales_invoice and data.sales_invoice == self.name)
-			):
-				data.sales_invoice = sales_invoice
+	# def update_time_sheet_detail(self, timesheet, args, sales_invoice):
+	# 	for data in timesheet.time_logs:
+	# 		if (
+	# 			(self.project and args.timesheet_detail == data.name)
+	# 			or (not self.project and not data.sales_invoice)
+	# 			or (not sales_invoice and data.sales_invoice == self.name)
+	# 		):
+	# 			data.sales_invoice = sales_invoice
 
 	def on_update_after_submit(self):
 		fields_to_check = [
@@ -717,12 +717,12 @@ class SalesInvoice(SellingController):
 			if not payment.account:
 				payment.account = get_bank_cash_account(payment.mode_of_payment, self.company).get("account")
 
-	def validate_time_sheets_are_submitted(self):
-		for data in self.timesheets:
-			if data.time_sheet:
-				status = frappe.db.get_value("Timesheet", data.time_sheet, "status")
-				if status not in ["Submitted", "Payslip"]:
-					frappe.throw(_("Timesheet {0} is already completed or cancelled").format(data.time_sheet))
+	# def validate_time_sheets_are_submitted(self):
+	# 	for data in self.timesheets:
+	# 		if data.time_sheet:
+	# 			status = frappe.db.get_value("Timesheet", data.time_sheet, "status")
+	# 			if status not in ["Submitted", "Payslip"]:
+	# 				frappe.throw(_("Timesheet {0} is already completed or cancelled").format(data.time_sheet))
 
 	def set_pos_fields(self, for_validate=False):
 		"""Set retail related fields from POS Profiles"""
@@ -960,16 +960,16 @@ class SalesInvoice(SellingController):
 							_("{0} is mandatory for Item {1}").format(key, d.item_code), raise_exception=1
 						)
 
-	def validate_proj_cust(self):
-		"""check for does customer belong to same project as entered.."""
-		if self.project and self.customer:
-			res = frappe.db.sql(
-				"""select name from `tabProject`
-				where name = %s and (customer = %s or customer is null or customer = '')""",
-				(self.project, self.customer),
-			)
-			if not res:
-				throw(_("Customer {0} does not belong to project {1}").format(self.customer, self.project))
+	# def validate_proj_cust(self):
+	# 	"""check for does customer belong to same project as entered.."""
+	# 	if self.project and self.customer:
+	# 		res = frappe.db.sql(
+	# 			"""select name from `tabProject`
+	# 			where name = %s and (customer = %s or customer is null or customer = '')""",
+	# 			(self.project, self.customer),
+	# 		)
+	# 		if not res:
+	# 			throw(_("Customer {0} does not belong to project {1}").format(self.customer, self.project))
 
 	def validate_pos(self):
 		if self.is_return:
@@ -1046,15 +1046,15 @@ class SalesInvoice(SellingController):
 		else:
 			self.set("packed_items", [])
 
-	def set_billing_hours_and_amount(self):
-		if not self.project:
-			for timesheet in self.timesheets:
-				ts_doc = frappe.get_doc("Timesheet", timesheet.time_sheet)
-				if not timesheet.billing_hours and ts_doc.total_billable_hours:
-					timesheet.billing_hours = ts_doc.total_billable_hours
+	# def set_billing_hours_and_amount(self):
+	# 	if not self.project:
+	# 		for timesheet in self.timesheets:
+	# 			ts_doc = frappe.get_doc("Timesheet", timesheet.time_sheet)
+	# 			if not timesheet.billing_hours and ts_doc.total_billable_hours:
+	# 				timesheet.billing_hours = ts_doc.total_billable_hours
 
-				if not timesheet.billing_amount and ts_doc.total_billable_amount:
-					timesheet.billing_amount = ts_doc.total_billable_amount
+	# 			if not timesheet.billing_amount and ts_doc.total_billable_amount:
+	# 				timesheet.billing_amount = ts_doc.total_billable_amount
 
 	def get_warehouse(self):
 		user_pos_profile = frappe.db.sql(
@@ -1208,7 +1208,7 @@ class SalesInvoice(SellingController):
 						"against_voucher": against_voucher,
 						"against_voucher_type": self.doctype,
 						"cost_center": self.cost_center,
-						"project": self.project,
+						# "project": self.project,
 					},
 					self.party_account_currency,
 					item=self,
@@ -1352,7 +1352,7 @@ class SalesInvoice(SellingController):
 									else flt(amount, item.precision("net_amount"))
 								),
 								"cost_center": item.cost_center,
-								"project": item.project or self.project,
+								# "project": item.project or self.project,
 							},
 							account_currency,
 							item=item,
@@ -1693,13 +1693,13 @@ class SalesInvoice(SellingController):
 					)
 				)
 
-	def update_project(self):
-		unique_projects = list(set([d.project for d in self.get("items") if d.project]))
-		for p in unique_projects:
-			project = frappe.get_doc("Project", p)
-			project.update_billed_amount()
-			project.calculate_gross_margin()
-			project.db_update()
+	# def update_project(self):
+	# 	unique_projects = list(set([d.project for d in self.get("items") if d.project]))
+	# 	for p in unique_projects:
+	# 		project = frappe.get_doc("Project", p)
+	# 		project.update_billed_amount()
+	# 		project.calculate_gross_margin()
+	# 		project.db_update()
 
 	def verify_payment_amount_is_positive(self):
 		for entry in self.payments:

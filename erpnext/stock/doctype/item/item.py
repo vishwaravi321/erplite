@@ -58,8 +58,6 @@ class Item(Document):
 	from typing import TYPE_CHECKING
 
 	if TYPE_CHECKING:
-		from frappe.types import DF
-
 		from erpnext.stock.doctype.item_barcode.item_barcode import ItemBarcode
 		from erpnext.stock.doctype.item_customer_detail.item_customer_detail import ItemCustomerDetail
 		from erpnext.stock.doctype.item_default.item_default import ItemDefault
@@ -68,6 +66,7 @@ class Item(Document):
 		from erpnext.stock.doctype.item_tax.item_tax import ItemTax
 		from erpnext.stock.doctype.item_variant_attribute.item_variant_attribute import ItemVariantAttribute
 		from erpnext.stock.doctype.uom_conversion_detail.uom_conversion_detail import UOMConversionDetail
+		from frappe.types import DF
 
 		allow_alternative_item: DF.Check
 		allow_negative_stock: DF.Check
@@ -84,12 +83,9 @@ class Item(Document):
 		customer_code: DF.SmallText | None
 		customer_items: DF.Table[ItemCustomerDetail]
 		customs_tariff_number: DF.Link | None
-		default_bom: DF.Link | None
 		default_item_manufacturer: DF.Link | None
 		default_manufacturer_part_no: DF.Data | None
-		default_material_request_type: DF.Literal[
-			"Purchase", "Material Transfer", "Material Issue", "Manufacture", "Customer Provided"
-		]
+		default_material_request_type: DF.Literal["Purchase", "Material Transfer", "Material Issue", "Manufacture", "Customer Provided"]
 		delivered_by_supplier: DF.Check
 		description: DF.TextEditor | None
 		disabled: DF.Check
@@ -191,7 +187,7 @@ class Item(Document):
 		self.validate_conversion_factor()
 		self.validate_item_type()
 		self.validate_naming_series()
-		self.check_for_active_boms()
+		# self.check_for_active_boms()
 		self.fill_customer_code()
 		self.check_item_tax()
 		self.validate_barcode()
@@ -408,13 +404,13 @@ class Item(Document):
 					)
 				)
 
-	def check_for_active_boms(self):
-		if self.default_bom:
-			bom_item = frappe.db.get_value("BOM", self.default_bom, "item")
-			if bom_item not in (self.name, self.variant_of):
-				frappe.throw(
-					_("Default BOM ({0}) must be active for this item or its template").format(bom_item)
-				)
+	# def check_for_active_boms(self):
+	# 	if self.default_bom:
+	# 		bom_item = frappe.db.get_value("BOM", self.default_bom, "item")
+	# 		if bom_item not in (self.name, self.variant_of):
+	# 			frappe.throw(
+	# 				_("Default BOM ({0}) must be active for this item or its template").format(bom_item)
+	# 			)
 
 	def fill_customer_code(self):
 		"""

@@ -35,7 +35,6 @@
   "accounting_dimensions_section",
   "cost_center",
   "dimension_col_break",
-  "project",
   "currency_and_price_list",
   "currency",
   "conversion_rate",
@@ -1372,13 +1371,6 @@
   },
   {
    "allow_on_submit": 1,
-   "fieldname": "project",
-   "fieldtype": "Link",
-   "label": "Project",
-   "options": "Project"
-  },
-  {
-   "allow_on_submit": 1,
    "depends_on": "eval:doc.is_internal_supplier",
    "description": "Unrealized Profit/Loss account for intra-company transfers",
    "fieldname": "unrealized_profit_loss_account",
@@ -1633,7 +1625,7 @@
  "idx": 204,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-10-25 18:13:01.944477",
+ "modified": "2024-12-09 14:43:04.273134",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Purchase Invoice",
