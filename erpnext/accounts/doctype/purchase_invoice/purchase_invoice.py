@@ -900,7 +900,7 @@ class PurchaseInvoice(BuyingController):
 			else grand_total,
 			"against_voucher": against_voucher,
 			"against_voucher_type": self.doctype,
-			"project": self.project,
+			# "project": self.project,
 			"cost_center": self.cost_center,
 			"_skip_merge": skip_merge,
 		}
