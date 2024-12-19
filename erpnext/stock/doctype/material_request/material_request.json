@@ -41,9 +41,7 @@
   "column_break_31",
   "select_print_heading",
   "reference",
-  "job_card",
   "column_break_35",
-  "work_order",
   "connections_tab"
  ],
  "fields": [
@@ -264,14 +262,6 @@
    "label": "Reference"
   },
   {
-   "fieldname": "job_card",
-   "fieldtype": "Link",
-   "label": "Job Card",
-   "options": "Job Card",
-   "print_hide": 1,
-   "read_only": 1
-  },
-  {
    "fieldname": "warehouse_section",
    "fieldtype": "Section Break",
    "hide_border": 1,
@@ -307,13 +297,6 @@
    "fieldtype": "Select",
    "label": "Transfer Status",
    "options": "\nNot Started\nIn Transit\nCompleted",
-   "read_only": 1
-  },
-  {
-   "fieldname": "work_order",
-   "fieldtype": "Link",
-   "label": "Work Order",
-   "options": "Work Order",
    "read_only": 1
   },
   {
@@ -357,7 +340,7 @@
  "idx": 70,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-09-15 12:07:24.789471",
+ "modified": "2024-12-18 15:45:00.330757",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Material Request",
@@ -376,7 +359,6 @@
    "read": 1,
    "report": 1,
    "role": "Purchase Manager",
-   "set_user_permissions": 1,
    "share": 1,
    "submit": 1,
    "write": 1

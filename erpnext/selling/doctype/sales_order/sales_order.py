@@ -374,7 +374,7 @@ class SalesOrder(SellingController):
 					frappe.throw(_("Quotation {0} is cancelled").format(quotation))
 
 				doc.set_status(update=True)
-				doc.update_opportunity("Converted" if flag == "submit" else "Quotation")
+				# doc.update_opportunity("Converted" if flag == "submit" else "Quotation")
 
 	def validate_drop_ship(self):
 		for d in self.get("items"):
@@ -968,8 +968,8 @@ def make_delivery_note(source_name, target_doc=None, kwargs=None):
 
 		if item:
 			target.cost_center = (
-				frappe.db.get_value("Project", source_parent.project, "cost_center")
-				or item.get("buying_cost_center")
+				# frappe.db.get_value("Project", source_parent.project, "cost_center")
+				item.get("buying_cost_center")
 				or item_group.get("buying_cost_center")
 			)
 
@@ -1075,8 +1075,8 @@ def make_sales_invoice(source_name, target_doc=None, ignore_permissions=False):
 			else source.qty - source.returned_qty
 		)
 
-		if source_parent.project:
-			target.cost_center = frappe.db.get_value("Project", source_parent.project, "cost_center")
+		# if source_parent.project:
+		# 	target.cost_center = frappe.db.get_value("Project", source_parent.project, "cost_center")
 		if target.item_code:
 			item = get_item_defaults(target.item_code, source_parent.company)
 			item_group = get_item_group_defaults(target.item_code, source_parent.company)

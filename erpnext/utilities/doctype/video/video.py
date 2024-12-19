@@ -11,7 +11,7 @@ from frappe import _
 from frappe.model.document import Document
 from frappe.utils import cint
 from frappe.utils.data import get_system_timezone
-from pyyoutube import Api
+#from pyyoutube import Api
 
 
 class Video(Document):

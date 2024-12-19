@@ -24,7 +24,6 @@ class QuotationItem(Document):
 		base_price_list_rate: DF.Currency
 		base_rate: DF.Currency
 		base_rate_with_margin: DF.Currency
-		blanket_order: DF.Link | None
 		blanket_order_rate: DF.Currency
 		brand: DF.Link | None
 		conversion_factor: DF.Float

@@ -58,7 +58,6 @@ class StockLedgerEntry(Document):
 		posting_date: DF.Date | None
 		posting_datetime: DF.Datetime | None
 		posting_time: DF.Time | None
-		project: DF.Link | None
 		qty_after_transaction: DF.Float
 		recalculate_rate: DF.Check
 		serial_and_batch_bundle: DF.Link | None

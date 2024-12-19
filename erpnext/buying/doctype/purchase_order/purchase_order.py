@@ -433,7 +433,7 @@ class PurchaseOrder(BuyingController):
 		self.update_requested_qty()
 		self.update_ordered_qty()
 		self.update_reserved_qty_for_subcontract()
-		self.update_subcontracting_order_status()
+		# self.update_subcontracting_order_status()
 		self.update_blanket_order()
 		self.notify_update()
 		clear_doctype_notifications(self)
@@ -618,16 +618,16 @@ class PurchaseOrder(BuyingController):
 			if frappe.db.get_single_value("Buying Settings", "auto_create_subcontracting_order"):
 				make_subcontracting_order(self.name, save=True, notify=True)
 
-	def update_subcontracting_order_status(self):
-		from erpnext.subcontracting.doctype.subcontracting_order.subcontracting_order import (
-			update_subcontracting_order_status as update_sco_status,
-		)
+	# def update_subcontracting_order_status(self):
+	# 	from erpnext.subcontracting.doctype.subcontracting_order.subcontracting_order import (
+	# 		update_subcontracting_order_status as update_sco_status,
+	# 	)
 
-		if self.is_subcontracted and not self.is_old_subcontracting_flow:
-			sco = frappe.db.get_value("Subcontracting Order", {"purchase_order": self.name, "docstatus": 1})
+	# 	if self.is_subcontracted and not self.is_old_subcontracting_flow:
+	# 		sco = frappe.db.get_value("Subcontracting Order", {"purchase_order": self.name, "docstatus": 1})
 
-			if sco:
-				update_sco_status(sco, "Closed" if self.status == "Closed" else None)
+	# 		if sco:
+	# 			update_sco_status(sco, "Closed" if self.status == "Closed" else None)
 
 	def set_missing_values(self, for_validate=False):
 		tds_category = frappe.db.get_value("Supplier", self.supplier, "tax_withholding_category")

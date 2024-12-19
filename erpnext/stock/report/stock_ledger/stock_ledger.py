@@ -346,13 +346,13 @@ def get_columns(filters):
 				"options": "Serial and Batch Bundle",
 				"width": 100,
 			},
-			{
-				"label": _("Project"),
-				"fieldname": "project",
-				"fieldtype": "Link",
-				"options": "Project",
-				"width": 100,
-			},
+			# {
+			# 	"label": _("Project"),
+			# 	"fieldname": "project",
+			# 	"fieldtype": "Link",
+			# 	"options": "Project",
+			# 	"width": 100,
+			# },
 			{
 				"label": _("Company"),
 				"fieldname": "company",
@@ -388,7 +388,7 @@ def get_stock_ledger_entries(filters, items):
 			sle.stock_value,
 			sle.batch_no,
 			sle.serial_no,
-			sle.project,
+			# sle.project,
 		)
 		.where(
 			(sle.docstatus < 2)
@@ -409,7 +409,7 @@ def get_stock_ledger_entries(filters, items):
 	if items:
 		query = query.where(sle.item_code.isin(items))
 
-	for field in ["voucher_no", "project", "company"]:
+	for field in ["voucher_no", "company"]: #project
 		if filters.get(field) and field not in inventory_dimension_fields:
 			query = query.where(sle[field] == filters.get(field))
 
@@ -516,8 +516,8 @@ def get_sle_conditions(filters):
 		conditions.append("voucher_no=%(voucher_no)s")
 	if filters.get("batch_no"):
 		conditions.append("batch_no=%(batch_no)s")
-	if filters.get("project"):
-		conditions.append("project=%(project)s")
+	# if filters.get("project"):
+	# 	conditions.append("project=%(project)s")
 
 	for dimension in get_inventory_dimensions():
 		if filters.get(dimension.fieldname):

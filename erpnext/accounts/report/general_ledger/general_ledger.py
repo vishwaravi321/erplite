@@ -78,8 +78,8 @@ def validate_filters(filters, account_details):
 	if filters.from_date > filters.to_date:
 		frappe.throw(_("From Date must be before To Date"))
 
-	if filters.get("project"):
-		filters.project = frappe.parse_json(filters.get("project"))
+	# if filters.get("project"):
+	# 	filters.project = frappe.parse_json(filters.get("project"))
 
 	if filters.get("cost_center"):
 		filters.cost_center = frappe.parse_json(filters.get("cost_center"))
@@ -191,7 +191,7 @@ def get_gl_entries(filters, accounting_dimensions):
 		select
 			name as gl_entry, posting_date, account, party_type, party,
 			voucher_type, voucher_subtype, voucher_no, {dimension_fields}
-			cost_center, project, {transaction_currency_fields}
+			cost_center, {transaction_currency_fields}
 			against_voucher_type, against_voucher, account_currency,
 			against, is_opening, creation {select_fields}
 		from `tabGL Entry`
@@ -200,7 +200,7 @@ def get_gl_entries(filters, accounting_dimensions):
 	""",
 		filters,
 		as_dict=1,
-	)
+	) #project
 
 	if filters.get("presentation_currency"):
 		return convert_to_presentation_currency(gl_entries, currency_map)
@@ -277,8 +277,8 @@ def get_conditions(filters):
 
 	conditions.append("(posting_date <=%(to_date)s or is_opening = 'Yes')")
 
-	if filters.get("project"):
-		conditions.append("project in %(project)s")
+	# if filters.get("project"):
+	# 	conditions.append("project in %(project)s")
 
 	if filters.get("include_default_book_entries"):
 		if filters.get("finance_book"):
@@ -667,7 +667,7 @@ def get_columns(filters):
 		{"label": _("Against Account"), "fieldname": "against", "width": 120},
 		{"label": _("Party Type"), "fieldname": "party_type", "width": 100},
 		{"label": _("Party"), "fieldname": "party", "width": 100},
-		{"label": _("Project"), "options": "Project", "fieldname": "project", "width": 100},
+		# {"label": _("Project"), "options": "Project", "fieldname": "project", "width": 100},
 	]
 
 	if filters.get("include_dimensions"):

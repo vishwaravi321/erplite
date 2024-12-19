@@ -284,7 +284,7 @@ class PurchaseReceipt(BuyingController):
 				},
 				"Purchase Order Item": {
 					"ref_dn_field": "purchase_order_item",
-					"compare_fields": [["project", "="], ["uom", "="], ["item_code", "="]],
+					"compare_fields": [["uom", "="], ["item_code", "="]],
 					"is_child_table": True,
 					"allow_duplicate_prev_row_id": True,
 				},
@@ -558,7 +558,7 @@ class PurchaseReceipt(BuyingController):
 							against_account=stock_asset_account_name,
 							credit_in_account_currency=flt(amount["amount"]),
 							account_currency=account_currency,
-							project=item.project,
+							# project=item.project,
 							item=item,
 						)
 
@@ -629,7 +629,7 @@ class PurchaseReceipt(BuyingController):
 					remarks=remarks,
 					against_account=stock_asset_account_name,
 					account_currency=account_currency,
-					project=item.project,
+					# project=item.project,
 					item=item,
 				)
 

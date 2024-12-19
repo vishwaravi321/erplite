@@ -19,19 +19,13 @@ class Quotation(SellingController):
 	from typing import TYPE_CHECKING
 
 	if TYPE_CHECKING:
-		from frappe.types import DF
-
 		from erpnext.accounts.doctype.payment_schedule.payment_schedule import PaymentSchedule
 		from erpnext.accounts.doctype.pricing_rule_detail.pricing_rule_detail import PricingRuleDetail
-		from erpnext.accounts.doctype.sales_taxes_and_charges.sales_taxes_and_charges import (
-			SalesTaxesandCharges,
-		)
-		# from erpnext.crm.doctype.competitor_detail.competitor_detail import CompetitorDetail
+		from erpnext.accounts.doctype.sales_taxes_and_charges.sales_taxes_and_charges import SalesTaxesandCharges
 		from erpnext.selling.doctype.quotation_item.quotation_item import QuotationItem
-		from erpnext.setup.doctype.quotation_lost_reason_detail.quotation_lost_reason_detail import (
-			QuotationLostReasonDetail,
-		)
+		from erpnext.setup.doctype.quotation_lost_reason_detail.quotation_lost_reason_detail import QuotationLostReasonDetail
 		from erpnext.stock.doctype.packed_item.packed_item import PackedItem
+		from frappe.types import DF
 
 		additional_discount_percentage: DF.Float
 		address_display: DF.SmallText | None
@@ -46,11 +40,9 @@ class Quotation(SellingController):
 		base_rounding_adjustment: DF.Currency
 		base_total: DF.Currency
 		base_total_taxes_and_charges: DF.Currency
-		campaign: DF.Link | None
 		company: DF.Link
 		company_address: DF.Link | None
 		company_address_display: DF.SmallText | None
-		# competitors: DF.TableMultiSelect[CompetitorDetail]
 		contact_display: DF.SmallText | None
 		contact_email: DF.Data | None
 		contact_mobile: DF.SmallText | None
@@ -76,7 +68,6 @@ class Quotation(SellingController):
 		named_place: DF.Data | None
 		naming_series: DF.Literal["SAL-QTN-.YYYY.-"]
 		net_total: DF.Currency
-		opportunity: DF.Link | None
 		order_lost_reason: DF.SmallText | None
 		order_type: DF.Literal["", "Sales", "Maintenance", "Shopping Cart"]
 		other_charges_calculation: DF.TextEditor | None
@@ -97,10 +88,7 @@ class Quotation(SellingController):
 		shipping_address: DF.SmallText | None
 		shipping_address_name: DF.Link | None
 		shipping_rule: DF.Link | None
-		source: DF.Link | None
-		status: DF.Literal[
-			"Draft", "Open", "Replied", "Partially Ordered", "Ordered", "Lost", "Cancelled", "Expired"
-		]
+		status: DF.Literal["Draft", "Open", "Replied", "Partially Ordered", "Ordered", "Lost", "Cancelled", "Expired"]
 		supplier_quotation: DF.Link | None
 		tax_category: DF.Link | None
 		taxes: DF.Table[SalesTaxesandCharges]
@@ -226,20 +214,20 @@ class Quotation(SellingController):
 		elif self.party_name and self.quotation_to == "CRM Deal":
 			self.customer_name = frappe.db.get_value("CRM Deal", self.party_name, "organization")
 
-	def update_opportunity(self, status):
-		for opportunity in set(d.prevdoc_docname for d in self.get("items")):
-			if opportunity:
-				self.update_opportunity_status(status, opportunity)
+	# def update_opportunity(self, status):
+	# 	for opportunity in set(d.prevdoc_docname for d in self.get("items")):
+	# 		if opportunity:
+	# 			self.update_opportunity_status(status, opportunity)
 
-		if self.opportunity:
-			self.update_opportunity_status(status)
+	# 	if self.opportunity:
+	# 		self.update_opportunity_status(status)
 
-	def update_opportunity_status(self, status, opportunity=None):
-		if not opportunity:
-			opportunity = self.opportunity
+	# def update_opportunity_status(self, status, opportunity=None):
+	# 	if not opportunity:
+	# 		opportunity = self.opportunity
 
-		opp = frappe.get_doc("Opportunity", opportunity)
-		opp.set_status(status=status, update=True)
+	# 	opp = frappe.get_doc("Opportunity", opportunity)
+	# 	opp.set_status(status=status, update=True)
 
 	@frappe.whitelist()
 	def declare_enquiry_lost(self, lost_reasons_list, competitors, detailed_reason=None):
@@ -264,7 +252,7 @@ class Quotation(SellingController):
 			for competitor in competitors:
 				self.append("competitors", competitor)
 
-			self.update_opportunity("Lost")
+			# self.update_opportunity("Lost")
 			self.update_lead()
 			self.save()
 
@@ -278,7 +266,7 @@ class Quotation(SellingController):
 		)
 
 		# update enquiry status
-		self.update_opportunity("Quotation")
+		# self.update_opportunity("Quotation")
 		self.update_lead()
 
 	def on_cancel(self):
@@ -288,7 +276,7 @@ class Quotation(SellingController):
 
 		# update enquiry status
 		self.set_status(update=True)
-		self.update_opportunity("Open")
+		# self.update_opportunity("Open")
 		self.update_lead()
 
 	def print_other_charges(self, docname):

@@ -39,9 +39,8 @@ class PickList(Document):
 	from typing import TYPE_CHECKING
 
 	if TYPE_CHECKING:
-		from frappe.types import DF
-
 		from erpnext.stock.doctype.pick_list_item.pick_list_item import PickListItem
+		from frappe.types import DF
 
 		amended_from: DF.Link | None
 		company: DF.Link
@@ -61,7 +60,6 @@ class PickList(Document):
 		scan_barcode: DF.Data | None
 		scan_mode: DF.Check
 		status: DF.Literal["Draft", "Open", "Completed", "Cancelled"]
-		work_order: DF.Link | None
 	# end: auto-generated types
 
 	def onload(self) -> None:
@@ -1300,7 +1298,6 @@ def get_item_details(item_code, uom=None):
 
 
 def update_delivery_note_item(source, target, delivery_note):
-	cost_center = frappe.db.get_value("Project", delivery_note.project, "cost_center")
 	if not cost_center:
 		cost_center = get_cost_center(source.item_code, "Item", delivery_note.company)
 
@@ -1309,6 +1306,14 @@ def update_delivery_note_item(source, target, delivery_note):
 
 	target.cost_center = cost_center
 
+def update_delivery_note_item(source, target, delivery_note):
+    if source.item_code:
+        cost_center = get_cost_center(source.item_code, "Item", delivery_note.company)
+
+    if source.item_group:
+        cost_center = get_cost_center(source.item_group, "Item Group", delivery_note.company)
+
+    target.cost_center = cost_center
 
 def get_cost_center(for_item, from_doctype, company):
 	"""Returns Cost Center for Item or Item Group"""

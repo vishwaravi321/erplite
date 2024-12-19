@@ -31,7 +31,6 @@
   "material_request",
   "material_request_item",
   "section_break_24",
-  "project_name",
   "section_break_23",
   "page_break"
  ],
@@ -160,13 +159,6 @@
    "print_hide": 1
   },
   {
-   "fieldname": "project_name",
-   "fieldtype": "Link",
-   "label": "Project",
-   "options": "Project",
-   "print_hide": 1
-  },
-  {
    "fieldname": "material_request",
    "fieldtype": "Link",
    "label": "Material Request",
@@ -261,7 +253,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-11-14 18:34:48.327224",
+ "modified": "2024-12-18 15:51:51.159799",
  "modified_by": "Administrator",
  "module": "Buying",
  "name": "Request for Quotation Item",

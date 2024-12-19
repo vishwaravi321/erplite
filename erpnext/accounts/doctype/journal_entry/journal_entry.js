@@ -644,12 +644,21 @@ $.extend(erpnext.journal_entry, {
 			is_group: 0,
 		};
 		if (!frm.doc.multi_currency) {
-			$.extend(filters, {
-				account_currency: [
-					"in",
-					[frappe.get_doc(":Company", frm.doc.company).default_currency, null],
-				],
-			});
+			frappe.db.get_doc("Company", frm.doc.company).then(d=>{
+				$.extend(filters, {
+					account_currency: [
+						"in",
+						[d.default_currency, null],
+					],
+				});
+			})
+			
+			// $.extend(filters, {
+			// 	account_currency: [
+			// 		"in",
+			// 		[frappe.get_doc(":Company", frm.doc.company).default_currency, ''],
+			// 	],
+			// });
 		}
 		return { filters: filters };
 	},

@@ -939,31 +939,33 @@ def get_partywise_advanced_payment_amount(
 
 
 def get_default_contact(doctype: str, name: str) -> str | None:
-	"""
-	Returns contact name only if there is a primary contact for given doctype and name.
+	# """
+	# Returns contact name only if there is a primary contact for given doctype and name.
 
-	Else returns None
+	# Else returns None
 
-	:param doctype: Party Doctype
-	:param name: Party name
-	:return: String
-	"""
-	contacts = frappe.get_all(
-		"Contact",
-		filters=[
-			["Dynamic Link", "link_doctype", "=", doctype],
-			["Dynamic Link", "link_name", "=", name],
-		],
-		or_filters=[
-			["is_primary_contact", "=", 1],
-			["is_billing_contact", "=", 1],
-		],
-		pluck="name",
-		limit=1,
-		order_by="is_primary_contact DESC, is_billing_contact DESC",
-	)
+	# :param doctype: Party Doctype
+	# :param name: Party name
+	# :return: String
+	# """
+	# contacts = frappe.get_all(
+	# 	"Contact",
+	# 	filters=[
+	# 		["Dynamic Link", "link_doctype", "=", doctype],
+	# 		["Dynamic Link", "link_name", "=", name],
+	# 	],
+	# 	or_filters=[
+	# 		["is_primary_contact", "=", 1],
+	# 		# ["is_billing_contact", "=", 1],
+	# 	],
+	# 	pluck="name",
+	# 	limit=1,
+	# 	order_by="is_primary_contact DESC DESC",
+	# 	# order_by="is_primary_contact DESC, is_billing_contact DESC",
+	# )
 
-	return contacts[0] if contacts else None
+	# return contacts[0] if contacts else None
+	pass
 
 
 def add_party_account(party_type, party, company, account):

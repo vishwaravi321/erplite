@@ -48,7 +48,6 @@ class SupplierQuotationItem(Document):
 		prevdoc_doctype: DF.Data | None
 		price_list_rate: DF.Currency
 		pricing_rules: DF.SmallText | None
-		project: DF.Link | None
 		qty: DF.Float
 		rate: DF.Currency
 		request_for_quotation: DF.Link | None

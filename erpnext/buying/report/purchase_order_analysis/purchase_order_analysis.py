@@ -53,7 +53,7 @@ def get_data(filters):
 		.select(
 			po.transaction_date.as_("date"),
 			po_item.schedule_date.as_("required_date"),
-			po_item.project,
+			# po_item.project,
 			po.name.as_("purchase_order"),
 			po.status,
 			po.supplier,
@@ -87,8 +87,8 @@ def get_data(filters):
 	if filters.get("status"):
 		query = query.where(po.status.isin(filters.get("status")))
 
-	if filters.get("project"):
-		query = query.where(po_item.project == filters.get("project"))
+	# if filters.get("project"):
+	# 	query = query.where(po_item.project == filters.get("project"))
 
 	data = query.run(as_dict=True)
 
@@ -178,13 +178,13 @@ def get_columns(filters):
 			"options": "Supplier",
 			"width": 130,
 		},
-		{
-			"label": _("Project"),
-			"fieldname": "project",
-			"fieldtype": "Link",
-			"options": "Project",
-			"width": 130,
-		},
+		# {
+		# 	"label": _("Project"),
+		# 	"fieldname": "project",
+		# 	"fieldtype": "Link",
+		# 	"options": "Project",
+		# 	"width": 130,
+		# },
 	]
 
 	if not filters.get("group_by_po"):

@@ -51,7 +51,6 @@ class GLEntry(Document):
 		party: DF.DynamicLink | None
 		party_type: DF.Link | None
 		posting_date: DF.Date | None
-		project: DF.Link | None
 		remarks: DF.Text | None
 		to_rename: DF.Check
 		transaction_currency: DF.Link | None

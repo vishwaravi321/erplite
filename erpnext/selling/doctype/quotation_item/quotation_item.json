@@ -63,7 +63,6 @@
   "reference",
   "warehouse",
   "against_blanket_order",
-  "blanket_order",
   "blanket_order_rate",
   "column_break_30",
   "prevdoc_doctype",
@@ -586,15 +585,6 @@
   },
   {
    "depends_on": "eval:doc.against_blanket_order",
-   "fieldname": "blanket_order",
-   "fieldtype": "Link",
-   "label": "Blanket Order",
-   "no_copy": 1,
-   "options": "Blanket Order",
-   "print_hide": 1
-  },
-  {
-   "depends_on": "eval:doc.against_blanket_order",
    "fieldname": "blanket_order_rate",
    "fieldtype": "Currency",
    "label": "Blanket Order Rate",
@@ -667,7 +657,7 @@
  "idx": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-11-14 18:24:24.619832",
+ "modified": "2024-12-18 16:01:01.987809",
  "modified_by": "Administrator",
  "module": "Selling",
  "name": "Quotation Item",

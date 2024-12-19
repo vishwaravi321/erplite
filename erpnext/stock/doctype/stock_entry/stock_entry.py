@@ -86,12 +86,9 @@ class StockEntry(StockController):
 	from typing import TYPE_CHECKING
 
 	if TYPE_CHECKING:
-		from frappe.types import DF
-
-		from erpnext.stock.doctype.landed_cost_taxes_and_charges.landed_cost_taxes_and_charges import (
-			LandedCostTaxesandCharges,
-		)
+		from erpnext.stock.doctype.landed_cost_taxes_and_charges.landed_cost_taxes_and_charges import LandedCostTaxesandCharges
 		from erpnext.stock.doctype.stock_entry_detail.stock_entry_detail import StockEntryDetail
+		from frappe.types import DF
 
 		add_to_transit: DF.Check
 		additional_costs: DF.Table[LandedCostTaxesandCharges]
@@ -99,7 +96,6 @@ class StockEntry(StockController):
 		amended_from: DF.Link | None
 		apply_putaway_rule: DF.Check
 		asset_repair: DF.Link | None
-		bom_no: DF.Link | None
 		company: DF.Link
 		credit_note: DF.Link | None
 		delivery_note_no: DF.Link | None
@@ -110,7 +106,6 @@ class StockEntry(StockController):
 		is_opening: DF.Literal["No", "Yes"]
 		is_return: DF.Check
 		items: DF.Table[StockEntryDetail]
-		job_card: DF.Link | None
 		letter_head: DF.Link | None
 		naming_series: DF.Literal["MAT-STE-.YYYY.-"]
 		outgoing_stock_entry: DF.Link | None
@@ -120,20 +115,9 @@ class StockEntry(StockController):
 		posting_time: DF.Time | None
 		process_loss_percentage: DF.Percent
 		process_loss_qty: DF.Float
-		project: DF.Link | None
 		purchase_order: DF.Link | None
 		purchase_receipt_no: DF.Link | None
-		purpose: DF.Literal[
-			"Material Issue",
-			"Material Receipt",
-			"Material Transfer",
-			"Material Transfer for Manufacture",
-			"Material Consumption for Manufacture",
-			"Manufacture",
-			"Repack",
-			"Send to Subcontractor",
-			"Disassemble",
-		]
+		purpose: DF.Literal["Material Issue", "Material Receipt", "Material Transfer", "Material Transfer for Manufacture", "Material Consumption for Manufacture", "Manufacture", "Repack", "Send to Subcontractor", "Disassemble"]
 		remarks: DF.Text | None
 		sales_invoice_no: DF.Link | None
 		scan_barcode: DF.Data | None
@@ -142,7 +126,6 @@ class StockEntry(StockController):
 		source_address_display: DF.SmallText | None
 		source_warehouse_address: DF.Link | None
 		stock_entry_type: DF.Link
-		subcontracting_order: DF.Link | None
 		supplier: DF.Link | None
 		supplier_address: DF.Link | None
 		supplier_name: DF.Data | None
@@ -155,7 +138,6 @@ class StockEntry(StockController):
 		total_outgoing_value: DF.Currency
 		use_multi_level_bom: DF.Check
 		value_difference: DF.Currency
-		work_order: DF.Link | None
 	# end: auto-generated types
 
 	def __init__(self, *args, **kwargs):
@@ -193,8 +175,8 @@ class StockEntry(StockController):
 
 	def validate(self):
 		self.pro_doc = frappe._dict()
-		if self.work_order:
-			self.pro_doc = frappe.get_doc("Work Order", self.work_order)
+		# if self.work_order:
+		# 	self.pro_doc = frappe.get_doc("Work Order", self.work_order)
 
 		self.validate_duplicate_serial_and_batch_bundle("items")
 		self.validate_posting_time()
@@ -221,7 +203,7 @@ class StockEntry(StockController):
 		self.validate_fg_completed_qty()
 		self.validate_difference_account()
 		# self.set_job_card_data()
-		self.validate_job_card_item()
+		# self.validate_job_card_item()
 		self.set_purpose_for_stock_entry()
 		self.clean_serial_nos()
 
@@ -244,16 +226,16 @@ class StockEntry(StockController):
 		self.validate_closed_subcontracting_order()
 		self.make_bundle_using_old_serial_batch_fields()
 		self.update_stock_ledger()
-		self.update_work_order()
+		# self.update_work_order()
 		self.validate_subcontract_order()
 		self.update_subcontract_order_supplied_items()
-		self.update_subcontracting_order_status()
+		# self.update_subcontracting_order_status()
 		self.update_pick_list_status()
 
 		self.make_gl_entries()
 
 		self.repost_future_sle_and_gle()
-		self.update_cost_in_project()
+		# self.update_cost_in_project()
 		self.update_transferred_qty()
 		self.update_quality_inspection()
 
@@ -265,12 +247,12 @@ class StockEntry(StockController):
 	def on_cancel(self):
 		self.validate_closed_subcontracting_order()
 		self.update_subcontract_order_supplied_items()
-		self.update_subcontracting_order_status()
+		# self.update_subcontracting_order_status()
 
 		if self.work_order and self.purpose == "Material Consumption for Manufacture":
 			self.validate_work_order_status()
 
-		self.update_work_order()
+		# self.update_work_order()
 		self.update_stock_ledger()
 
 		self.ignore_linked_doctypes = (
@@ -282,7 +264,7 @@ class StockEntry(StockController):
 
 		self.make_gl_entries_on_cancel()
 		self.repost_future_sle_and_gle()
-		self.update_cost_in_project()
+		# self.update_cost_in_project()
 		self.update_transferred_qty()
 		self.update_quality_inspection()
 		self.delete_auto_created_batches()
@@ -306,23 +288,23 @@ class StockEntry(StockController):
 	# 		self.from_bom = 1
 	# 		self.bom_no = data.bom_no
 
-	def validate_job_card_item(self):
-		if not self.job_card:
-			return
+	# def validate_job_card_item(self):
+	# 	if not self.job_card:
+	# 		return
 
-		if cint(frappe.db.get_single_value("Manufacturing Settings", "job_card_excess_transfer")):
-			return
+	# 	if cint(frappe.db.get_single_value("Manufacturing Settings", "job_card_excess_transfer")):
+	# 		return
 
-		for row in self.items:
-			if row.job_card_item or not row.s_warehouse:
-				continue
+	# 	for row in self.items:
+	# 		if row.job_card_item or not row.s_warehouse:
+	# 			continue
 
-			msg = f"""Row #{row.idx}: The job card item reference
-				is missing. Kindly create the stock entry
-				from the job card. If you have added the row manually
-				then you won't be able to add job card item reference."""
+	# 		msg = f"""Row #{row.idx}: The job card item reference
+	# 			is missing. Kindly create the stock entry
+	# 			from the job card. If you have added the row manually
+	# 			then you won't be able to add job card item reference."""
 
-			frappe.throw(_(msg))
+	# 		frappe.throw(_(msg))
 
 	def validate_work_order_status(self):
 		pro_doc = frappe.get_doc("Work Order", self.work_order)
@@ -345,12 +327,12 @@ class StockEntry(StockController):
 		if self.purpose not in valid_purposes:
 			frappe.throw(_("Purpose must be one of {0}").format(comma_or(valid_purposes)))
 
-		if self.job_card and self.purpose not in ["Material Transfer for Manufacture", "Repack"]:
-			frappe.throw(
-				_(
-					"For job card {0}, you can only make the 'Material Transfer for Manufacture' type stock entry"
-				).format(self.job_card)
-			)
+		# if self.job_card and self.purpose not in ["Material Transfer for Manufacture", "Repack"]:
+		# 	frappe.throw(
+		# 		_(
+		# 			"For job card {0}, you can only make the 'Material Transfer for Manufacture' type stock entry"
+		# 		).format(self.job_card)
+		# 	)
 
 	def delete_linked_stock_entry(self):
 		if self.purpose == "Send to Warehouse":
@@ -378,40 +360,40 @@ class StockEntry(StockController):
 					_("Row {0}: Qty in Stock UOM can not be zero.").format(item.idx), title=_("Zero quantity")
 				)
 
-	def update_cost_in_project(self):
-		if self.work_order and not frappe.db.get_value(
-			"Work Order", self.work_order, "update_consumed_material_cost_in_project"
-		):
-			return
+	# def update_cost_in_project(self):
+	# 	if self.work_order and not frappe.db.get_value(
+	# 		"Work Order", self.work_order, "update_consumed_material_cost_in_project"
+	# 	):
+	# 		return
 
-		if self.project:
-			amount = frappe.db.sql(
-				""" select ifnull(sum(sed.amount), 0)
-				from
-					`tabStock Entry` se, `tabStock Entry Detail` sed
-				where
-					se.docstatus = 1 and se.project = %s and sed.parent = se.name
-					and (sed.t_warehouse is null or sed.t_warehouse = '')""",
-				self.project,
-				as_list=1,
-			)
+	# 	if self.project:
+	# 		amount = frappe.db.sql(
+	# 			""" select ifnull(sum(sed.amount), 0)
+	# 			from
+	# 				`tabStock Entry` se, `tabStock Entry Detail` sed
+	# 			where
+	# 				se.docstatus = 1 and se.project = %s and sed.parent = se.name
+	# 				and (sed.t_warehouse is null or sed.t_warehouse = '')""",
+	# 			self.project,
+	# 			as_list=1,
+	# 		)
 
-			amount = amount[0][0] if amount else 0
-			additional_costs = frappe.db.sql(
-				""" select ifnull(sum(sed.base_amount), 0)
-				from
-					`tabStock Entry` se, `tabLanded Cost Taxes and Charges` sed
-				where
-					se.docstatus = 1 and se.project = %s and sed.parent = se.name
-					and se.purpose = 'Manufacture'""",
-				self.project,
-				as_list=1,
-			)
+	# 		amount = amount[0][0] if amount else 0
+	# 		additional_costs = frappe.db.sql(
+	# 			""" select ifnull(sum(sed.base_amount), 0)
+	# 			from
+	# 				`tabStock Entry` se, `tabLanded Cost Taxes and Charges` sed
+	# 			where
+	# 				se.docstatus = 1 and se.project = %s and sed.parent = se.name
+	# 				and se.purpose = 'Manufacture'""",
+	# 			self.project,
+	# 			as_list=1,
+	# 		)
 
-			additional_cost_amt = additional_costs[0][0] if additional_costs else 0
+	# 		additional_cost_amt = additional_costs[0][0] if additional_costs else 0
 
-			amount += additional_cost_amt
-			frappe.db.set_value("Project", self.project, "total_consumed_material_cost", amount)
+	# 		amount += additional_cost_amt
+	# 		frappe.db.set_value("Project", self.project, "total_consumed_material_cost", amount)
 
 	def validate_item(self):
 		stock_items = self.get_stock_items()
@@ -431,7 +413,7 @@ class StockEntry(StockController):
 					{
 						"item_code": item.item_code,
 						"company": self.company,
-						"project": self.project,
+						# "project": self.project,
 						"uom": item.uom,
 						"s_warehouse": item.s_warehouse,
 					}
@@ -1584,35 +1566,35 @@ class StockEntry(StockController):
 
 		return process_gl_map(gl_entries)
 
-	def update_work_order(self):
-		def _validate_work_order(pro_doc):
-			msg, title = "", ""
-			if flt(pro_doc.docstatus) != 1:
-				msg = f"Work Order {self.work_order} must be submitted"
+	# def update_work_order(self):
+	# 	def _validate_work_order(pro_doc):
+	# 		msg, title = "", ""
+	# 		if flt(pro_doc.docstatus) != 1:
+	# 			msg = f"Work Order {self.work_order} must be submitted"
 
-			if pro_doc.status == "Stopped":
-				msg = f"Transaction not allowed against stopped Work Order {self.work_order}"
+	# 		if pro_doc.status == "Stopped":
+	# 			msg = f"Transaction not allowed against stopped Work Order {self.work_order}"
 
-			if msg:
-				frappe.throw(_(msg), title=title)
+	# 		if msg:
+	# 			frappe.throw(_(msg), title=title)
 
-		if self.job_card:
-			job_doc = frappe.get_doc("Job Card", self.job_card)
-			job_doc.set_transferred_qty(update_status=True)
-			job_doc.set_transferred_qty_in_job_card_item(self)
+	# 	# if self.job_card:
+	# 	# 	job_doc = frappe.get_doc("Job Card", self.job_card)
+	# 	# 	job_doc.set_transferred_qty(update_status=True)
+	# 	# 	job_doc.set_transferred_qty_in_job_card_item(self)
 
-		if self.work_order:
-			pro_doc = frappe.get_doc("Work Order", self.work_order)
-			_validate_work_order(pro_doc)
+	# 	if self.work_order:
+	# 		pro_doc = frappe.get_doc("Work Order", self.work_order)
+	# 		_validate_work_order(pro_doc)
 
-			if self.fg_completed_qty:
-				pro_doc.run_method("update_work_order_qty")
-				if self.purpose == "Manufacture":
-					pro_doc.run_method("update_planned_qty")
+	# 		if self.fg_completed_qty:
+	# 			pro_doc.run_method("update_work_order_qty")
+	# 			if self.purpose == "Manufacture":
+	# 				pro_doc.run_method("update_planned_qty")
 
-			pro_doc.run_method("update_status")
-			if not pro_doc.operations:
-				pro_doc.set_actual_dates()
+	# 		pro_doc.run_method("update_status")
+	# 		if not pro_doc.operations:
+	# 			pro_doc.set_actual_dates()
 
 	@frappe.whitelist()
 	def get_item_details(self, args=None, for_update=False):
@@ -2727,13 +2709,13 @@ class StockEntry(StockController):
 
 		return serial_nos
 
-	def update_subcontracting_order_status(self):
-		if self.subcontracting_order and self.purpose in ["Send to Subcontractor", "Material Transfer"]:
-			from erpnext.subcontracting.doctype.subcontracting_order.subcontracting_order import (
-				update_subcontracting_order_status,
-			)
+	# def update_subcontracting_order_status(self):
+	# 	if self.subcontracting_order and self.purpose in ["Send to Subcontractor", "Material Transfer"]:
+	# 		from erpnext.subcontracting.doctype.subcontracting_order.subcontracting_order import (
+	# 			update_subcontracting_order_status,
+	# 		)
 
-			update_subcontracting_order_status(self.subcontracting_order)
+	# 		update_subcontracting_order_status(self.subcontracting_order)
 
 	def update_pick_list_status(self):
 		from erpnext.stock.doctype.pick_list.pick_list import update_pick_list_status

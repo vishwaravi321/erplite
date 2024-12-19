@@ -874,7 +874,7 @@ class SalesInvoice(SellingController):
 					"compare_fields": [
 						["customer", "="],
 						["company", "="],
-						["project", "="],
+						# ["project", "="],
 						["currency", "="],
 					],
 				},
@@ -889,7 +889,7 @@ class SalesInvoice(SellingController):
 					"compare_fields": [
 						["customer", "="],
 						["company", "="],
-						["project", "="],
+						# ["project", "="],
 						["currency", "="],
 					],
 				},

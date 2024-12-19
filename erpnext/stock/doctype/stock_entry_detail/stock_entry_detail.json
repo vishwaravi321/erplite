@@ -58,12 +58,10 @@
   "expense_account",
   "accounting_dimensions_section",
   "cost_center",
-  "project",
   "dimension_col_break",
   "more_info",
   "actual_qty",
   "transferred_qty",
-  "bom_no",
   "allow_alternative_item",
   "col_break6",
   "material_request",
@@ -372,15 +370,6 @@
    "search_index": 1
   },
   {
-   "description": "BOM No. for a Finished Good Item",
-   "fieldname": "bom_no",
-   "fieldtype": "Link",
-   "hidden": 1,
-   "label": "BOM No",
-   "options": "BOM",
-   "print_hide": 1
-  },
-  {
    "default": "0",
    "depends_on": "s_warehouse",
    "fieldname": "allow_alternative_item",
@@ -489,12 +478,6 @@
    "label": "Reference Purchase Receipt",
    "options": "Purchase Receipt",
    "read_only": 1
-  },
-  {
-   "fieldname": "project",
-   "fieldtype": "Link",
-   "label": "Project",
-   "options": "Project"
   },
   {
    "fieldname": "po_detail",
@@ -610,7 +593,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-02-25 15:58:40.982582",
+ "modified": "2024-12-10 18:21:55.066603",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Stock Entry Detail",

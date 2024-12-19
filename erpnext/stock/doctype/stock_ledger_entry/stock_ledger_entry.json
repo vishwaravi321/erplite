@@ -34,7 +34,6 @@
   "section_break_21",
   "company",
   "stock_uom",
-  "project",
   "column_break_26",
   "fiscal_year",
   "has_batch_no",
@@ -239,12 +238,6 @@
    "read_only": 1
   },
   {
-   "fieldname": "project",
-   "fieldtype": "Link",
-   "label": "Project",
-   "options": "Project"
-  },
-  {
    "fieldname": "company",
    "fieldtype": "Link",
    "in_filter": 1,
@@ -362,7 +355,7 @@
  "in_create": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-08-27 09:28:03.961443",
+ "modified": "2024-12-18 17:46:08.777061",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Stock Ledger Entry",

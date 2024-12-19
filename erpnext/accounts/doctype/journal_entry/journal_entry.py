@@ -1094,7 +1094,7 @@ class JournalEntry(AccountsController):
 							"remarks": remarks,
 							"voucher_detail_no": d.reference_detail_no,
 							"cost_center": d.cost_center,
-							"project": d.project,
+							# "project": d.project,
 							"finance_book": self.finance_book,
 						},
 						item=d,

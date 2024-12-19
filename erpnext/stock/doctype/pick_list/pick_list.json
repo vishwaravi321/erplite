@@ -11,7 +11,6 @@
   "purpose",
   "customer",
   "customer_name",
-  "work_order",
   "material_request",
   "for_qty",
   "column_break_4",
@@ -64,13 +63,6 @@
    "in_list_view": 1,
    "label": "Customer",
    "options": "Customer"
-  },
-  {
-   "depends_on": "eval:doc.purpose==='Material Transfer for Manufacture'",
-   "fieldname": "work_order",
-   "fieldtype": "Link",
-   "label": "Work Order",
-   "options": "Work Order"
   },
   {
    "allow_on_submit": 1,
@@ -212,7 +204,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2024-08-14 13:20:42.168827",
+ "modified": "2024-12-18 17:15:18.317532",
  "modified_by": "Administrator",
  "module": "Stock",
  "name": "Pick List",

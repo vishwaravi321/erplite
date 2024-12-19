@@ -20,15 +20,10 @@ class SupplierQuotation(BuyingController):
 	from typing import TYPE_CHECKING
 
 	if TYPE_CHECKING:
-		from frappe.types import DF
-
 		from erpnext.accounts.doctype.pricing_rule_detail.pricing_rule_detail import PricingRuleDetail
-		from erpnext.accounts.doctype.purchase_taxes_and_charges.purchase_taxes_and_charges import (
-			PurchaseTaxesandCharges,
-		)
-		from erpnext.buying.doctype.supplier_quotation_item.supplier_quotation_item import (
-			SupplierQuotationItem,
-		)
+		from erpnext.accounts.doctype.purchase_taxes_and_charges.purchase_taxes_and_charges import PurchaseTaxesandCharges
+		from erpnext.buying.doctype.supplier_quotation_item.supplier_quotation_item import SupplierQuotationItem
+		from frappe.types import DF
 
 		additional_discount_percentage: DF.Float
 		address_display: DF.SmallText | None
@@ -70,12 +65,10 @@ class SupplierQuotation(BuyingController):
 		named_place: DF.Data | None
 		naming_series: DF.Literal["PUR-SQTN-.YYYY.-"]
 		net_total: DF.Currency
-		opportunity: DF.Link | None
 		other_charges_calculation: DF.TextEditor | None
 		plc_conversion_rate: DF.Float
 		price_list_currency: DF.Link | None
 		pricing_rules: DF.Table[PricingRuleDetail]
-		project: DF.Link | None
 		quotation_number: DF.Data | None
 		rounded_total: DF.Currency
 		rounding_adjustment: DF.Currency

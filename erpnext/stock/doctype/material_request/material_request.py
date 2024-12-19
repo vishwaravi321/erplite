@@ -28,19 +28,15 @@ class MaterialRequest(BuyingController):
 	from typing import TYPE_CHECKING
 
 	if TYPE_CHECKING:
-		from frappe.types import DF
-
 		from erpnext.stock.doctype.material_request_item.material_request_item import MaterialRequestItem
+		from frappe.types import DF
 
 		amended_from: DF.Link | None
 		company: DF.Link
 		customer: DF.Link | None
 		items: DF.Table[MaterialRequestItem]
-		job_card: DF.Link | None
 		letter_head: DF.Link | None
-		material_request_type: DF.Literal[
-			"Purchase", "Material Transfer", "Material Issue", "Manufacture", "Customer Provided"
-		]
+		material_request_type: DF.Literal["Purchase", "Material Transfer", "Material Issue", "Manufacture", "Customer Provided"]
 		naming_series: DF.Literal["MAT-MR-.YYYY.-"]
 		per_ordered: DF.Percent
 		per_received: DF.Percent
@@ -49,26 +45,12 @@ class MaterialRequest(BuyingController):
 		select_print_heading: DF.Link | None
 		set_from_warehouse: DF.Link | None
 		set_warehouse: DF.Link | None
-		status: DF.Literal[
-			"",
-			"Draft",
-			"Submitted",
-			"Stopped",
-			"Cancelled",
-			"Pending",
-			"Partially Ordered",
-			"Partially Received",
-			"Ordered",
-			"Issued",
-			"Transferred",
-			"Received",
-		]
+		status: DF.Literal["", "Draft", "Submitted", "Stopped", "Cancelled", "Pending", "Partially Ordered", "Partially Received", "Ordered", "Issued", "Transferred", "Received"]
 		tc_name: DF.Link | None
 		terms: DF.TextEditor | None
 		title: DF.Data | None
 		transaction_date: DF.Date
 		transfer_status: DF.Literal["", "Not Started", "In Transit", "Completed"]
-		work_order: DF.Link | None
 	# end: auto-generated types
 
 	def check_if_already_pulled(self):
@@ -166,7 +148,7 @@ class MaterialRequest(BuyingController):
 			self.title = _("{0} Request for {1}").format(_(self.material_request_type), items)[:100]
 
 	def on_submit(self):
-		self.update_requested_qty_in_production_plan()
+		# self.update_requested_qty_in_production_plan()
 		self.update_requested_qty()
 		if self.material_request_type == "Purchase" and frappe.db.exists(
 			"Budget", {"applicable_on_material_request": 1, "docstatus": 1}
@@ -224,7 +206,7 @@ class MaterialRequest(BuyingController):
 				)
 
 	def on_cancel(self):
-		self.update_requested_qty_in_production_plan()
+		# self.update_requested_qty_in_production_plan()
 		self.update_requested_qty()
 
 	def get_mr_items_ordered_qty(self, mr_items):
@@ -328,22 +310,22 @@ class MaterialRequest(BuyingController):
 				},
 			)
 
-	def update_requested_qty_in_production_plan(self):
-		production_plans = []
-		for d in self.get("items"):
-			if d.production_plan and d.material_request_plan_item:
-				qty = d.qty if self.docstatus == 1 else 0
-				frappe.db.set_value(
-					"Material Request Plan Item", d.material_request_plan_item, "requested_qty", qty
-				)
+	# def update_requested_qty_in_production_plan(self):
+	# 	production_plans = []
+	# 	for d in self.get("items"):
+	# 		if d.production_plan and d.material_request_plan_item:
+	# 			qty = d.qty if self.docstatus == 1 else 0
+	# 			frappe.db.set_value(
+	# 				"Material Request Plan Item", d.material_request_plan_item, "requested_qty", qty
+	# 			)
 
-				if d.production_plan not in production_plans:
-					production_plans.append(d.production_plan)
+	# 			if d.production_plan not in production_plans:
+	# 				production_plans.append(d.production_plan)
 
-		for production_plan in production_plans:
-			doc = frappe.get_doc("Production Plan", production_plan)
-			doc.set_status()
-			doc.db_set("status", doc.status)
+	# 	for production_plan in production_plans:
+	# 		doc = frappe.get_doc("Production Plan", production_plan)
+	# 		doc.set_status()
+	# 		doc.db_set("status", doc.status)
 
 
 def update_completed_and_requested_qty(stock_entry, method):
@@ -682,7 +664,7 @@ def make_stock_entry(source_name, target_doc=None):
 		target.set_actual_qty()
 		target.calculate_rate_and_amount(raise_error_if_no_rate=False)
 		target.stock_entry_type = target.purpose
-		target.set_job_card_data()
+		# target.set_job_card_data()
 
 		if source.job_card:
 			job_card_details = frappe.get_all(

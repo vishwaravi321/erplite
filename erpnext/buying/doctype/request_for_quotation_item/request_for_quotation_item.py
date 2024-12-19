@@ -27,7 +27,6 @@ class RequestforQuotationItem(Document):
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data
-		project_name: DF.Link | None
 		qty: DF.Float
 		schedule_date: DF.Date
 		stock_qty: DF.Float

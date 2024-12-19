@@ -44,7 +44,7 @@ frappe.query_reports["Stock Ledger"] = {
 			options: "Item",
 			get_query: function () {
 				return {
-					query: "erplite.controllers.queries.item_query",
+					query: "erpnext.controllers.queries.item_query",
 				};
 			},
 		},
@@ -79,12 +79,12 @@ frappe.query_reports["Stock Ledger"] = {
 			label: __("Voucher #"),
 			fieldtype: "Data",
 		},
-		{
-			fieldname: "project",
-			label: __("Project"),
-			fieldtype: "Link",
-			options: "Project",
-		},
+		// {
+		// 	fieldname: "project",
+		// 	label: __("Project"),
+		// 	fieldtype: "Link",
+		// 	options: "Project",
+		// },
 		{
 			fieldname: "include_uom",
 			label: __("Include UOM"),
@@ -118,4 +118,4 @@ frappe.query_reports["Stock Ledger"] = {
 	},
 };
 
-erplite.utils.add_inventory_dimensions("Stock Ledger", 10);
+erpnext.utils.add_inventory_dimensions("Stock Ledger", 10);

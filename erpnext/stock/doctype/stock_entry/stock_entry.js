@@ -213,7 +213,7 @@ frappe.ui.form.on("Stock Entry", {
 		frm.trigger("get_items_from_transit_entry");
 
 		if (!frm.doc.docstatus) {
-			frm.trigger("validate_purpose_consumption");
+			// frm.trigger("validate_purpose_consumption");
 			frm.add_custom_button(
 				__("Material Request"),
 				function () {
@@ -488,23 +488,23 @@ frappe.ui.form.on("Stock Entry", {
 	},
 
 	purpose: function (frm) {
-		frm.trigger("validate_purpose_consumption");
+		// frm.trigger("validate_purpose_consumption");
 		frm.fields_dict.items.grid.refresh();
 		frm.cscript.toggle_related_fields(frm.doc);
 	},
 
-	validate_purpose_consumption: function (frm) {
-		frappe
-			.call({
-				method: "erpnext.manufacturing.doctype.manufacturing_settings.manufacturing_settings.is_material_consumption_enabled",
-			})
-			.then((r) => {
-				if (cint(r.message) == 0 && frm.doc.purpose == "Material Consumption for Manufacture") {
-					frm.set_value("purpose", "Manufacture");
-					frappe.throw(__("Material Consumption is not set in Manufacturing Settings."));
-				}
-			});
-	},
+	// validate_purpose_consumption: function (frm) {
+	// 	frappe
+	// 		.call({
+	// 			method: "erpnext.manufacturing.doctype.manufacturing_settings.manufacturing_settings.is_material_consumption_enabled",
+	// 		})
+	// 		.then((r) => {
+	// 			if (cint(r.message) == 0 && frm.doc.purpose == "Material Consumption for Manufacture") {
+	// 				frm.set_value("purpose", "Manufacture");
+	// 				frappe.throw(__("Material Consumption is not set in Manufacturing Settings."));
+	// 			}
+	// 		});
+	// },
 
 	company: function (frm) {
 		if (frm.doc.company) {
@@ -999,14 +999,14 @@ erpnext.stock.StockEntry = class StockEntry extends erpnext.stock.StockControlle
 
 		this.setup_posting_date_time_check();
 
-		this.frm.fields_dict.bom_no.get_query = function () {
-			return {
-				filters: {
-					docstatus: 1,
-					is_active: 1,
-				},
-			};
-		};
+		// this.frm.fields_dict.bom_no.get_query = function () {
+		// 	return {
+		// 		filters: {
+		// 			docstatus: 1,
+		// 			is_active: 1,
+		// 		},
+		// 	};
+		// };
 
 		this.frm.fields_dict.items.grid.get_field("item_code").get_query = function () {
 			return erpnext.queries.item({ is_stock_item: 1 });

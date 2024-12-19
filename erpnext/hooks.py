@@ -624,7 +624,7 @@ global_search_doctypes = {
 		{"doctype": "Purchase Taxes and Charges Template", "index": 26},
 		{"doctype": "Sales Taxes and Charges", "index": 27},
 		{"doctype": "Asset", "index": 28},
-		{"doctype": "Project", "index": 29},
+		# {"doctype": "Project", "index": 29},
 		{"doctype": "Task", "index": 30},
 		{"doctype": "Timesheet", "index": 31},
 		{"doctype": "Issue", "index": 32},
@@ -642,10 +642,10 @@ global_search_doctypes = {
 # additional_timeline_content = {"*": ["erpnext.telephony.doctype.call_log.call_log.get_linked_call_logs"]}
 
 
-# extend_bootinfo = [
-# 	"erpnext.support.doctype.service_level_agreement.service_level_agreement.add_sla_doctypes",
-# 	"erpnext.startup.boot.bootinfo",
-# ]
+extend_bootinfo = [
+	# "erpnext.support.doctype.service_level_agreement.service_level_agreement.add_sla_doctypes",
+	"erpnext.startup.boot.bootinfo",
+]
 
 
 default_log_clearing_doctypes = {

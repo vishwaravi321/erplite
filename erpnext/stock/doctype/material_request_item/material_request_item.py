@@ -19,7 +19,6 @@ class MaterialRequestItem(Document):
 
 		actual_qty: DF.Float
 		amount: DF.Currency
-		bom_no: DF.Link | None
 		brand: DF.Link | None
 		conversion_factor: DF.Float
 		cost_center: DF.Link | None
@@ -42,8 +41,6 @@ class MaterialRequestItem(Document):
 		parentfield: DF.Data
 		parenttype: DF.Data
 		price_list_rate: DF.Currency
-		production_plan: DF.Link | None
-		project: DF.Link | None
 		projected_qty: DF.Float
 		qty: DF.Float
 		rate: DF.Currency

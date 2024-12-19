@@ -81,7 +81,6 @@
   "reference_date",
   "clearance_date",
   "accounting_dimensions_section",
-  "project",
   "dimension_col_break",
   "cost_center",
   "section_break_12",
@@ -479,14 +478,6 @@
    "label": "More Information"
   },
   {
-   "allow_on_submit": 1,
-   "fieldname": "project",
-   "fieldtype": "Link",
-   "label": "Project",
-   "options": "Project",
-   "print_hide": 1
-  },
-  {
    "fieldname": "remarks",
    "fieldtype": "Small Text",
    "label": "Remarks",
@@ -801,7 +792,7 @@
    "table_fieldname": "payment_entries"
   }
  ],
- "modified": "2024-05-31 17:07:06.197249",
+ "modified": "2024-12-10 10:35:54.460359",
  "modified_by": "Administrator",
  "module": "Accounts",
  "name": "Payment Entry",
